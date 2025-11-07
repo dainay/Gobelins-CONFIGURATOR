@@ -10,7 +10,6 @@ if (!endpoint || !projectId) {
 export const client = new Client().setEndpoint(endpoint).setProject(projectId);
 
 export const account = new Account(client);
-export const databases = new Databases(client);
 export const storage = new Storage(client);
 export const avatars = new Avatars(client);
 export const locale = new Locale(client);
