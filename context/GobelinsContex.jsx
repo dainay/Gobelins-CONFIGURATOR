@@ -58,10 +58,11 @@ export function GobelinsProvider({ children }) {
   }
 
   async function deleteGobelin(id) {
-    const res = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
-      Query.equal("$id", id),
-    ]);
-    return res.documents[0] || null;
+    try {
+      await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+    } catch (error) {
+      console.error("Error deleting gobelin:", error);
+    }
   }
 
   //fetch gobelins directly when we have user loggined
@@ -77,6 +78,11 @@ export function GobelinsProvider({ children }) {
         const { payload, events } = response;
         if (events[0].includes("create")) {
           setGobelins((prevGobelins) => [...prevGobelins, payload]);
+        }
+        if (events[0].includes("delete")) {
+          setGobelins((prevGobelins) =>
+            prevGobelins.filter((gobelin) => gobelin.$id !== payload.$id)
+          );
         }
       });
     } else {
