@@ -19,7 +19,7 @@
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
     "appwrite": "^21.4.0",
-    "expo": "~54.0.22",
+    "expo": "^54.0.23",
     "expo-asset": "~12.0.9",
     "expo-constants": "~18.0.10",
     "expo-file-system": "~19.0.17",

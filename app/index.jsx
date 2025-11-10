@@ -31,8 +31,12 @@ const Home = () => {
         <ThemedText>Profile</ThemedText>
       </Link>
 
-        <Link href="/ping" style={styles.link}>
+        {/* <Link href="/ping" style={styles.link}>
         <ThemedText>ping</ThemedText>
+      </Link> */}
+
+      <Link href="/three-demo" style={styles.link}>
+        <ThemedText>3D Demo</ThemedText>
       </Link>
 
     </ThemedView>
