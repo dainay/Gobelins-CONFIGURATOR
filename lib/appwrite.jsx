@@ -14,7 +14,7 @@ export const storage = new Storage(client);
 export const avatars = new Avatars(client);
 export const locale = new Locale(client);
 
-export const database = new Databases(client);
+export const databases = new Databases(client);
 export const AppwriteID = ID;
 
 export async function appwritePing() {

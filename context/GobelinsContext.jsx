@@ -19,9 +19,9 @@ export function GobelinsProvider({ children }) {
         COLLECTION_ID
       );
       setGobelins(response.documents);
-      // console.log("Fetched gobelins:", response.documents);
+      console.log("Fetched gobelins:", response.documents);
     } catch (error) {
-      console.error("Error fetching gobelins:", error);
+      console.error("Error fetching gobelins:", error.message);
     }
   }
 
@@ -73,6 +73,7 @@ export function GobelinsProvider({ children }) {
 
     if (user) {
       fetchGobelins();
+      console.log("Setting up subscription for gobelins updates...");
       unsubscribe = client.subscribe(channel, (response) => {
         //     console.log("Gobelins collection updated:", response);
         const { payload, events } = response;

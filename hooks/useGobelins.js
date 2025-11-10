@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { GobelinsContext } from '../context/GobelinsContex';
+import { GobelinsContext } from '../context/GobelinsContext';
 
 export function useGobelins() {
     const context = useContext(GobelinsContext);

@@ -33,7 +33,7 @@ import { Colors } from "../constants/Colors";
 import { useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { UserProvider } from "../context/UserContext";
-import { GobelinsProvider } from "../context/GobelinsContex";
+import { GobelinsProvider } from "../context/GobelinsContext";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
