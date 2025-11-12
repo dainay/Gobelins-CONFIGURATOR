@@ -1,6 +1,16 @@
 import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
+import { decode as atob, encode as btoa } from 'base-64';
 
+// Expo runtime (React Native) doesn't provide these by default
+if (!global.atob) global.atob = atob;
+if (!global.btoa) global.btoa = btoa;
+
+// Some loaders also reference global.Base64
+global.Base64 = {
+  atob,
+  btoa,
+};
 // Synchronous in-memory localStorage polyfill for Appwrite compatibility
 //do not touch - needed for Appwrite SDK to work in React Native environment
 if (typeof global.localStorage === 'undefined') {
@@ -55,6 +65,9 @@ export default function RootLayout() {
           {/* Groups */}
           <Stack.Screen name="(auth)" options={{ headerShown: true }} />
           <Stack.Screen name="(dashboard)" options={{ headerShown: true }} />
+
+          <Stack.Screen name="(three)" options={{ headerShown: true }} />
+
         </Stack>
       </GobelinsProvider>
     </UserProvider>

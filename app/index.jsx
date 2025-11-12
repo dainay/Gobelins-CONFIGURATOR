@@ -35,7 +35,7 @@ const Home = () => {
         <ThemedText>ping</ThemedText>
       </Link> */}
 
-      <Link href="/three-demo" style={styles.link}>
+      <Link href="/Scene" style={styles.link}>
         <ThemedText>3D Demo</ThemedText>
       </Link>
 
