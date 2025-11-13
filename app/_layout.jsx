@@ -1,5 +1,19 @@
+if (typeof URL.createObjectURL !== 'function') {
+  console.log('Patched createObjectURL called', blob);
+  URL.createObjectURL = (blob) => {
+    console.log('Patched createObjectURL called', blob);
+    if (typeof blob === 'string' && blob.startsWith('data:image')) {
+      return blob;
+    }
+    throw new Error('Cannot create URL for blob in React Native');
+  };
+}
+
 import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
+ 
+import { Base64 } from 'js-base64';
+global.Base64 = Base64;
 
 // Synchronous in-memory localStorage polyfill for Appwrite compatibility
 //do not touch - needed for Appwrite SDK to work in React Native environment
@@ -55,6 +69,9 @@ export default function RootLayout() {
           {/* Groups */}
           <Stack.Screen name="(auth)" options={{ headerShown: true }} />
           <Stack.Screen name="(dashboard)" options={{ headerShown: true }} />
+
+          {/* <Stack.Screen name="(three)" options={{ headerShown: true }} /> */}
+
         </Stack>
       </GobelinsProvider>
     </UserProvider>
