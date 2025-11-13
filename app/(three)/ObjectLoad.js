@@ -1,5 +1,5 @@
 import { Asset } from "expo-asset";
-import useGLTF from "@react-three/drei/native/useGLTF";
+import { useGLTF } from "@react-three/drei/native";
 
 export default function ObjectLoad() {
  const asset = Asset.fromURI(
