@@ -24,7 +24,7 @@ const Experience = ({ THREE }) => {
   //to get stuff one time on load
   const { camera, gl } = useThree((state) => {});
 
- 
+
 
   return (
     <>

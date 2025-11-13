@@ -1,8 +1,10 @@
-import React from 'react';
-import { useGLTF } from '@react-three/drei/native';
+import { Asset } from "expo-asset";
+import useGLTF from "@react-three/drei/native/useGLTF";
 
-export default function ObjectLoad(props) {
-  const { scene } = useGLTF('https://github.com/KhronosGroup/glTF-Sample-Models/raw/main/2.0/Duck/glTF-Binary/Duck.glb');
-
-  return <primitive object={scene} scale={1} {...props} />;
+export default function ObjectLoad() {
+ const asset = Asset.fromURI(
+    "https://t49q8flueooukrdm.public.blob.vercel-storage.com/gobelinsV3.glb"
+  );
+  const { scene } = useGLTF(asset.uri, true);
+  return <primitive object={scene} scale={0.5} />;
 }
