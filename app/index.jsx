@@ -1,65 +1,37 @@
-import { StyleSheet } from 'react-native'
-import { Link } from 'expo-router' 
+import { Redirect } from 'expo-router';
+import { useEffect } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useIntroFlag } from '../hooks/useIntroFlag';
 
-import ThemedView from "../components/ThemedView"
-import ThemedText from "../components/ThemedText"
-import ThemedLogo from "../components/ThemedLogo"
-import Spacer from "../components/Spacer"
-// Removed unused Colors import
+export default function Index() {
+  const { hasSeenIntro, resetIntro } = useIntroFlag();
 
-const Home = () => {
-  return (
-    <ThemedView style={styles.container}>
-      <ThemedLogo />
-      <Spacer />
+  // Pendant le développement : réinitialise l'intro à chaque démarrage
+  // Commenter cette ligne pour réactiver la logique normale
+  useEffect(() => {
+    resetIntro();
+  }, []);
 
-      <ThemedText style={styles.title} title={true}>The Number 1</ThemedText>
+  if (hasSeenIntro === null) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
-      <ThemedText style={{ marginTop: 10, marginBottom: 30 }}>
-        Reading List App
-      </ThemedText>
+  if (!hasSeenIntro) {
+    return <Redirect href="/intro" />;
+  }
 
-      <Link href="/login" style={styles.link}>
-        <ThemedText>Login</ThemedText>
-      </Link>
-
-      <Link href="/register" style={styles.link}>
-        <ThemedText>Register</ThemedText>
-      </Link>
-
-      <Link href="/profile" style={styles.link}>
-        <ThemedText>Profile</ThemedText>
-      </Link>
-
-        {/* <Link href="/ping" style={styles.link}>
-        <ThemedText>ping</ThemedText>
-      </Link> */}
-
-      <Link href="/Scene" style={styles.link}>
-        <ThemedText>3D Demo</ThemedText>
-      </Link>
-
-    </ThemedView>
-  )
+  return <Redirect href="/home" />;
 }
 
-export default Home
-
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'black',
   },
-  img: {
-    marginVertical: 20
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  link: {
-    marginVertical: 10,
-    borderBottomWidth: 1
-  },
-})
+});

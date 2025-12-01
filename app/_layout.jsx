@@ -43,11 +43,11 @@ if (typeof global.localStorage === 'undefined') {
 }
 
 import { Stack } from "expo-router";
-import { Colors } from "../constants/Colors";
-import { useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { UserProvider } from "../context/UserContext";
+import { useColorScheme } from "react-native";
+import { Colors } from "../constants/Colors";
 import { GobelinsProvider } from "../context/GobelinsContext";
+import { UserProvider } from "../context/UserContext";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -65,6 +65,8 @@ export default function RootLayout() {
         >
           {/* Individual Screens (make index the first/initial route) */}
           <Stack.Screen name="index" options={{ title: "Home" }} />
+          {/* Desactive lanimation de la transition de l'intro */}
+          <Stack.Screen name="intro" options={{ animation: "none", title: "Intro" , headerShown: false}} />
 
           {/* Groups */}
           <Stack.Screen name="(auth)" options={{ headerShown: true }} />
