@@ -3,8 +3,6 @@ import { Appearance } from "react-native";
 
 export async function readPhoneMetrics() {
 
-    const { status } = await Brightness.requestPermissionsAsync();
-
   // battery level: 0–1
   let batteryLevel = -1;
   try {
