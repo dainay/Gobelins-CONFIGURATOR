@@ -1,34 +1,66 @@
 import { Video } from 'expo-av';
 import React, { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
   const videoConfig = [
-    {
-      source: require('../../assets/video/intro/scene1.mp4'),
+    // {
+    //   source: require('../../assets/video/intro/scene1.mp4'),
+    //   isLooping: false, 
+    //   requiresInteraction: false, 
+    //   clickImage: null,
+    //   isSkipable: true,
+    //   requireUsername: false,
+    // },
+    // {
+    //   source: require('../../assets/video/intro/scene2.mp4'),
+    //   isLooping: true, 
+    //   requiresInteraction: true, 
+    //   clickImage: require('../../assets/intro/CTA/click.png'),
+    //   isSkipable: true,
+    //   requireUsername: false,
+    // },
+    // {
+    //   source: require('../../assets/video/intro/scene1.mp4'),
+    //   isLooping: false, 
+    //   requiresInteraction: false, 
+    //   clickImage: null,
+    //   isSkipable: true,
+    //   requireUsername: false,
+    // },
+        {
+      source: require('../../assets/video/intro/scene4.mp4'),
       isLooping: false, 
       requiresInteraction: false, 
+      clickImage: null,
+      isSkipable: false,
+      requireUsername: true,
     },
     {
       source: require('../../assets/video/intro/scene2.mp4'),
       isLooping: true, 
       requiresInteraction: true, 
-    },
-    {
-      source: require('../../assets/video/intro/scene1.mp4'),
-      isLooping: false, 
-      requiresInteraction: false, 
+      clickImage: require('../../assets/intro/CTA/click.png'),
+      isSkipable: true,
+      requireUsername: false,
     },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeVideo, setActiveVideo] = useState(0); // 0 ou 1 pour alterner entre les deux vidéos
   const [clickedToFinish, setClickedToFinish] = useState(false);
+  const [hasCompletedFirstLoop, setHasCompletedFirstLoop] = useState(false);
+  const [showSkipButton, setShowSkipButton] = useState(false);
+  const [username, setUsername] = useState('');
+  const [showUsernameInput, setShowUsernameInput] = useState(false);
   const videoRef0 = useRef(null);
   const videoRef1 = useRef(null);
   const fadeAnim0 = useSharedValue(1);
   const fadeAnim1 = useSharedValue(0);
+  const imageFadeAnim = useSharedValue(0);
+  const usernameIntroFadeAnim = useSharedValue(0);
+  const usernameScaleIntroAnim = useSharedValue(0.75);
   const currentConfig = videoConfig[currentIndex];
 
   const goToNextVideo = async () => {
@@ -67,6 +99,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
           // Mettre à jour les index
           setCurrentIndex(nextIdx);
           setActiveVideo(nextActiveVideo);
+          setHasCompletedFirstLoop(false);
         };
         
         // Crossfade : l'ancienne disparaît, la nouvelle apparaît
@@ -78,6 +111,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
         console.log('Error loading next video:', error);
         setCurrentIndex(nextIdx);
         setActiveVideo(nextActiveVideo);
+        setHasCompletedFirstLoop(false);
       }
     } else {
       setTimeout(() => {
@@ -90,13 +124,35 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     // Ne traiter que les événements de la vidéo active
     if (videoIndex !== activeVideo) return;
     
-    // Vidéo normale qui se termine automatiquement
-    if (status.didJustFinish && !currentConfig.isLooping && !currentConfig.requiresInteraction) {
-      goToNextVideo();
-    }
-    // Vidéo avec interaction qui a été cliquée et qui se termine maintenant
-    if (status.didJustFinish && clickedToFinish) {
-      goToNextVideo();
+
+    
+    if (status.didJustFinish) {
+
+      // Vidéo avec interaction qui a été cliquée et qui se termine maintenant et qui n'est pas un loop
+      if (clickedToFinish) {
+        goToNextVideo();
+      }
+      
+
+      else if (currentConfig.isLooping && hasCompletedFirstLoop === false) {
+        setHasCompletedFirstLoop(true);
+      }
+
+      else if (currentConfig.requireUsername) {
+
+        const currentVideoRef = activeVideo === 0 ? videoRef0 : videoRef1;
+        if (currentVideoRef.current) {
+          currentVideoRef.current.pauseAsync();
+        }
+        setShowUsernameInput(true);
+      }
+
+          // Vidéo normale qui se termine automatiquement
+      else if (status.didJustFinish && !currentConfig.isLooping && !currentConfig.requiresInteraction) {
+        goToNextVideo();
+      }
+
+
     }
   };
 
@@ -104,6 +160,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     if (currentConfig.requiresInteraction && currentConfig.isLooping) {
       // Désactiver le loop pour laisser la vidéo se terminer
         setClickedToFinish(true);
+        imageFadeAnim.value = withTiming(0, { duration: 300 });
 
       const currentVideoRef = activeVideo === 0 ? videoRef0 : videoRef1;
       if (currentVideoRef.current) {
@@ -111,6 +168,25 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
           console.log('Error disabling loop:', error);
         });
       }
+    }
+  };
+
+  const handleSkipIntro = () => {
+    goToNextVideo();
+  }
+
+  const handleSubmitUsername = () => {
+    if (username.trim().length > 0) {
+      usernameIntroFadeAnim.value = withTiming(0, { duration: 200 });
+      usernameScaleIntroAnim.value = withTiming(0.75, { duration: 200 });
+      
+      // Attendre la fin de l'animation (200ms) + délai (500ms) = 700ms
+      setTimeout(() => {
+        setShowUsernameInput(false);
+        setTimeout(() => {
+          goToNextVideo();
+        }, 500);
+      }, 200);
     }
   };
 
@@ -159,6 +235,54 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     };
   });
 
+  const imageIntroStyle = useAnimatedStyle(() => {
+    return {
+      opacity: imageFadeAnim.value,
+    }
+  })
+
+  const usernameOverlayIntroStyle = useAnimatedStyle(() => {
+    return {
+      opacity: usernameIntroFadeAnim.value,
+      transform: [{ scale: usernameScaleIntroAnim.value }],
+    };
+  });
+
+  useEffect(() => {
+    if (hasCompletedFirstLoop && currentConfig.clickImage) {
+      //  fade in 0 -> 1
+      imageFadeAnim.value = withTiming(1, { duration: 300 });
+    }
+    else {
+      // sinon masquer l'image
+      imageFadeAnim.value = 0;
+    }
+  }, [hasCompletedFirstLoop, currentIndex]);
+
+  useEffect(() => {
+    setShowSkipButton(false);
+
+    const timeout = setTimeout(() => {
+      if (currentConfig.isSkipable) {
+        setShowSkipButton(true);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [currentIndex]);
+
+
+  useEffect(() => {
+    if (showUsernameInput) {
+      usernameIntroFadeAnim.value = withTiming(1, { duration: 200 });
+      usernameScaleIntroAnim.value = withTiming(1, { duration: 200 });
+    }
+    // else {
+    //   usernameIntroFadeAnim.value = 0;
+    //   usernameScaleIntroAnim.value = 0;
+    // }
+  }, [showUsernameInput]);
+
   return (
     <Pressable style={styles.container} onPress={handlePress}>
       <Animated.View style={[styles.videoContainer, animatedStyle0]}>
@@ -179,6 +303,40 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
           onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(status, 1)}
         />
       </Animated.View>
+      {hasCompletedFirstLoop && currentConfig.clickImage && (
+        <Animated.Image 
+        source={currentConfig.clickImage} 
+        style={[styles.clickImageIntro, imageIntroStyle]}
+        resizeMode="contain"
+        />
+      )}
+      {showSkipButton && (
+        <Pressable style={styles.skipButton} onPress={handleSkipIntro}>
+          <Text style={styles.skipButtonText}>Skip</Text>
+        </Pressable>
+      )}
+      {showUsernameInput && currentConfig.requireUsername && (
+        <Animated.View style={[styles.usernameIntroOverlay, usernameOverlayIntroStyle]}>
+          <View style={styles.usernameIntroContainer}>
+            <Text style={styles.usernameIntroQuestion}>Enter your username</Text>
+            <TextInput 
+            style={styles.usernameIntroInput} 
+            value={username} 
+            onChangeText={setUsername} 
+            placeholder="Quel est son nom ?" 
+            placeholderTextColor="black"
+            autoFocus={true}
+            />
+          <Pressable 
+            style={styles.usernameIntroButton} 
+            onPress={handleSubmitUsername}
+            >
+            <Text style={styles.usernameIntroButtonText}>Valider</Text>
+          </Pressable>
+       
+          </View>
+        </Animated.View>
+      )}
     </Pressable>
   );
 }
@@ -188,6 +346,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
+  //VIDEO INTRO
   videoContainer: {
     position: 'absolute',
     top: 0,
@@ -200,5 +359,75 @@ const styles = StyleSheet.create({
   },
   video: {
     flex: 1,
+  },
+  //IMAGE CTA INTRO
+  clickImageIntro: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: '-50%' }, { translateY: '-50%' }],
+    zIndex: 100,
+    width: '75%',
+
+  },
+  //BUTTON SKIP INTRO
+  skipButton: {
+    position: 'absolute',
+    bottom: '10%',
+    right: '10%',
+    zIndex: 100,
+  },
+  skipButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  //INPUT PRENOM INTRO
+  usernameIntroOverlay: {
+    position: 'absolute',
+    bottom: '10%',
+    left: '5%',
+    // transform: [{ translateX: '-50%' }],
+    zIndex: 100,
+    width: '90%',
+    height: '50%',
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  usernameIntroContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  usernameIntroQuestion: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: 'black',
+    textAlign: 'center',
+  },
+  usernameIntroInput: {
+    fontSize: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    width: '100%',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    backgroundColor: '#fff',
+  },
+  usernameIntroButton: {
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  usernameIntroButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
