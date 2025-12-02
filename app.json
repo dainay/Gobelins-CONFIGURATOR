@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "second",
-    "slug": "second",
+    "name": "gobelink",
+    "scheme": "gobelink",
+    "slug": "gobelink",
     "version": "1.0.0",
     "orientation": "portrait",
-    // "icon": "./assets/images/icon.png",
-    "scheme": "dark",
+    // "icon": "./assets/images/icon.png", 
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true

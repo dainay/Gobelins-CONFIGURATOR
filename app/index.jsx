@@ -39,6 +39,11 @@ const Home = () => {
         <ThemedText>3D Demo</ThemedText>
       </Link>
 
+      <Link href="/text" style={styles.link}>
+        <ThemedText>True app</ThemedText>
+      </Link>
+
+
     </ThemedView>
   )
 }
