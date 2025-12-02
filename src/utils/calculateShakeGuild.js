@@ -1,27 +1,27 @@
 const IDEAL = {
   maxMag: {
-    ardembouls: 8,
+    ardembouls: 7,
     brumelins: 5,
-    lumivel: 2,
-    mecarocks: 1,
+    lumivel: 2.5,
+    mecarocks: 1.2,
   },
   meanMag: {
-    ardembouls: 4,
+    ardembouls: 3.5,
     brumelins: 2.5,
-    lumivel: 1.5,
-    mecarocks: 1,
+    lumivel: 1.8,
+    mecarocks: 1.2,
   },
   stdDev: {
-    ardembouls: 1.0,
+    ardembouls: 1.2,
     brumelins: 1.5,
-    lumivel: 0.3,
-    mecarocks: 0.1,
+    lumivel: 0.5,
+    mecarocks: 0.15,
   },
   zeroX: {
     ardembouls: 35,
-    brumelins: 60,
-    lumivel: 10,
-    mecarocks: 3,
+    brumelins: 55,
+    lumivel: 15,
+    mecarocks: 5,
   },
 };
 
@@ -44,7 +44,7 @@ export function calculateShakeGuild({ maxMag, meanMag, stdDev, zeroX }) {
     guilds.forEach((g) => {
       const ideal = IDEAL[metricName][g];
       const score = proportionalScore(value, ideal);
-      scores[g] += score * 2; 
+      scores[g] += score * 2.5; // увеличили вес до 2.5 (макс 10 баллов за shake)
     });
   }
 
