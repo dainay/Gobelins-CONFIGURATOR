@@ -87,21 +87,11 @@ const Home = () => {
   )
 }
 
-export default Home
-
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'black',
   },
-  title: {
-    textAlign: 'center',
-    fontSize: 18,
-    marginBottom: 30,
-  },
-  link: {
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
-})
+});
