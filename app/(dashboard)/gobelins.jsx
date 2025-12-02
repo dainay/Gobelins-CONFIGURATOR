@@ -10,39 +10,39 @@ import { useRouter } from 'expo-router'
 
 const Create = () => {
 
-const { gobelins } = useGobelins();
+const { gobelin } = useGobelins();
 const router = useRouter();
 
   return (
     <ThemedView style={styles.container}>
 
       <ThemedText title={true} style={styles.heading}>
-        Add a New Book
+        Your Gobelin
       </ThemedText>
       <Spacer />
 
-      <FlatList 
-        data={gobelins}
-        keyExtractor={(item) => item?.$id }
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <Pressable 
-             onPress={() => router.push(`/gobelin/${item.$id}`)}
-              style={({ pressed }) => [
-                styles.cardPressable,
-                pressed && styles.cardPressed,
-              ]}
-          >
+      {gobelin ? (
+        <Pressable 
+          onPress={() => router.push(`/gobelin/${gobelin.id}`)}
+          style={({ pressed }) => [
+            styles.cardPressable,
+            pressed && styles.cardPressed,
+          ]}
+        >
           <ThemedCard style={styles.card}>
-            <ThemedText type="title">{item?.name || "Unknown Name"}</ThemedText>
-            <ThemedText>{item?.surname || "Unknown Surname"}</ThemedText>
-            <ThemedText>{item?.formation || "Unknown Formation"}</ThemedText>
-            <ThemedText>{item?.email || "Unknown Email"}</ThemedText>
-            <ThemedText>{item?.Guild || "Unknown Guild"}</ThemedText>
+            <ThemedText type="title">Guild: {gobelin.guild}</ThemedText>
+            <ThemedText>Created: {new Date(gobelin.created_at).toLocaleDateString()}</ThemedText>
+            {gobelin.shake_metrics && (
+              <ThemedText>Shake Test: Completed</ThemedText>
+            )}
+            {gobelin.sensor_metrics && (
+              <ThemedText>Sensor Test: Completed</ThemedText>
+            )}
           </ThemedCard>
-          </Pressable>
-        )}
-      />
+        </Pressable>
+      ) : (
+        <ThemedText style={styles.noGobelin}>No gobelin created yet</ThemedText>
+      )}
 
     </ThemedView>
   )
@@ -61,17 +61,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  list: {
-    paddingVertical: 10,
-    // width: '100%',
-    borderBlockColor: 'red',
-    borderWidth: 5,
-  },
   card: {
     marginHorizontal: 20,
     marginVertical: 10,
     padding: 15,
-    width: '100%',
+    alignSelf: 'center',
+    width: '90%',
+  },
+  noGobelin: {
+    textAlign: 'center',
+    marginTop: 20,
+    opacity: 0.6,
   },
   cardPressable: {
     borderRadius: 8,

@@ -1,111 +1,127 @@
 import { createContext, useEffect, useState } from "react";
-import { databases, client } from "../lib/appwrite";
-import { ID, Permission, Query, Role } from "appwrite";
+import { supabase } from "../src/lib/supabase";
 import { useUser } from "../hooks/useUser";
-
-const DATABASE_ID = "690dbc2700060281a085";
-const COLLECTION_ID = "gobelins";
 
 export const GobelinsContext = createContext();
 
 export function GobelinsProvider({ children }) {
-  const [gobelins, setGobelins] = useState([]);
+  const [gobelin, setGobelin] = useState(null); // один гоблин, не массив
   const { user } = useUser();
 
-  async function fetchGobelins() {
+  // FETCH USER'S GOBELIN
+  async function fetchGobelin() {
+    if (!user) return;
+    
     try {
-      const response = await databases.listDocuments(
-        DATABASE_ID,
-        COLLECTION_ID
-      );
-      setGobelins(response.documents);
-      console.log("Fetched gobelins:", response.documents);
-    } catch (error) {
-      console.error("Error fetching gobelins:", error.message);
+      const { data, error } = await supabase
+        .from("gobelins")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error; // игнорируем "not found"
+
+      setGobelin(data);
+      return data;
+    } catch (err) {
+      console.error("Error fetching gobelin:", err.message);
     }
   }
 
-  async function fetchGobelinById(id) {
-    try {
-      const response = await databases.getDocument(
-        DATABASE_ID,
-        COLLECTION_ID,
-        id
-      );
-      return response;
-    } catch (error) {
-      console.error("Error fetching gobelin by ID:", error);
-    } finally {
-    }
-  }
-
+  // CREATE (только если ещё нет гоблина)
   async function createGobelin(data) {
     try {
-      const newGobelin = await databases.createDocument(
-        DATABASE_ID,
-        COLLECTION_ID,
-        ID.unique(),
-        { ...data }
-        // [
-        // Permission.read(Role.user(user.$id)),
-        // Permission.update(Role.user(user.$id)),
-        // Permission.delete(Role.user(user.$id)),
-        // ]
-      );
-    } catch (error) {
-      console.error("Error creating gobelin:", error);
+      // проверяем, есть ли уже гоблин
+      const existing = await fetchGobelin();
+      if (existing) {
+        throw new Error("You already have a gobelin!");
+      }
+
+      const { data: created, error } = await supabase
+        .from("gobelins")
+        .insert({
+          ...data,
+          user_id: user.id,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setGobelin(created);
+      return created;
+    } catch (err) {
+      console.error("Error creating gobelin:", err.message);
+      throw err;
     }
   }
 
-  async function deleteGobelin(id) {
+  // UPDATE (изменить существующего гоблина)
+  async function updateGobelin(data) {
+    if (!gobelin) throw new Error("No gobelin to update");
+
     try {
-      await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
-    } catch (error) {
-      console.error("Error deleting gobelin:", error);
+      const { data: updated, error } = await supabase
+        .from("gobelins")
+        .update(data)
+        .eq("id", gobelin.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setGobelin(updated);
+      return updated;
+    } catch (err) {
+      console.error("Error updating gobelin:", err.message);
+      throw err;
     }
   }
 
-  //fetch gobelins directly when we have user loggined
+  // REALTIME LISTENER
   useEffect(() => {
-    let unsubscribe;
-    // subscription for updates in gobelins collection
-    const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`;
-
-    if (user) {
-      fetchGobelins();
-      console.log("Setting up subscription for gobelins updates...");
-      unsubscribe = client.subscribe(channel, (response) => {
-        //     console.log("Gobelins collection updated:", response);
-        const { payload, events } = response;
-        if (events[0].includes("create")) {
-          setGobelins((prevGobelins) => [...prevGobelins, payload]);
-        }
-        if (events[0].includes("delete")) {
-          setGobelins((prevGobelins) =>
-            prevGobelins.filter((gobelin) => gobelin.$id !== payload.$id)
-          );
-        }
-      });
-    } else {
-      setGobelins([]);
+    if (!user) {
+      setGobelin(null);
+      return;
     }
 
-    // return works as cleanup function, so it is called only on rerender/unmount
-    return () => {
-        if (unsubscribe) {
-            unsubscribe();
+    fetchGobelin();
+
+    const channel = supabase
+      .channel("gobelin-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "gobelins",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT" || payload.eventType === "UPDATE") {
+            setGobelin(payload.new);
+          }
+
+          if (payload.eventType === "DELETE") {
+            setGobelin(null);
+          }
         }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
     };
   }, [user]);
 
   return (
     <GobelinsContext.Provider
       value={{
-        gobelins,
-        fetchGobelins,
-        fetchGobelinById,
+        gobelin,
+        fetchGobelin,
         createGobelin,
-        deleteGobelin,
+        updateGobelin,
+        hasGobelin: !!gobelin,
       }}
     >
       {children}
