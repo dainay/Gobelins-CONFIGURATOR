@@ -1,10 +1,36 @@
-import { Asset } from "expo-asset";
-import { useGLTF } from "@react-three/drei/native";
+import React, { useEffect } from 'react'
+import { useGLTF } from '@react-three/drei/native'
+import Model from '../../assets/models/gob.glb'
 
-export default function ObjectLoad() {
- const asset = Asset.fromURI(
-    "https://t49q8flueooukrdm.public.blob.vercel-storage.com/gobelinsV3.glb"
-  );
-  const { scene } = useGLTF(asset.uri, true);
-  return <primitive object={scene} scale={0.5} />;
+export default function ObjectLoad({ selectedEar, ...props }) {
+  const { nodes } = useGLTF(Model)
+
+  const avatarConfig = {
+    ear: ["Bandage2"], 
+  }
+
+  // скрыть только вариативные элементы
+  useEffect(() => {
+    Object.values(avatarConfig).flat().forEach((meshName) => {
+      if (nodes[meshName]) nodes[meshName].visible = false;
+    });
+  }, [nodes]);
+
+  // обновить видимость
+  useEffect(() => {
+    avatarConfig.ear.forEach((meshName) => {
+      if (nodes[meshName]) {
+        nodes[meshName].visible = meshName === selectedEar
+      }
+    })
+  }, [selectedEar, nodes])
+
+  return (
+    <group {...props} dispose={null} scale={0.5}>
+      <primitive object={nodes.Bandage2} />
+      <primitive object={nodes.MainG} />
+    </group>
+  )
 }
+
+useGLTF.preload(Model)

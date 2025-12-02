@@ -1,30 +1,90 @@
-import { Redirect } from 'expo-router';
-import { useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { useIntroFlag } from '../hooks/useIntroFlag';
+import { StyleSheet, Text } from 'react-native'
+import { Link, router } from 'expo-router' 
+import { useState } from 'react'
+import { Colors } from '../constants/Colors'
+import { useUser } from "../hooks/useUser"
 
-export default function Index() {
-  const { hasSeenIntro, resetIntro } = useIntroFlag();
+import ThemedView from "../components/ThemedView"
+import ThemedText from "../components/ThemedText"
+import ThemedLogo from "../components/ThemedLogo"
+import Spacer from "../components/Spacer"
+import ThemedButton from "../components/ThemedButton"
+import ThemedTextInput from "../components/ThemedTextInput"
+import GuestOnly from "../components/auth/GuestOnly"
 
-  // Pendant le développement : réinitialise l'intro à chaque démarrage
-  // Commenter cette ligne pour réactiver la logique normale
-  useEffect(() => {
-    resetIntro();
-  }, []);
 
-  if (hasSeenIntro === null) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-      </View>
-    );
+const Home = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState(null)
+
+  const { login } = useUser()
+
+  const handleSubmit = async () => {
+    console.log("login form submitted")
+    setError(null)
+
+    try {
+      await login(email, password)
+      router.push("/profile")  
+    } catch (error) {
+      setError(error.message)
+    }
   }
 
-  if (!hasSeenIntro) {
-    return <Redirect href="/intro" />;
-  }
+  return (
+    <GuestOnly>
+      <ThemedView style={styles.container}>
+        <ThemedLogo />
+        <Spacer />
 
-  return <Redirect href="/home" />;
+        <ThemedText title={true} style={styles.title}>
+          Connect to your gobelin
+        </ThemedText>
+
+      <ThemedTextInput
+        style={{ width: "80%", marginBottom: 20 }}
+        placeholder="Email"
+        keyboardType="email-address"
+        onChangeText={setEmail}
+        value={email}
+      />
+
+      <ThemedTextInput
+        style={{ width: "80%", marginBottom: 20 }}
+        placeholder="Password"
+        secureTextEntry
+        onChangeText={setPassword}
+        value={password}
+      />
+
+      <ThemedButton onPress={handleSubmit}>
+        <Text style={{ color: "#f2f2f2" }}>Login</Text>
+      </ThemedButton>
+
+      <Spacer />
+      
+      {error && (
+        <ThemedText style={{ color: Colors.error, marginTop: 10 }}>
+          {error}
+        </ThemedText>
+      )}
+
+      <Spacer height={20} />
+      <Link href="/register">
+        <ThemedText style={styles.link}>
+          Don't have an account? Register here
+        </ThemedText>
+      </Link>
+
+      <Link href="/Scene">
+        <ThemedText style={styles.link}>
+          DEMO 3D
+        </ThemedText>
+      </Link>
+    </ThemedView>
+    </GuestOnly>
+  )
 }
 
 const styles = StyleSheet.create({
