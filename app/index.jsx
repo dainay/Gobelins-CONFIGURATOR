@@ -82,16 +82,33 @@ const Home = () => {
           DEMO 3D
         </ThemedText>
       </Link>
+
+      <Link href="/introManager">
+        <ThemedText style={styles.link}>
+          INTRO
+        </ThemedText>
+      </Link>
+
     </ThemedView>
     </GuestOnly>
   )
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
+  container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'black',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  link: {
+    color: '#007AFF',
+    marginTop: 10,
   },
 });
+
+export default Home;

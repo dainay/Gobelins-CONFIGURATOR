@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import IntroPlayer from '../components/intro/IntroPlayer';
-import { useIntroFlag } from '../hooks/useIntroFlag';
+import IntroPlayer from '../../components/intro/IntroPlayer';
+import { useIntroFlag } from '../../hooks/useIntroFlag';
 
 
 export default function IntroRoute() {
