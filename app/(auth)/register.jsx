@@ -15,14 +15,19 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [name, setName] = useState("");
 
   const { register } = useUser();
 
   const handleSubmit = async () => {
+    if (!email || !password || !name) {
+    setError('All fields are required'); 
+    return;
+  }
     // console.log("register form submitted");
     setError(null);
     try {
-      await register(email, password);
+      await register(email, password, name);
     } catch (error) {
       setError(error.message);
     }
@@ -50,6 +55,13 @@ const Register = () => {
           secureTextEntry
           onChangeText={setPassword}
           value={password}
+        />
+
+        <ThemedTextInput
+          style={{ width: "80%", marginBottom: 20 }}
+          placeholder="Name"
+          onChangeText={setName}
+          value={name}
         />
 
         <ThemedButton onPress={handleSubmit}>

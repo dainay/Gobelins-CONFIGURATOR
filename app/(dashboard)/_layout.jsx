@@ -13,7 +13,7 @@ export default function DashboardLayout() {
     <UserOnly>
       <Tabs
         screenOptions={{
-          headerShown: false,
+          headerShown: true,
           tabBarStyle: {
             backgroundColor: theme.navBackground,
             paddingTop: 10,

@@ -11,7 +11,11 @@ export default function AuthLayout() {
     <GuestOnly>
       <StatusBar style="auto" />
       <Stack 
-        screenOptions={{ headerShown: false, animation: "none" }} 
+        screenOptions={{ 
+          headerShown: false, 
+          animation: "none",
+          contentStyle: { backgroundColor: 'transparent' }
+        }} 
       />
     </GuestOnly>
   )

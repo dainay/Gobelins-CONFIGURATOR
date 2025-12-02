@@ -1,62 +1,101 @@
-import { createContext, useEffect } from "react";
-import { useState } from "react";
-import { account } from "../lib/appwrite";
-import { ID } from "appwrite";
+import { createContext, useEffect, useState } from "react";
+import { AppState } from "react-native";
+import { supabase } from "../src/lib/supabase";
 
 export const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false); // to track if auth check is done
+  const [authChecked, setAuthChecked] = useState(false);
 
+  // AUTO REFRESH TOKEN (Official Supabase RN recommended setup)
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        supabase.auth.startAutoRefresh();
+      } else {
+        supabase.auth.stopAutoRefresh();
+      }
+    });
+
+    return () => subscription.remove();
+  }, []);
+
+  // LOGIN
   async function login(email, password) {
-     try {
-      await account.createEmailPasswordSession( email, password);
-      const response = await account.get();
-      setUser(response);
-      
-    } catch (error) {
-      // console.error("Error registering user:", error.message);
-       throw Error(error.message); 
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw new Error(error.message);
+
+    const { data } = await supabase.auth.getUser();
+    setUser(data.user);
   }
 
-  async function register (email, password) {
-    try {
+  // REGISTER
+  async function register(email, password, name) {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: name
+        }
+      }
+    });
 
-      await account.create(ID.unique(), email, password);
-      await login(email, password);
+    if (error) throw new Error(error.message);
 
-    } catch (error) {
-      // console.error("Error registering user:", error.message);
-      throw Error(error.message);
-    }
+    // After registration user must confirm email,
+    // but for now we auto-login for simplicity:
+    await login(email, password);
   }
 
+  // LOGOUT
   async function logout() {
-    await account.deleteSession('current')
+    await supabase.auth.signOut();
     setUser(null);
   }
 
-  //get current user function to user into useEffect which is called once when the component mounts
-  async function getInitialUserValue() {
-    try {
-      const response = await account.get();
-      setUser(response);
-    } catch (error) {
+  // INITIAL SESSION CHECK
+  async function loadInitialUser() {
+    const { data } = await supabase.auth.getSession();
+
+    if (data.session?.user) {
+      setUser(data.session.user);
+    } else {
       setUser(null);
-    } finally {
-      setAuthChecked(true); // to delay rendering until auth check is done
     }
+
+    setAuthChecked(true);
   }
 
+  // LISTEN TO AUTH CHANGES (Official behaviour)
   useEffect(() => {
-    getInitialUserValue();
+    loadInitialUser();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, login, register, logout, authChecked }}>
+    <UserContext.Provider
+      value={{
+        user,
+        authChecked,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </UserContext.Provider>
-  )
+  );
 }
