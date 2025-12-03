@@ -10,7 +10,6 @@ export async function saveGobelinToDatabase(userId) {
     // Get complete gobelin data from Zustand
     const gobelinData = useGobelinStore.getState().getGobelinData();
  
-     
     const { data, error } = await supabase
         .from("gobelins")
         .insert({

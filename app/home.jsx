@@ -7,19 +7,17 @@ import ThemedLogo from "../components/ui/ThemedLogo"
 import ThemedText from "../components/ui/ThemedText"
 import ThemedView from "../components/ui/ThemedView"
 
+import TabsBar from './(configurator)/TabsBar'
+
 export default function Home() {
   return (
     <ThemedView style={styles.container}>
       <ThemedLogo />
       <Spacer />
+ 
+      {/* <TabsBar /> */}
 
-      <ThemedText style={styles.title} title={true}>The Number 1</ThemedText>
-
-      <ThemedText style={{ marginTop: 10, marginBottom: 30 }}>
-        Reading List App
-      </ThemedText>
-
-      <Link href="/login" style={styles.link}>
+      {/* <Link href="/login" style={styles.link}>
         <ThemedText>Login</ThemedText>
       </Link>
 
@@ -33,7 +31,7 @@ export default function Home() {
 
       <Link href="/Scene" style={styles.link}>
         <ThemedText>3D Demo</ThemedText>
-      </Link>
+      </Link> */}
     </ThemedView>
   )
 }

@@ -8,14 +8,11 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
 
-  // AUTO REFRESH TOKEN (Official Supabase RN recommended setup)
+  // AUTO REFRESH TOKEN (RN official)
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (state) => {
-      if (state === "active") {
-        supabase.auth.startAutoRefresh();
-      } else {
-        supabase.auth.stopAutoRefresh();
-      }
+      if (state === "active") supabase.auth.startAutoRefresh();
+      else supabase.auth.stopAutoRefresh();
     });
 
     return () => subscription.remove();
@@ -23,15 +20,9 @@ export function UserProvider({ children }) {
 
   // LOGIN
   async function login(email, password) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
-
-    const { data } = await supabase.auth.getUser();
-    setUser(data.user);
+    // user will be handled by onAuthStateChange
   }
 
   // REGISTER
@@ -39,62 +30,41 @@ export function UserProvider({ children }) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          display_name: name
-        }
-      }
+      options: { data: { display_name: name } },
     });
 
     if (error) throw new Error(error.message);
 
-    // After registration user must confirm email,
-    // but for now we auto-login for simplicity:
     await login(email, password);
   }
 
   // LOGOUT
   async function logout() {
     await supabase.auth.signOut();
-    setUser(null);
+    // user will be set to null by listener
   }
 
-  // INITIAL SESSION CHECK
-  async function loadInitialUser() {
-    const { data } = await supabase.auth.getSession();
-
-    if (data.session?.user) {
-      setUser(data.session.user);
-    } else {
-      setUser(null);
-    }
-
-    setAuthChecked(true);
-  }
-
-  // LISTEN TO AUTH CHANGES (Official behaviour)
+  // MAIN AUTH LISTENER + INITIAL LOAD
   useEffect(() => {
-    loadInitialUser();
-
+    // Listen for changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
+        setAuthChecked(true);
       }
     );
+
+    // Initial session load
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
+      setAuthChecked(true);
+    });
 
     return () => listener.subscription.unsubscribe();
   }, []);
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        authChecked,
-        login,
-        register,
-        logout,
-      }}
-    >
+    <UserContext.Provider value={{ user, authChecked, login, register, logout }}>
       {children}
     </UserContext.Provider>
   );
