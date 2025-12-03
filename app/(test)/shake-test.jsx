@@ -8,10 +8,10 @@ import { calculateShakeMetrics } from "../../src/utils/calculateShakeMetrics";
 import { calculateShakeGuild } from "../../src/utils/calculateShakeGuild";
 
 
-import ThemedView from "../../components/ThemedView";
-import ThemedText from "../../components/ThemedText";
-import ThemedButton from "../../components/ThemedButton";
-import Spacer from "../../components/Spacer";
+import ThemedView from "../../components/ui/ThemedView";
+import ThemedText from "../../components/ui/ThemedText";
+import ThemedButton from "../../components/ui/ThemedButton";
+import Spacer from "../../components/ui/Spacer";
 
 export default function ShakeTestScreen() {
   // UI state
@@ -145,7 +145,7 @@ Et surtout, garde bien ton téléphone en main.
           </ThemedText>
 
           <ThemedButton onPress={handleStartTest}>
-            <Text style={styles.buttonText}>Commencer le test</Text>
+            Commencer le test
           </ThemedButton>
         </>
       )}

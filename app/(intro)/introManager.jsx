@@ -8,9 +8,9 @@ export default function Index() {
 
   // Pendant le développement : réinitialise l'intro à chaque démarrage
   // Commenter cette ligne pour réactiver la logique normale
-  useEffect(() => {
-    resetIntro();
-  }, []);
+  // useEffect(() => {
+  //   resetIntro();
+  // }, []);
 
   if (hasSeenIntro === null) {
     return (
@@ -24,7 +24,7 @@ export default function Index() {
     return <Redirect href="/intro" />;
   }
 
-  return <Redirect href="/home" />;
+  return <Redirect href="/profile" />; // Go to authenticated area if intro seen
 }
 
 const styles = StyleSheet.create({

@@ -4,10 +4,10 @@ import { useGobelins } from '../../../hooks/useGobelins'
 import { useEffect, useState } from 'react'
 
 
-import ThemedView from '../../../components/ThemedView'
-import ThemedButton from '../../../components/ThemedButton'
-import ThemedText from '../../../components/ThemedText'
-import ThemedLoader from '../../../components/ThemedLoader'
+import ThemedView from '../../../components/ui/ThemedView'
+import ThemedButton from '../../../components/ui/ThemedButton'
+import ThemedText from '../../../components/ui/ThemedText'
+import ThemedLoader from '../../../components/ui/ThemedLoader'
 
 
 const GobelinPage = ({}) => {

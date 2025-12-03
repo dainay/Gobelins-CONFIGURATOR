@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native'
 
-import Spacer from "../../components/Spacer"
-import ThemedText from "../../components/ThemedText"
-import ThemedView from "../../components/ThemedView"
-import ThemedButton from '../../components/ThemedButton';
+import Spacer from "../../components/ui/Spacer"
+import ThemedText from "../../components/ui/ThemedText"
+import ThemedView from "../../components/ui/ThemedView"
+import ThemedButton from '../../components/ui/ThemedButton';
 
 import { useUser } from '../../hooks/useUser';
 

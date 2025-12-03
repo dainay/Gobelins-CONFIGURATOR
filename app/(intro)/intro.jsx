@@ -15,8 +15,6 @@ export default function IntroRoute() {
 
 
 
-
-
   const handleStart = () => {
     setStarted(true);
     fadeAnim.value = withTiming(0, { duration: 600 });

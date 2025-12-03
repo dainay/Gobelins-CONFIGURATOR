@@ -2,10 +2,10 @@ import { StyleSheet, FlatList, Pressable } from 'react-native'
 import { useGobelins } from '../../hooks/useGobelins'
 import { Colors } from '../../constants/Colors'
 
-import Spacer from "../../components/Spacer"
-import ThemedText from "../../components/ThemedText"
-import ThemedView from "../../components/ThemedView"
-import ThemedCard from "../../components/ThemedCard"
+import Spacer from "../../components/ui/Spacer"
+import ThemedText from "../../components/ui/ThemedText"
+import ThemedView from "../../components/ui/ThemedView"
+import ThemedCard from "../../components/ui/ThemedCard"
 import { useRouter } from 'expo-router'
 
 const Create = () => {
