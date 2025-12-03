@@ -77,6 +77,14 @@ const Home = () => {
         </ThemedText>
       </Link>
 
+       <Link href="/home">
+        <ThemedText style={styles.link}>
+          TABS
+        </ThemedText>
+      </Link>
+
+      <Spacer />
+
       <Link href="/Scene">
         <ThemedText style={styles.link}>
           DEMO 3D
