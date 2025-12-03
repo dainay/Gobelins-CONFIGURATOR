@@ -1,9 +1,15 @@
 import { Video } from 'expo-av';
 import React, { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useGobelinStore } from '../../src/store/gobelinStore';
+import ThemedText from '../../components/ui/ThemedText';
+import ThemedTextInput from '../../components/ui/ThemedTextInput';
+import ThemedButton from '../../components/ui/ThemedButton';
+import ThemedView from '../../components/ui/ThemedView';
 
 export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
+  const setName = useGobelinStore((state) => state.setName);
   const videoConfig = [
     // {
     //   source: require('../../assets/video/intro/scene1.mp4'),
@@ -13,14 +19,14 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     //   isSkipable: true,
     //   requireUsername: false,
     // },
-    // {
-    //   source: require('../../assets/video/intro/scene2.mp4'),
-    //   isLooping: true, 
-    //   requiresInteraction: true, 
-    //   clickImage: require('../../assets/intro/CTA/click.png'),
-    //   isSkipable: true,
-    //   requireUsername: false,
-    // },
+    {
+      source: require('../../assets/video/intro/scene2.mp4'),
+      isLooping: true, 
+      requiresInteraction: true, 
+      clickImage: require('../../assets/intro/CTA/click.png'),
+      isSkipable: true,
+      requireUsername: false,
+    },
     // {
     //   source: require('../../assets/video/intro/scene1.mp4'),
     //   isLooping: false, 
@@ -29,21 +35,13 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     //   isSkipable: true,
     //   requireUsername: false,
     // },
-        {
+    {
       source: require('../../assets/video/intro/scene4.mp4'),
       isLooping: false, 
       requiresInteraction: false, 
       clickImage: null,
       isSkipable: false,
       requireUsername: true,
-    },
-    {
-      source: require('../../assets/video/intro/scene2.mp4'),
-      isLooping: true, 
-      requiresInteraction: true, 
-      clickImage: require('../../assets/intro/CTA/click.png'),
-      isSkipable: true,
-      requireUsername: false,
     },
   ];
 
@@ -177,6 +175,9 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
 
   const handleSubmitUsername = () => {
     if (username.trim().length > 0) {
+      // Save to Zustand store
+      setName(username.trim());
+      
       usernameIntroFadeAnim.value = withTiming(0, { duration: 200 });
       usernameScaleIntroAnim.value = withTiming(0.75, { duration: 200 });
       
@@ -311,30 +312,28 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
         />
       )}
       {showSkipButton && (
-        <Pressable style={styles.skipButton} onPress={handleSkipIntro}>
-          <Text style={styles.skipButtonText}>Skip</Text>
-        </Pressable>
+        <ThemedButton style={styles.skipButton} onPress={handleSkipIntro}>
+          Skip
+        </ThemedButton>
       )}
       {showUsernameInput && currentConfig.requireUsername && (
         <Animated.View style={[styles.usernameIntroOverlay, usernameOverlayIntroStyle]}>
-          <View style={styles.usernameIntroContainer}>
-            <Text style={styles.usernameIntroQuestion}>Enter your username</Text>
-            <TextInput 
-            style={styles.usernameIntroInput} 
-            value={username} 
-            onChangeText={setUsername} 
-            placeholder="Quel est son nom ?" 
-            placeholderTextColor="black"
-            autoFocus={true}
+          <ThemedView style={styles.usernameIntroContainer}>
+            <ThemedText style={styles.usernameIntroQuestion}>Enter your username</ThemedText>
+            <ThemedTextInput 
+              style={styles.usernameIntroInput} 
+              value={username} 
+              onChangeText={setUsername} 
+              placeholder="Quel est son nom ?" 
+              autoFocus={true}
             />
-          <Pressable 
-            style={styles.usernameIntroButton} 
-            onPress={handleSubmitUsername}
+            <ThemedButton 
+              style={styles.usernameIntroButton} 
+              onPress={handleSubmitUsername}
             >
-            <Text style={styles.usernameIntroButtonText}>Valider</Text>
-          </Pressable>
-       
-          </View>
+              Valider
+            </ThemedButton>
+          </ThemedView>
         </Animated.View>
       )}
     </Pressable>
@@ -377,10 +376,6 @@ const styles = StyleSheet.create({
     right: '10%',
     zIndex: 100,
   },
-  skipButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
   //INPUT PRENOM INTRO
   usernameIntroOverlay: {
     position: 'absolute',
@@ -393,41 +388,24 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   usernameIntroContainer: {
-    backgroundColor: 'white',
     padding: 20,
     width: '100%',
     maxWidth: 400,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 10,
   },
   usernameIntroQuestion: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: 'black',
     textAlign: 'center',
   },
   usernameIntroInput: {
-    fontSize: 16,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
     width: '100%',
-    textAlign: 'center',
-    backgroundColor: 'white',
-    backgroundColor: '#fff',
+    marginBottom: 15,
   },
   usernameIntroButton: {
-    backgroundColor: '#007AFF',
-    padding: 12,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '100%',
-  },
-  usernameIntroButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });

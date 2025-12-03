@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Canvas } from "@react-three/fiber/native";
 import { Suspense, useState } from "react";
 import ObjectLoad from "./ObjectLoad";
-import ThemedButton from "../../components/ThemedButton";
+import ThemedButton from "../../components/ui/ThemedButton";
 
 export default function Scene() {
   const [selectedEar, setSelectedEar] = useState(null);

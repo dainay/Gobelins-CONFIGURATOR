@@ -1,10 +1,10 @@
 import { StyleSheet, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
 
-import Spacer from "../../components/Spacer";
-import ThemedText from "../../components/ThemedText";
-import ThemedView from "../../components/ThemedView";
-import ThemedTextInput from "../../components/ThemedTextInput";
-import ThemedButton from "../../components/ThemedButton";
+import Spacer from "../../components/ui/Spacer";
+import ThemedText from "../../components/ui/ThemedText";
+import ThemedView from "../../components/ui/ThemedView";
+import ThemedTextInput from "../../components/ui/ThemedTextInput";
+import ThemedButton from "../../components/ui/ThemedButton";
 
 import { useState } from "react";
 import { useGobelins } from "../../hooks/useGobelins";

@@ -2,11 +2,11 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback } from "react-nati
 import { Link } from "expo-router";
 import { Colors } from "../../constants/Colors";
 
-import ThemedView from "../../components/ThemedView";
-import ThemedText from "../../components/ThemedText";
-import Spacer from "../../components/Spacer";
-import ThemedButton from "../../components/ThemedButton";
-import ThemedTextInput from "../../components/ThemedTextInput";
+import ThemedView from "../../components/ui/ThemedView";
+import ThemedText from "../../components/ui/ThemedText";
+import Spacer from "../../components/ui/Spacer";
+import ThemedButton from "../../components/ui/ThemedButton";
+import ThemedTextInput from "../../components/ui/ThemedTextInput";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";

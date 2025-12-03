@@ -9,14 +9,12 @@ export default function ObjectLoad({ selectedEar, ...props }) {
     ear: ["Bandage2"], 
   }
 
-  // скрыть только вариативные элементы
   useEffect(() => {
     Object.values(avatarConfig).flat().forEach((meshName) => {
       if (nodes[meshName]) nodes[meshName].visible = false;
     });
   }, [nodes]);
 
-  // обновить видимость
   useEffect(() => {
     avatarConfig.ear.forEach((meshName) => {
       if (nodes[meshName]) {

@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { Colors } from '../constants/Colors'
 import { useUser } from "../hooks/useUser"
 
-import ThemedView from "../components/ThemedView"
-import ThemedText from "../components/ThemedText"
-import ThemedLogo from "../components/ThemedLogo"
-import Spacer from "../components/Spacer"
-import ThemedButton from "../components/ThemedButton"
-import ThemedTextInput from "../components/ThemedTextInput"
+import ThemedView from "../components/ui/ThemedView"
+import ThemedText from "../components/ui/ThemedText"
+import ThemedLogo from "../components/ui/ThemedLogo"
+import Spacer from "../components/ui/Spacer"
+import ThemedButton from "../components/ui/ThemedButton"
+import ThemedTextInput from "../components/ui/ThemedTextInput"
 import GuestOnly from "../components/auth/GuestOnly"
 
 
@@ -59,7 +59,7 @@ const Home = () => {
       />
 
       <ThemedButton onPress={handleSubmit}>
-        <Text style={{ color: "#f2f2f2" }}>Login</Text>
+        Login
       </ThemedButton>
 
       <Spacer />

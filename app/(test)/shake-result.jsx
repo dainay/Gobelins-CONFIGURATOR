@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { router } from "expo-router";
 
-import ThemedView from "../../components/ThemedView";
-import ThemedText from "../../components/ThemedText";
-import ThemedButton from "../../components/ThemedButton";
+import ThemedView from "../../components/ui/ThemedView";
+import ThemedText from "../../components/ui/ThemedText";
+import ThemedButton from "../../components/ui/ThemedButton";
 
 import { useTestStore } from "../../src/store/testStore";
 import { readPhoneMetrics } from "../../src/utils/readPhoneMetrics";
@@ -102,7 +102,7 @@ export default function ShakeResultScreen() {
       <ThemedView style={styles.container}>
         <ThemedText>Aucun résultat trouvé. Essaie de refaire le test.</ThemedText>
         <ThemedButton onPress={() => router.push("/shake-test")}>
-          <Text style={styles.buttonText}>Revenir au test</Text>
+          Revenir au test
         </ThemedButton>
       </ThemedView>
     );
@@ -132,7 +132,7 @@ export default function ShakeResultScreen() {
       </ThemedText>
 
       <ThemedButton onPress={() => router.push("/")}>
-        <Text style={styles.buttonText}>Revenir à l’accueil</Text>
+        Revenir à l'accueil
       </ThemedButton>
     </ThemedView>
   );

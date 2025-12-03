@@ -3,7 +3,7 @@ import { useUser } from "../../hooks/useUser";
 import { useEffect } from "react";
 import { Text } from "react-native";
 
-import ThemedLoader from "../ThemedLoader";
+import ThemedLoader from "../../components/ui/ThemedLoader";
 
 const UserOnly = ({ children }) => {
   const { user, authChecked } = useUser();

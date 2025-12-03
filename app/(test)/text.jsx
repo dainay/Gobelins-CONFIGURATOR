@@ -1,10 +1,10 @@
 import { StyleSheet, Text } from "react-native";
 import { router } from "expo-router";
  
-import ThemedView from "../../components/ThemedView";
-import ThemedText from "../../components/ThemedText";
-import Spacer from "../../components/Spacer";
-import ThemedButton from "../../components/ThemedButton";
+import ThemedView from "../../components/ui/ThemedView";
+import ThemedText from "../../components/ui/ThemedText";
+import Spacer from "../../components/ui/Spacer";
+import ThemedButton from "../../components/ui/ThemedButton";
  
 const text = () => {
  
@@ -19,7 +19,7 @@ const text = () => {
       <ThemedButton 
         onPress={() => router.push("/shake-test")}
       >
-        <Text style={{ color: "#ffffffff" }}>Start my journey</Text>
+        Start my journey
       </ThemedButton>
 
       <Spacer />

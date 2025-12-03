@@ -1,8 +1,8 @@
 import { Image, useColorScheme } from 'react-native'
 
 // images
-import DarkLogo from '../assets/img/logo.png'
-import LightLogo from '../assets/img/logo.png'
+import DarkLogo from '../../assets/img/logo.png'
+import LightLogo from '../../assets/img/logo.png'
 
 const ThemedLogo = () => {
   const colorScheme = useColorScheme()

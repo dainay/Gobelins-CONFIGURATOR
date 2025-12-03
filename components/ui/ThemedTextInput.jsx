@@ -1,5 +1,5 @@
 import { TextInput, useColorScheme } from 'react-native'
-import { Colors } from '../constants/Colors'
+import { Colors } from '../../constants/Colors'
  
 
 const ThemedTextImport = ({style, ...props}) => {
