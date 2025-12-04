@@ -4,13 +4,12 @@ export const useGobelinStore = create((set, get) => ({
   name: "",
   guild: "",
   configuration: {
-    ear_type: null,
-    skin_color: null,
-    hair_type: null,
-    hair_color: null,
-    eyes_type: null,
-    eyes_color: null,
-    outfit_type: null
+    hair: null,
+    face: null,
+    accessoire: null,
+    cloth: null,
+    animation: null,
+    pose: null,
   },
 
   //setters
@@ -44,14 +43,12 @@ export const useGobelinStore = create((set, get) => ({
     name: "",
     guild: "",
     configuration: {
-      ear_type: null,
-      skin_color: null,
-      hair_type: null,
-      hair_color: null,
-      eyes_type: null,
-      eyes_color: null,
-      outfit_type: null,
-      outfit_color: null,
+      hair: null,
+      face: null,
+      accessoire: null,
+      cloth: null,
+      animation: null,
+      pose: null,
     },
   }),
 }));
