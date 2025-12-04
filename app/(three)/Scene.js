@@ -2,8 +2,9 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { Suspense, useRef, useState } from "react";
 import { View } from "react-native";
-import ThemedButton from "../../components/ui/ThemedButton";
+import { OrbitControls } from "@react-three/drei/native";
 import ObjectLoad from "./ObjectLoad";
+import ThemedButton from "../../components/ui/ThemedButton";
 
 function CameraController() {
   const { camera } = useThree();
@@ -145,6 +146,13 @@ export default function Scene() {
     }
   }
 
+  function changeAnimation() {
+    const animations = ["ANIMATION1", "ANIMATION2", "ANIMATION3", "ANIMATION4", "POSE1"];
+    const currentIndex = animations.indexOf(currentAnimation);
+    const nextIndex = (currentIndex + 1) % animations.length;
+    setCurrentAnimation(animations[nextIndex]);
+  }
+
   return (
     <View 
     style={{ flex: 1 }}
@@ -154,8 +162,22 @@ export default function Scene() {
     >
       <Canvas
         shadows
-        dpr={1}
-        onCreated={created}
+        dpr={1} 
+
+        //this code disable awful log that generate expo-gl every tick
+        onCreated={(state) => {
+          const _gl = state.gl.getContext();
+          const pixelStorei = _gl.pixelStorei.bind(_gl);
+          _gl.pixelStorei = function(...args) {
+            const [parameter] = args;
+            switch(parameter) {
+              case _gl.UNPACK_FLIP_Y_WEBGL:
+                return pixelStorei(...args);
+              default:
+                return;
+            }
+          };
+        }}
       >
 
         <CameraController />
@@ -178,6 +200,14 @@ export default function Scene() {
           <meshStandardMaterial color="blue" wireframe={true}/>
         </mesh>
       
+        <OrbitControls 
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          minDistance={2}
+          maxDistance={10}
+        />
+      
         <Suspense fallback={null}>
          <RotatingGobelin 
          position={[0, 1.5, 0]} 
@@ -195,9 +225,12 @@ export default function Scene() {
         </Suspense>
       </Canvas>
       
-      <View style={{ position: 'absolute', bottom: 20, alignSelf: 'center' }}>
+      <View style={{ position: 'absolute', bottom: 20, alignSelf: 'center', flexDirection: 'row', gap: 10 }}>
         <ThemedButton onPress={changeEar}>
           Toggle Ear
+        </ThemedButton>
+        <ThemedButton onPress={changeAnimation}>
+          {currentAnimation}
         </ThemedButton>
       </View>
     </View>

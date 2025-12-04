@@ -4,8 +4,7 @@
     "scheme": "gobelink",
     "slug": "gobelink",
     "version": "1.0.0",
-    "orientation": "portrait",
-    // "icon": "./assets/images/icon.png", 
+    "orientation": "portrait", 
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

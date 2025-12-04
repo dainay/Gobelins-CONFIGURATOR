@@ -10,8 +10,7 @@ export const useGobelinStore = create((set, get) => ({
     hair_color: null,
     eyes_type: null,
     eyes_color: null,
-    outfit_type: null,
-    outfit_color: null,
+    outfit_type: null
   },
 
   //setters
