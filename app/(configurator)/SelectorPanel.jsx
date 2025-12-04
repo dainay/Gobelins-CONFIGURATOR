@@ -1,36 +1,55 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { useConfiguratorStore } from "../../src/store/configuratorStore";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { AvatarOptions } from "../../constants/AvatarOptions";
+import { useGobelinStore } from "../../src/store/gobelinStore";
 
-export default function OptionsPanel() {
-  const { activeTab } = useConfiguratorStore();
+export default function OptionsPanel({ activeTab }) {
+  const setConfig = useGobelinStore((state) => state.setConfig);
+  const items = AvatarOptions[activeTab] || [];
 
-  // Temporary placeholder data
-  const items = [];
+  const handlePress = (item) => {
+    setConfig({ [activeTab]: item.label });
+  };
 
   return (
-    <View style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={true}
+    >
       {items.map((item) => (
-        <TouchableOpacity key={item.id} style={styles.item}>
-          {item.thumbnail && (
-            <Image source={item.thumbnail} style={styles.thumb} />
-          )}
+        <TouchableOpacity 
+          key={item.id} 
+          style={styles.item}
+          onPress={() => handlePress(item)}
+        >
           <Text style={styles.label}>{item.label}</Text>
         </TouchableOpacity>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
+    height: 100,
+    backgroundColor: "white",
+  },
+  contentContainer: {
     padding: 16,
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 12,
   },
   item: {
-    width: 80,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
     alignItems: "center",
+    justifyContent: "center",
   },
   thumb: {
     width: 60,
@@ -40,5 +59,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     color: "#333",
+    fontWeight: "500",
   },
 });
