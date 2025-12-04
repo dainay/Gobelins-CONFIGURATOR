@@ -9,21 +9,20 @@ import { useGobelinStore } from "../../src/store/gobelinStore";
 import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
 import ThemedView from "../../components/ui/ThemedView";
+
 function CameraController() {
   const { camera } = useThree();
-  
+
   camera.position.set(0, 2, 4);
-  
+
   return null;
 }
-
 
 // function RotatingGobelin({children, position}) {
 //   const gobelinRef = useRef();
 //   const [rotationY, setRotationY] = useState(0);
 //   const [isDragging, setIsDragging] = useState(false);
 //   const lastTouchX = useRef(0);
-
 
 //   useFrame(() => {
 //     if (gobelinRef.current) {
@@ -47,8 +46,6 @@ function CameraController() {
 //     }
 //   }
 
-
-
 //   const handleTouchEnd = () => {
 //     setIsDragging(false);
 //   };
@@ -66,26 +63,32 @@ function CameraController() {
 //   )
 // }
 
-
-function RotatingGobelin({children, position, rotationY, rotationVelocityY, setGobelinRotationY, setRotationVelocityY}) {
+function RotatingGobelin({
+  children,
+  position,
+  rotationY,
+  rotationVelocityY,
+  setGobelinRotationY,
+  setRotationVelocityY,
+}) {
   const gobelinRef = useRef();
 
   useFrame(() => {
     if (gobelinRef.current) {
       // Appliquer la rotation actuelle
       gobelinRef.current.rotation.y = rotationY;
-      
+
       // Si on n'est pas en train de glisser ET qu'il y a une vélocité
       if (rotationVelocityY !== 0) {
         // Appliquer la vélocité à la rotation
         const newRotation = rotationY + rotationVelocityY;
         setGobelinRotationY(newRotation);
-        
+
         // Appliquer la friction (réduire la vélocité de 5% par frame)
         const friction = 0.95; // 0.95 = ralentit de 5% par frame
         const newVelocity = rotationVelocityY * friction;
         setRotationVelocityY(newVelocity);
-        
+
         // Arrêter si la vélocité est très petite (optimisation)
         if (Math.abs(newVelocity) < 0.001) {
           setRotationVelocityY(0);
@@ -95,22 +98,17 @@ function RotatingGobelin({children, position, rotationY, rotationVelocityY, setG
   });
 
   return (
-    <group
-      ref={gobelinRef}
-      position={position}
-    >
+    <group ref={gobelinRef} position={position}>
       {children}
     </group>
-  )
+  );
 }
 
 export default function Scene() {
-  const [selectedEar, setSelectedEar] = useState(null);
   const [gobelinRotationY, setGobelinRotationY] = useState(0);
   const [rotationVelocityY, setRotationVelocityY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const lastTouchX = useRef(0);
-
 
   const handleTouchStart = (e) => {
     setIsDragging(true);
@@ -126,20 +124,13 @@ export default function Scene() {
       const newVelocity = deltaX * 0.01;
       setRotationVelocityY(newVelocity);
 
-
-      setGobelinRotationY(prev => prev + newVelocity);
-    lastTouchX.current = currentX;
+      setGobelinRotationY((prev) => prev + newVelocity);
+      lastTouchX.current = currentX;
     }
   };
 
   const handleTouchEnd = () => {
     setIsDragging(false);
-  };
-
-
-export default function Scene() {
-  const created = (state) => {
-    console.log("called on creating component");
   };
 
   // Subscribe to configuration changes - component will rerender when these change
@@ -148,11 +139,12 @@ export default function Scene() {
   console.log("USER GOBLIN CONFIG IN SCENE:", configuration);
 
   return (
-    <ThemedView safe={true}
-    style={{ flex: 1 }}
-    onTouchStart={handleTouchStart}
-    onTouchMove={handleTouchMove}
-    onTouchEnd={handleTouchEnd}
+    <ThemedView
+      safe={true}
+      style={{ flex: 1 }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <Canvas
         shadows
@@ -172,45 +164,44 @@ export default function Scene() {
           };
         }}
       >
-
         <CameraController />
- 
+
         <color attach="background" args={["grey"]} />
         <ambientLight intensity={1} />
-     
+
         {/* Sol */}
         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[10, 10, 1, 1]} />
-          <meshStandardMaterial color="green" wireframe={true}/>
+          <meshStandardMaterial color="green" wireframe={true} />
         </mesh>
 
         {/* Mur */}
         <mesh position={[0, 5, -5]}>
           <planeGeometry args={[10, 10, 1, 1]} />
-          <meshStandardMaterial color="blue" wireframe={true}/>
+          <meshStandardMaterial color="blue" wireframe={true} />
         </mesh>
-      
 
         <Suspense fallback={null}>
-         <RotatingGobelin 
-         position={[0, 1.5, 0]} 
-         rotationY={gobelinRotationY} 
-         rotationVelocityY={rotationVelocityY} 
-         setGobelinRotationY={setGobelinRotationY} 
-         setRotationVelocityY={setRotationVelocityY}>
-               <Avatar
-                accesssoire={configuration.accessoire}
-                hair={configuration.hair}
-                cloth={configuration.cloth}
-                face={configuration.face}
-                animation={configuration.animation}
-                pose={configuration.pose}
-              />
+          <RotatingGobelin
+            position={[0, 1.5, 0]}
+            rotationY={gobelinRotationY}
+            rotationVelocityY={rotationVelocityY}
+            setGobelinRotationY={setGobelinRotationY}
+            setRotationVelocityY={setRotationVelocityY}
+          >
+            <Avatar
+              accesssoire={configuration.accessoire}
+              hair={configuration.hair}
+              cloth={configuration.cloth}
+              face={configuration.face}
+              animation={configuration.animation}
+              pose={configuration.pose}
+            />
           </RotatingGobelin>
           {/* Trepied */}
           <mesh position={[0, 0.25, 0]}>
             <cylinderGeometry args={[1, 1, 0.5, 32]} />
-            <meshStandardMaterial color="red" wireframe={true}/>
+            <meshStandardMaterial color="red" wireframe={true} />
           </mesh>
         </Suspense>
       </Canvas>
