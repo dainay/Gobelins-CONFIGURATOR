@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
 import { useGLTF } from '@react-three/drei/native'
+import React, { useEffect } from 'react'
 import Model from '../../assets/models/gob.glb'
 
 export default function ObjectLoad({ selectedEar, ...props }) {

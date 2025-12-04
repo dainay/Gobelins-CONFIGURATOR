@@ -1,11 +1,137 @@
+// import { OrbitControls } from "@react-three/drei/native";
+import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
+import { Suspense, useRef, useState } from "react";
 import { View } from "react-native";
-import { Canvas } from "@react-three/fiber/native";
-import { Suspense, useState } from "react";
-import ObjectLoad from "./ObjectLoad";
 import ThemedButton from "../../components/ui/ThemedButton";
+import ObjectLoad from "./ObjectLoad";
+
+function CameraController() {
+  const { camera } = useThree();
+  
+  camera.position.set(0, 2, 4);
+  
+  return null;
+}
+
+
+// function RotatingGobelin({children, position}) {
+//   const gobelinRef = useRef();
+//   const [rotationY, setRotationY] = useState(0);
+//   const [isDragging, setIsDragging] = useState(false);
+//   const lastTouchX = useRef(0);
+
+
+//   useFrame(() => {
+//     if (gobelinRef.current) {
+//       gobelinRef.current.rotation.y = rotationY;
+//     }
+//   });
+
+//   const handleTouchStart = (event) => {
+//     setIsDragging(true);
+//     const touch = event.touches ? event.touches[0] : event;
+//     lastTouchX.current = touch.clientX || touch.pageX;
+//   };
+
+//   const handleTouchMove = (event) => {
+//     if (isDragging) {
+//       const touch = event.touches ? event.touches[0] : event;
+//       const currentX = touch.clientX || touch.pageX;
+//       const deltaX = currentX - lastTouchX.current;
+//       setRotationY(prev => prev + deltaX * 0.01);
+//       lastTouchX.current = currentX;
+//     }
+//   }
+
+
+
+//   const handleTouchEnd = () => {
+//     setIsDragging(false);
+//   };
+
+//   return (
+//     <group
+//       ref={gobelinRef}
+//       position={position}
+//       onTouchStart={handleTouchStart}
+//       onTouchMove={handleTouchMove}
+//       onTouchEnd={handleTouchEnd}
+//     >
+//       {children}
+//     </group>
+//   )
+// }
+
+
+function RotatingGobelin({children, position, rotationY, rotationVelocityY, setGobelinRotationY, setRotationVelocityY}) {
+  const gobelinRef = useRef();
+
+  useFrame(() => {
+    if (gobelinRef.current) {
+      // Appliquer la rotation actuelle
+      gobelinRef.current.rotation.y = rotationY;
+      
+      // Si on n'est pas en train de glisser ET qu'il y a une vélocité
+      if (rotationVelocityY !== 0) {
+        // Appliquer la vélocité à la rotation
+        const newRotation = rotationY + rotationVelocityY;
+        setGobelinRotationY(newRotation);
+        
+        // Appliquer la friction (réduire la vélocité de 5% par frame)
+        const friction = 0.95; // 0.95 = ralentit de 5% par frame
+        const newVelocity = rotationVelocityY * friction;
+        setRotationVelocityY(newVelocity);
+        
+        // Arrêter si la vélocité est très petite (optimisation)
+        if (Math.abs(newVelocity) < 0.001) {
+          setRotationVelocityY(0);
+        }
+      }
+    }
+  });
+
+  return (
+    <group
+      ref={gobelinRef}
+      position={position}
+    >
+      {children}
+    </group>
+  )
+}
 
 export default function Scene() {
   const [selectedEar, setSelectedEar] = useState(null);
+  const [gobelinRotationY, setGobelinRotationY] = useState(0);
+  const [rotationVelocityY, setRotationVelocityY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const lastTouchX = useRef(0);
+
+
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    setRotationVelocityY(0);
+    lastTouchX.current = e.nativeEvent.pageX;
+  };
+
+  const handleTouchMove = (e) => {
+    if (isDragging) {
+      const currentX = e.nativeEvent.pageX;
+      const deltaX = currentX - lastTouchX.current;
+
+      const newVelocity = deltaX * 0.01;
+      setRotationVelocityY(newVelocity);
+
+
+      setGobelinRotationY(prev => prev + newVelocity);
+    lastTouchX.current = currentX;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
 
   const created = (state) => {
     console.log("called on creating component");
@@ -20,17 +146,52 @@ export default function Scene() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View 
+    style={{ flex: 1 }}
+    onTouchStart={handleTouchStart}
+    onTouchMove={handleTouchMove}
+    onTouchEnd={handleTouchEnd}
+    >
       <Canvas
         shadows
         dpr={1}
         onCreated={created}
       >
+
+        <CameraController />
+
+        {/* <OrbitControls /> */}
+
+
         <color attach="background" args={["grey"]} />
         <ambientLight intensity={1} />
+
+        {/* Sol */}
+        <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[10, 10, 1, 1]} />
+          <meshStandardMaterial color="green" wireframe={true}/>
+        </mesh>
+
+        {/* Mur */}
+        <mesh position={[0, 5, -5]}>
+          <planeGeometry args={[10, 10, 1, 1]} />
+          <meshStandardMaterial color="blue" wireframe={true}/>
+        </mesh>
       
         <Suspense fallback={null}>
-          <ObjectLoad selectedEar={selectedEar} />
+         <RotatingGobelin 
+         position={[0, 1.5, 0]} 
+         rotationY={gobelinRotationY} 
+         rotationVelocityY={rotationVelocityY} 
+         setGobelinRotationY={setGobelinRotationY} 
+         setRotationVelocityY={setRotationVelocityY}>
+            <ObjectLoad selectedEar={selectedEar} />
+          </RotatingGobelin>
+          {/* Trepied */}
+          <mesh position={[0, 0.25, 0]}>
+            <cylinderGeometry args={[1, 1, 0.5, 32]} />
+            <meshStandardMaterial color="red" wireframe={true}/>
+          </mesh>
         </Suspense>
       </Canvas>
       
