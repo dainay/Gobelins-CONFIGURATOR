@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import { useUser } from "../../hooks/useUser";
 import { useEffect } from "react";
+import { useUser } from "../../hooks/useUser";
 import ThemedLoader from "../ui/ThemedLoader";
 
 const GuestOnly = ({ children }) => {
@@ -9,7 +9,7 @@ const GuestOnly = ({ children }) => {
 
   useEffect(() => {
     if (authChecked && user) {
-      router.replace("/");
+      router.replace("/Scene");
     }
   }, [authChecked, user, router]);
 

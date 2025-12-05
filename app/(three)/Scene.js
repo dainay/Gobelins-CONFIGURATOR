@@ -1,19 +1,76 @@
 // import { OrbitControls } from "@react-three/drei/native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { OrbitControls } from "@react-three/drei/native";
 
+import { useConfiguratorStore } from "../../src/store/configuratorStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
-import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
 import ThemedView from "../../components/ui/ThemedView";
+import Avatar from "./Avatar";
 
 function CameraController() {
   const { camera } = useThree();
+  const cameraZoom = useConfiguratorStore((state) => state.cameraZoom);
+  const cameraX = useConfiguratorStore((state) => state.cameraX);
+  const cameraY = useConfiguratorStore((state) => state.cameraY);
 
-  camera.position.set(0, 2, 4);
+  const targetZoom = useRef(cameraZoom);
+  const targetX = useRef(cameraX);
+  const targetY = useRef(cameraY);
+
+  // Position initiale UNE SEULE FOIS au montage
+  useEffect(() => {
+    camera.position.set(cameraX, cameraY, cameraZoom);
+    targetZoom.current = cameraZoom;
+    targetX.current = cameraX;
+    targetY.current = cameraY;
+  }, []);
+
+  useFrame(() => {
+    targetZoom.current = cameraZoom;
+    targetX.current = cameraX;
+    targetY.current = cameraY;
+  });
+
+
+  useFrame(() => {
+    // Animation Zoom 
+    const currentZ = camera.position.z;
+    const targetZ = targetZoom.current;
+    const difference = targetZ - currentZ;
+
+    camera.position.z += difference * 0.1;
+
+    if (Math.abs(difference) < 0.01) {
+      camera.position.z = targetZ;
+    }
+
+    // Animation X 
+    const currentX = camera.position.x;
+    const targetXValue = targetX.current;
+    const differenceX = targetXValue - currentX;
+
+    camera.position.x += differenceX * 0.1;
+
+    if (Math.abs(differenceX) < 0.01) {
+      camera.position.x = targetXValue;
+    }
+
+    // Animation Y 
+    const currentY = camera.position.y;
+    const targetYValue = targetY.current;
+    const differenceY = targetYValue - currentY;
+
+    camera.position.y += differenceY * 0.1;
+
+    if (Math.abs(differenceY) < 0.01) {
+      camera.position.y = targetYValue;
+    }
+
+  });
+
 
   return null;
 }

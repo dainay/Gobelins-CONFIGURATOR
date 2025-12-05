@@ -1,7 +1,7 @@
-import { View, TouchableOpacity, Image, StyleSheet } from "react-native"; 
+// import { useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useConfiguratorStore } from "../../src/store/configuratorStore";
 import SelectorPanel from "./SelectorPanel";
-import { useState } from "react";
-
 
 const TABS = [
   { id: "hair", icon: require("../../assets/icons/hair.png") },
@@ -12,7 +12,9 @@ const TABS = [
 ];
 
 export default function TabsBar() {
-  const [activeTab, setActiveTab] = useState('hair');
+  // const [activeTab, setActiveTab] = useState('hair');
+  const activeTab = useConfiguratorStore((state) => state.activeTab);
+  const setActiveTab = useConfiguratorStore((state) => state.setActiveTab);
 
   return (
     <View style={styles.container}>
@@ -26,6 +28,10 @@ export default function TabsBar() {
 
       <SelectorPanel activeTab={activeTab} />
       
+      {/* Texte de test pour afficher l'onglet actif */}
+      {(activeTab === "hair" || activeTab === "cloth" || activeTab === "face") && (
+        <Text style={styles.testText}>{activeTab}</Text>
+      )}
     </View>
   );
 }
@@ -54,5 +60,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     tintColor: "#999",
+  },
+  testText: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: "-50%" }],
+    color: "#007AFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    zIndex: 1000,
   },
 });

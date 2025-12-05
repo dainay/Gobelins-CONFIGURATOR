@@ -1,16 +1,16 @@
-import { StyleSheet, Text } from 'react-native'
-import { Link, router } from 'expo-router' 
+import { Link, router } from 'expo-router'
 import { useState } from 'react'
+import { StyleSheet } from 'react-native'
 import { Colors } from '../constants/Colors'
 import { useUser } from "../hooks/useUser"
 
-import ThemedView from "../components/ui/ThemedView"
-import ThemedText from "../components/ui/ThemedText"
-import ThemedLogo from "../components/ui/ThemedLogo"
+import GuestOnly from "../components/auth/GuestOnly"
 import Spacer from "../components/ui/Spacer"
 import ThemedButton from "../components/ui/ThemedButton"
+import ThemedLogo from "../components/ui/ThemedLogo"
+import ThemedText from "../components/ui/ThemedText"
 import ThemedTextInput from "../components/ui/ThemedTextInput"
-import GuestOnly from "../components/auth/GuestOnly"
+import ThemedView from "../components/ui/ThemedView"
 
 
 const Home = () => {
@@ -62,7 +62,7 @@ const Home = () => {
         Login
       </ThemedButton>
 
-      <Spacer />
+      {/* <Spacer /> */}
       
       {error && (
         <ThemedText style={{ color: Colors.error, marginTop: 10 }}>
@@ -70,7 +70,7 @@ const Home = () => {
         </ThemedText>
       )}
 
-      <Spacer height={20} />
+      {/* <Spacer height={2} /> */}
       <Link href="/register">
         <ThemedText style={styles.link}>
           Don't have an account? Register here
