@@ -6,12 +6,15 @@ import ThemedView from "../../components/ui/ThemedView"
 import ThemedButton from '../../components/ui/ThemedButton';
 
 import { useUser } from '../../hooks/useUser';
+import { useEffect } from 'react';
 
 const Profile = () => {
 
   const { logout, user } = useUser();
 
-   
+  useEffect(() => {
+    console.log("User in profile:", user);
+  }, [])
 
   return (
     <ThemedView style={styles.container}>

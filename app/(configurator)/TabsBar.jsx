@@ -1,23 +1,48 @@
-import { View, TouchableOpacity, Image, StyleSheet } from "react-native"; 
+import { View, TouchableOpacity, Image, StyleSheet, Text } from "react-native"; 
 import SelectorPanel from "./SelectorPanel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
+import { useUser } from "../../context/UserContext";
+import { useMenuStore } from "../../src/store/menuStore";
+
+import { TabsInfo } from "../../constants/TabsInfo";
+
+import ThemedButton from "../../components/ui/ThemedButton";
 
 
-const TABS = [
-  { id: "hair", icon: require("../../assets/icons/hair.png") },
-  { id: "cloth", icon: require("../../assets/icons/cloth.png") },
-  { id: "face", icon: require("../../assets/icons/face.png") },
-  { id: "animation", icon: require("../../assets/icons/animation.png") },
-  { id: "pose", icon: require("../../assets/icons/pose.png") },
-];
 
 export default function TabsBar() {
-  const [activeTab, setActiveTab] = useState('hair');
+   const [activeTab, setActiveTab] = useState('hair');
+  const [saveMessage, setSaveMessage] = useState('');
+  const { user } = useUser();
+
+  const activeMenu = useMenuStore((state) => state.activeMenu);
+  const setActiveMenu = useMenuStore((state) => state.setActiveMenu);
+
+  useEffect(() => {
+    setActiveTab(TabsInfo[activeMenu][0].id);
+  }, [activeMenu]);
+
+  // const handleSave = async () => {
+  //   if (user?.id) {
+  //     try {
+  //       setSaveMessage('Saving...');
+  //       await saveGobelinToDatabase(user.id);
+  //       setSaveMessage('✓ Saved successfully!');
+  //       setTimeout(() => setSaveMessage(''), 3000);
+  //     } catch (error) {
+  //       setSaveMessage('✗ Failed to save');
+  //       setTimeout(() => setSaveMessage(''), 3000);
+  //       console.error("Failed to save gobelin:", error);
+  //     }
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
+   
       <View style={styles.tabs}>
-        {TABS.map((t) => (
+        {TabsInfo[activeMenu].map((t) => (
           <TouchableOpacity key={t.id} onPress={() => setActiveTab(t.id)}>
             <Image source={t.icon} style={activeTab === t.id ? styles.active : styles.normal} />
           </TouchableOpacity>
@@ -38,6 +63,18 @@ const styles = StyleSheet.create({
     right: 0,
     width: "100%",
     backgroundColor: "#fff",
+  },
+  saveContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    gap: 12,
+  },
+  saveMessage: {
+    fontSize: 14,
+    color: "#007AFF",
+    fontWeight: "500",
   },
   tabs: {
     flexDirection: "row",

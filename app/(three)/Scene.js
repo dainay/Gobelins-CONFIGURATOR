@@ -1,14 +1,18 @@
 // import { OrbitControls } from "@react-three/drei/native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { Suspense, useRef, useState } from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { OrbitControls } from "@react-three/drei/native";
+import { router } from "expo-router";
 
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
 import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
 import ThemedView from "../../components/ui/ThemedView";
+import ThemedButton from "../../components/ui/ThemedButton";
+import ThemedText from "../../components/ui/ThemedText";
+import MenuBar from "../(configurator)/MenuBar";
 
 function CameraController() {
   const { camera } = useThree();
@@ -142,10 +146,18 @@ export default function Scene() {
     <ThemedView
       safe={true}
       style={{ flex: 1 }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      // onTouchStart={handleTouchStart}
+      // onTouchMove={handleTouchMove}
+      // onTouchEnd={handleTouchEnd}
     >
+       <TouchableOpacity onPress={() => router.push("/(dashboard)/profile")}>
+        <ThemedText>
+          INDEX
+        </ThemedText>
+      </TouchableOpacity>
+
+      <MenuBar />
+
       <Canvas
         shadows
         dpr={1}
@@ -164,7 +176,14 @@ export default function Scene() {
           };
         }}
       >
-        <CameraController />
+        {/* <CameraController /> */}
+        <OrbitControls
+          enablePan={false}
+          enableZoom={true}
+          zoomSpeed={0.6}
+          minDistance={2}
+          maxDistance={10}
+        />
 
         <color attach="background" args={["grey"]} />
         <ambientLight intensity={1} />
@@ -182,13 +201,13 @@ export default function Scene() {
         </mesh>
 
         <Suspense fallback={null}>
-          <RotatingGobelin
+          {/* <RotatingGobelin
             position={[0, 1.5, 0]}
             rotationY={gobelinRotationY}
             rotationVelocityY={rotationVelocityY}
             setGobelinRotationY={setGobelinRotationY}
             setRotationVelocityY={setRotationVelocityY}
-          >
+          > */}
             <Avatar
               accesssoire={configuration.accessoire}
               hair={configuration.hair}
@@ -197,9 +216,9 @@ export default function Scene() {
               animation={configuration.animation}
               pose={configuration.pose}
             />
-          </RotatingGobelin>
+          {/* </RotatingGobelin> */}
           {/* Trepied */}
-          <mesh position={[0, 0.25, 0]}>
+          <mesh position={[0, -1, 0]}>
             <cylinderGeometry args={[1, 1, 0.5, 32]} />
             <meshStandardMaterial color="red" wireframe={true} />
           </mesh>
@@ -209,6 +228,7 @@ export default function Scene() {
       <View>
         <TabsBar />
       </View>
+      
     </ThemedView>
   );
 }

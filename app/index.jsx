@@ -34,7 +34,7 @@ const Home = () => {
 
   return (
     <GuestOnly>
-      <ThemedView style={styles.container}>
+      <ThemedView safe={true} style={styles.container}>
         <ThemedLogo />
         <Spacer />
 

@@ -1,12 +1,24 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { AppState } from "react-native";
 import { supabase } from "../src/lib/supabase";
+import { loadGobelinFromDatabase } from "../src/lib/saveGobelin";
+import { useGobelinStore } from "../src/store/gobelinStore";
 
 export const UserContext = createContext();
+
+// Hook to use UserContext
+export function useUser() {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within UserProvider");
+  }
+  return context;
+}
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const setConfig = useGobelinStore((state) => state.setConfig);
 
   // AUTO REFRESH TOKEN (RN official)
   useEffect(() => {
@@ -18,6 +30,18 @@ export function UserProvider({ children }) {
     return () => subscription.remove();
   }, []);
 
+//to load gobelin on user change and set into zustand (login register logout nosession)  
+  useEffect(() => {
+    if (user) {
+      loadGobelinFromDatabase(user.id).then((gobelinData) => {
+        if (gobelinData) {
+          console.log("Loaded gobelin from database:", gobelinData);
+          setConfig(gobelinData);
+        }
+      });
+    }
+  }, [user]);
+
   // LOGIN
   async function login(email, password) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -26,11 +50,11 @@ export function UserProvider({ children }) {
   }
 
   // REGISTER
-  async function register(email, password, name) {
+  async function register(email, password, name, year) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: name } },
+      options: { data: { display_name: name, year: year } },
     });
 
     if (error) throw new Error(error.message);
