@@ -6,7 +6,7 @@ import { OrbitControls } from "@react-three/drei/native";
 import { router } from "expo-router";
 
 import { useGobelinStore } from "../../src/store/gobelinStore";
-import { useConfiguratorStore } from "../../src/store/configuratorStore";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
@@ -17,9 +17,9 @@ import MenuBar from "../(configurator)/MenuBar";
 
 function CameraController() {
   const { camera } = useThree();
-  const cameraZoom = useConfiguratorStore((state) => state.cameraZoom);
-  const cameraX = useConfiguratorStore((state) => state.cameraX);
-  const cameraY = useConfiguratorStore((state) => state.cameraY);
+  const cameraZoom = useConfigurateurStore((state) => state.cameraZoom);
+  const cameraX = useConfigurateurStore((state) => state.cameraX);
+  const cameraY = useConfigurateurStore((state) => state.cameraY);
 
   const targetZoom = useRef(cameraZoom);
   const targetX = useRef(cameraX);
