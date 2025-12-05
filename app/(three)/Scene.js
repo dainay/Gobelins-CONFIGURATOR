@@ -6,7 +6,7 @@ import { OrbitControls } from "@react-three/drei/native";
 import { router } from "expo-router";
 
 import { useGobelinStore } from "../../src/store/gobelinStore";
-import { useConfiguratorStore } from "../../src/store/configuratorStore";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
@@ -17,9 +17,9 @@ import MenuBar from "../(configurator)/MenuBar";
 
 function CameraController() {
   const { camera } = useThree();
-  const cameraZoom = useConfiguratorStore((state) => state.cameraZoom);
-  const cameraX = useConfiguratorStore((state) => state.cameraX);
-  const cameraY = useConfiguratorStore((state) => state.cameraY);
+  const cameraZoom = useConfigurateurStore((state) => state.cameraZoom);
+  const cameraX = useConfigurateurStore((state) => state.cameraX);
+  const cameraY = useConfigurateurStore((state) => state.cameraY);
 
   const targetZoom = useRef(cameraZoom);
   const targetX = useRef(cameraX);
@@ -75,8 +75,6 @@ function CameraController() {
     }
 
   });
-
-  camera.position.set(0, 2, 4);
 
   return null;
 }
@@ -150,7 +148,7 @@ export default function Scene() {
           };
         }}
       >
-        {/* <CameraController /> */}
+        <CameraController />
         <OrbitControls
           enablePan={false}
           enableZoom={true}
@@ -175,13 +173,7 @@ export default function Scene() {
         </mesh>
 
         <Suspense fallback={null}>
-          {/* <RotatingGobelin
-            position={[0, 1.5, 0]}
-            rotationY={gobelinRotationY}
-            rotationVelocityY={rotationVelocityY}
-            setGobelinRotationY={setGobelinRotationY}
-            setRotationVelocityY={setRotationVelocityY}
-          > */}
+         
             <Avatar
               accesssoire={configuration.accessoire}
               hair={configuration.hair}
@@ -190,7 +182,7 @@ export default function Scene() {
               animation={configuration.animation}
               pose={configuration.pose}
             />
-          {/* </RotatingGobelin> */}
+  
           {/* Trepied */}
           <mesh position={[0, -1, 0]}>
             <cylinderGeometry args={[1, 1, 0.5, 32]} />

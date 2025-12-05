@@ -1,11 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useConfiguratorStore } from "../../src/store/configuratorStore";
 import SelectorPanel from "./SelectorPanel";
 import { useEffect, useState } from "react";
 
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
 import { useUser } from "../../context/UserContext";
 import { useMenuStore } from "../../src/store/menuStore";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 import { TabsInfo } from "../../constants/TabsInfo";
 
@@ -15,8 +15,8 @@ import ThemedButton from "../../components/ui/ThemedButton";
 
 export default function TabsBar() {
   //  const [activeTab, setActiveTab] = useState('hair');
-    const activeTab = useConfiguratorStore((state) => state.activeTab);
-  const setActiveTab = useConfiguratorStore((state) => state.setActiveTab);
+    const activeTab = useConfigurateurStore((state) => state.activeTab);
+  const setActiveTab = useConfigurateurStore((state) => state.setActiveTab);
   const [saveMessage, setSaveMessage] = useState('');
   const { user } = useUser();
 

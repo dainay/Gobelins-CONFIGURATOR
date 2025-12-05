@@ -1,10 +1,14 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { AvatarOptions } from "../../constants/AvatarOptions";
 import { useGobelinStore } from "../../src/store/gobelinStore";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
-export default function OptionsPanel({ activeTab }) {
+export default function OptionsPanel() {
   const setConfig = useGobelinStore((state) => state.setConfig);
+  const activeTab = useConfigurateurStore((state) => state.activeTab);
   const items = AvatarOptions[activeTab] || [];
+
+  console.log("Active Tab:", activeTab);
 
   const handlePress = (item) => {
     setConfig({ [activeTab]: item.label });

@@ -1,4 +1,6 @@
-export const useConfiguratorStore = create((set) => ({
+import { create } from "zustand";
+
+export const useConfigurateurStore = create((set) => ({
   activeTab: "hair", // Current active tab
   cameraZoom: 4, //valeur par default Z de la camera 
   cameraX: 0, //valeur par default X de la camera 
