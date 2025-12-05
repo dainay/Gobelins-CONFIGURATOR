@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei/native'
-import Model from '../../assets/models/try.glb'
+import Model from '../../assets/models/bake.glb'
 import { useFrame } from '@react-three/fiber/native'
 import {avatarOptions} from '../../constants/AvatarOptions'
  
 
-export default function ObjectLoad({ hair, cloth, face, accesssoire, animation }) {
+export default function ObjectLoad({ hair, cloth, face, accesssoire, animation, pose }) {
   const model = useGLTF(Model)
   const { animations, scene } = model
   const { actions, names } = useAnimations(animations, scene)
   
   console.log("Available animations:", names)
 
-  const accessoiresGroup = scene.getObjectByName("ACCESSOIRES")
-  const hairGroup = scene.getObjectByName("HAIR")
-  const clothesGroup = scene.getObjectByName("CLOTHES")
-  const faceGroup = scene.getObjectByName("FACE")
+  const accessoiresGroup = scene.getObjectByName("Accessoires")
+  const hairGroup = scene.getObjectByName("Cheveux")
+  const clothesGroup = scene.getObjectByName("Tenue")
+  const faceGroup = scene.getObjectByName("Visage")
 
   
   // Play animation 
@@ -26,43 +26,44 @@ export default function ObjectLoad({ hair, cloth, face, accesssoire, animation }
     }
   }, [animation, actions])
 
-  // Hide/show meshes based on selected options
+  // Play pose
   useEffect(() => {
-    scene.traverse((obj) => {
-      if (!obj.name) return;
+    if (pose && actions[pose]) {
+      actions[pose].reset().fadeIn(0.5).play()
+      return () => actions[pose]?.fadeOut(0.5)
+    }
+  }, [pose, actions])
 
-      if (accessoiresGroup) {
-        accessoiresGroup.traverse((obj) => {
-          if (obj !== accessoiresGroup) { // skip the group itself
-            obj.visible = obj.name === accesssoire
-          }
-        })
-      }
+  // Hide/show groups based on selected options
+  useEffect(() => {
+    
+    // Hide/show direct children groups of ACCESSOIRES
+    if (accessoiresGroup) {
+      accessoiresGroup.children.forEach((childGroup) => {
+        childGroup.visible = childGroup.name === accesssoire;
+      });
+    }
 
-      if (hairGroup) {
-        hairGroup.traverse((obj) => {
-          if (obj !== hairGroup) { // skip the group itself
-            obj.visible = obj.name === hair
-          }
-        })
-      }
+    // Hide/show direct children groups of HAIR
+    if (hairGroup) {
+      hairGroup.children.forEach((childGroup) => { 
+        childGroup.visible = childGroup.name === hair;
+      });
+    }
 
-      if (clothesGroup) {
-        clothesGroup.traverse((obj) => {
-          if (obj !== clothesGroup) { // skip the group itself
-            obj.visible = obj.name === cloth
-          }
-        })
-      }
+    // Hide/show direct children groups of CLOTHES
+    if (clothesGroup) {
+      clothesGroup.children.forEach((childGroup) => {
+        childGroup.visible = childGroup.name === cloth;
+      });
+    }
 
-      if (faceGroup) {
-        faceGroup.traverse((obj) => {
-          if (obj !== faceGroup) { // skip the group itself
-            obj.visible = obj.name === face
-          }
-        })
-      }
-    });
+    // Hide/show direct children groups of FACE
+    if (faceGroup) {
+      faceGroup.children.forEach((childGroup) => {
+        childGroup.visible = childGroup.name === face;
+      });
+    }
   }, [scene, hair, cloth, face, accesssoire]);
    
 

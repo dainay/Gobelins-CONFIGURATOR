@@ -1,6 +1,7 @@
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback } from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Link } from "expo-router";
 import { Colors } from "../../constants/Colors";
+import { Picker } from "@react-native-picker/picker";
 
 import ThemedView from "../../components/ui/ThemedView";
 import ThemedText from "../../components/ui/ThemedText";
@@ -16,6 +17,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [name, setName] = useState("");
+  const [year, setYear] = useState("1");
 
   const { register } = useUser();
 
@@ -27,7 +29,7 @@ const Register = () => {
     // console.log("register form submitted");
     setError(null);
     try {
-      await register(email, password, name);
+      await register(email, password, name, year);
     } catch (error) {
       setError(error.message);
     }
@@ -64,6 +66,21 @@ const Register = () => {
           value={name}
         />
 
+        <View style={styles.pickerContainer}>
+          <ThemedText style={styles.pickerLabel}>Quelle année êtes-vous?</ThemedText>
+          <Picker
+            selectedValue={year}
+            onValueChange={setYear}
+            style={styles.picker}
+          >
+            <Picker.Item label="1ère année" value="1" />
+            <Picker.Item label="2ème année" value="2" />
+            <Picker.Item label="3ème année" value="3" />
+            <Picker.Item label="4ème année" value="4" />
+            <Picker.Item label="5ème année" value="5" />
+          </Picker>
+        </View>
+
         <ThemedButton onPress={handleSubmit}>
           <Text style={{ color: "#f2f2f2" }}>Register</Text>
         </ThemedButton>
@@ -96,5 +113,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     marginBottom: 30,
+  },
+  pickerContainer: {
+    width: "80%",
+    marginBottom: 20,
+  },
+  pickerLabel: {
+    marginBottom: 8,
+    fontSize: 14,
+  },
+  picker: {
+    width: "100%",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
   },
 });

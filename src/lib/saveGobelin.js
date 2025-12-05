@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 import { useGobelinStore } from "../store/gobelinStore";
-
+import { AvatarOptions } from "../../constants/AvatarOptions";
 /**
  * Save the complete gobelin from Zustand store to Supabase 
  */
@@ -31,39 +31,49 @@ export async function saveGobelinToDatabase(userId) {
 /**
  * Load gobelin from database into Zustand store
  */
-// export async function loadGobelinFromDatabase(userId) {
-//   try {
-//     const { data, error } = await supabase
-//       .from("gobelins")
-//       .select("*")
-//       .eq("user_id", userId)
-//       .single();
+export async function loadGobelinFromDatabase(userId) {
+  try {
+    const { data, error } = await supabase
+      .from("gobelins")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
 
-//     if (error && error.code !== 'PGRST116') {
-//       throw error;
-//     }
+    if (error && error.code !== 'PGRST116') {
+      throw error;
+    }
 
-//     if (data) {
-//       const { setName, setGuild, setConfig } = useGobelinStore.getState();
-      
-//       setName(data.name || "");
-//       setGuild(data.guild || "");
-//       setConfig({
-//         ear_type: data.ear_type,
-//         skin_color: data.skin_color,
-//         hair_type: data.hair_type,
-//         hair_color: data.hair_color,
-//         eyes_type: data.eyes_type,
-//         eyes_color: data.eyes_color,
-//         outfit_type: data.outfit_type,
-//         outfit_color: data.outfit_color,
-//       });
-      
-//       return data;
-//     }
+    const { setName, setGuild, setConfig } = useGobelinStore.getState();
     
-//     return null;
-//   } catch (error) {
-//     console.error("Error loading gobelin from database:", error);
-//     throw error;
-//   } }
+    if (data) {
+      setName(data.name || "");
+      setGuild(data.guild || "");
+      setConfig({
+        hair: data.hair || AvatarOptions.hair[0].label,
+        face: data.face || AvatarOptions.face[0].label,
+        accessoire: data.accessoire || AvatarOptions.accessoire[0].label,
+        cloth: data.cloth || AvatarOptions.cloth[0].label,
+        animation: data.animation || AvatarOptions.animation[0].label,
+        pose: data.pose || AvatarOptions.pose[0].label,
+      });
+      
+      console.log("Gobelin loaded from database:", data);
+      return data;
+    } else {
+      // No gobelin found - set default values
+      console.log("No gobelin found for user, setting defaults");
+      setConfig({
+        hair: AvatarOptions.hair[0].label,
+        face: AvatarOptions.face[0].label,
+        accessoire: AvatarOptions.accessoire[0].label,
+        cloth: AvatarOptions.cloth[0].label,
+        animation: AvatarOptions.animation[0].label,
+        pose: AvatarOptions.pose[0].label,
+      });
+      return null;
+    }
+  } catch (error) {
+    console.error("Error loading gobelin from database:", error);
+    throw error;
+  }
+}

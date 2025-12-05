@@ -4,7 +4,9 @@ export const AvatarOptions = {
     { id: "h2", label: "Cheveux2" },
     { id: "h3", label: "Cheveux3" },
     { id: "h4", label: "Cheveux4" },
-    { id: "h5", label: "Cheveux5" }
+    { id: "h5", label: "Cheveux5" },
+    { id: "h6", label: "Cheveux6" },
+    { id: "h7", label: "Cheveux7" },
   ],
 
   cloth: [
@@ -14,18 +16,18 @@ export const AvatarOptions = {
     { id: "c4", label: "Tenue4" },
   ],
 
-  accessorie: [
-    { id: "a1", label: "Accessoires_Bandana" },
-    { id: "a2", label: "Accessoires_Casquette" },
-    { id: "a3", label: "Accessoires_Chapeau" },
-    { id: "a4", label: "Accessoires_Chapeau2" },
-    { id: "a5", label: "Acc" },
+  accessoire: [
+    { id: "a1", label: "Acc1" },
+    { id: "a2", label: "Acc2" },
+    { id: "a3", label: "Acc3" },
+    { id: "a4", label: "Acc4" },
+    { id: "a5", label: "Acc5" },
   ],
 
   face: [
-    { id: "f1", label: "Visage1_Neutre" },
-    { id: "f2", label: "Visage2_Fache" },
-    { id: "f3", label: "Visage3_Content" },
+    { id: "f1", label: "Visage1" },
+    { id: "f2", label: "Visage2" },
+    { id: "f3", label: "Visage3" },
   ],
 
   animation: [
@@ -42,5 +44,4 @@ export const AvatarOptions = {
     { id: "p3", label: "Pose3" },
     { id: "p4", label: "Pose4" },
   ],
-
 };
