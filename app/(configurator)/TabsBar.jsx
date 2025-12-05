@@ -1,6 +1,8 @@
-import { View, TouchableOpacity, Image, StyleSheet, Text } from "react-native"; 
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useConfiguratorStore } from "../../src/store/configuratorStore";
 import SelectorPanel from "./SelectorPanel";
 import { useEffect, useState } from "react";
+
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
 import { useUser } from "../../context/UserContext";
 import { useMenuStore } from "../../src/store/menuStore";
@@ -12,7 +14,9 @@ import ThemedButton from "../../components/ui/ThemedButton";
 
 
 export default function TabsBar() {
-   const [activeTab, setActiveTab] = useState('hair');
+  //  const [activeTab, setActiveTab] = useState('hair');
+    const activeTab = useConfiguratorStore((state) => state.activeTab);
+  const setActiveTab = useConfiguratorStore((state) => state.setActiveTab);
   const [saveMessage, setSaveMessage] = useState('');
   const { user } = useUser();
 
@@ -50,6 +54,10 @@ export default function TabsBar() {
       </View>
 
       <SelectorPanel activeTab={activeTab} />
+       {/* Texte de test pour afficher l'onglet actif */}
+      {(activeTab === "hair" || activeTab === "cloth" || activeTab === "face") && (
+        <Text style={styles.testText}>{activeTab}</Text>
+      )}
       
     </View>
   );
@@ -91,5 +99,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     tintColor: "#999",
+  },
+    testText: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: "-50%" }],
+    color: "#007AFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    zIndex: 1000,
   },
 });

@@ -2,7 +2,7 @@ import { StyleSheet, Text } from 'react-native'
 import { Link, router } from 'expo-router' 
 import { useState } from 'react'
 import { Colors } from '../constants/Colors'
-import { useUser } from "../hooks/useUser"
+import { useUser } from "../hooks/useUser" 
 
 import ThemedView from "../components/ui/ThemedView"
 import ThemedText from "../components/ui/ThemedText"
@@ -36,7 +36,7 @@ const Home = () => {
     <GuestOnly>
       <ThemedView safe={true} style={styles.container}>
         <ThemedLogo />
-        <Spacer />
+        {/* <Spacer /> */}
 
         <ThemedText title={true} style={styles.title}>
           Connect to your gobelin
@@ -62,7 +62,7 @@ const Home = () => {
         Login
       </ThemedButton>
 
-      <Spacer />
+      {/* <Spacer /> */}
       
       {error && (
         <ThemedText style={{ color: Colors.error, marginTop: 10 }}>

@@ -60,6 +60,9 @@ export function UserProvider({ children }) {
     if (error) throw new Error(error.message);
 
     await login(email, password);
+
+    
+
   }
 
   // LOGOUT
