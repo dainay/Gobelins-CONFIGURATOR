@@ -28,7 +28,7 @@ export default function IntroRoute() {
 
   const handleIntroFinished = async () => {
     // await markIntroSeen();     // Décommenter pour activer le flag "intro vue"
-    router.replace('/home');  
+    router.replace('/Scene');  
   };
 
   return (

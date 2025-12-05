@@ -1,11 +1,12 @@
 // import { OrbitControls } from "@react-three/drei/native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { OrbitControls } from "@react-three/drei/native";
 import { router } from "expo-router";
 
 import { useGobelinStore } from "../../src/store/gobelinStore";
+import { useConfiguratorStore } from "../../src/store/configuratorStore";
 
 import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
@@ -16,98 +17,71 @@ import MenuBar from "../(configurator)/MenuBar";
 
 function CameraController() {
   const { camera } = useThree();
+  const cameraZoom = useConfiguratorStore((state) => state.cameraZoom);
+  const cameraX = useConfiguratorStore((state) => state.cameraX);
+  const cameraY = useConfiguratorStore((state) => state.cameraY);
+
+  const targetZoom = useRef(cameraZoom);
+  const targetX = useRef(cameraX);
+  const targetY = useRef(cameraY);
+
+  // Position initiale UNE SEULE FOIS au montage
+  useEffect(() => {
+    camera.position.set(cameraX, cameraY, cameraZoom);
+    targetZoom.current = cameraZoom;
+    targetX.current = cameraX;
+    targetY.current = cameraY;
+  }, []);
+
+  useFrame(() => {
+    targetZoom.current = cameraZoom;
+    targetX.current = cameraX;
+    targetY.current = cameraY;
+  });
+
+
+  useFrame(() => {
+    // Animation Zoom 
+    const currentZ = camera.position.z;
+    const targetZ = targetZoom.current;
+    const difference = targetZ - currentZ;
+
+    camera.position.z += difference * 0.1;
+
+    if (Math.abs(difference) < 0.01) {
+      camera.position.z = targetZ;
+    }
+
+    // Animation X 
+    const currentX = camera.position.x;
+    const targetXValue = targetX.current;
+    const differenceX = targetXValue - currentX;
+
+    camera.position.x += differenceX * 0.1;
+
+    if (Math.abs(differenceX) < 0.01) {
+      camera.position.x = targetXValue;
+    }
+
+    // Animation Y 
+    const currentY = camera.position.y;
+    const targetYValue = targetY.current;
+    const differenceY = targetYValue - currentY;
+
+    camera.position.y += differenceY * 0.1;
+
+    if (Math.abs(differenceY) < 0.01) {
+      camera.position.y = targetYValue;
+    }
+
+  });
 
   camera.position.set(0, 2, 4);
 
   return null;
 }
-
-// function RotatingGobelin({children, position}) {
-//   const gobelinRef = useRef();
-//   const [rotationY, setRotationY] = useState(0);
-//   const [isDragging, setIsDragging] = useState(false);
-//   const lastTouchX = useRef(0);
-
-//   useFrame(() => {
-//     if (gobelinRef.current) {
-//       gobelinRef.current.rotation.y = rotationY;
-//     }
-//   });
-
-//   const handleTouchStart = (event) => {
-//     setIsDragging(true);
-//     const touch = event.touches ? event.touches[0] : event;
-//     lastTouchX.current = touch.clientX || touch.pageX;
-//   };
-
-//   const handleTouchMove = (event) => {
-//     if (isDragging) {
-//       const touch = event.touches ? event.touches[0] : event;
-//       const currentX = touch.clientX || touch.pageX;
-//       const deltaX = currentX - lastTouchX.current;
-//       setRotationY(prev => prev + deltaX * 0.01);
-//       lastTouchX.current = currentX;
-//     }
-//   }
-
-//   const handleTouchEnd = () => {
-//     setIsDragging(false);
-//   };
-
-//   return (
-//     <group
-//       ref={gobelinRef}
-//       position={position}
-//       onTouchStart={handleTouchStart}
-//       onTouchMove={handleTouchMove}
-//       onTouchEnd={handleTouchEnd}
-//     >
-//       {children}
-//     </group>
-//   )
-// }
-
-function RotatingGobelin({
-  children,
-  position,
-  rotationY,
-  rotationVelocityY,
-  setGobelinRotationY,
-  setRotationVelocityY,
-}) {
-  const gobelinRef = useRef();
-
-  useFrame(() => {
-    if (gobelinRef.current) {
-      // Appliquer la rotation actuelle
-      gobelinRef.current.rotation.y = rotationY;
-
-      // Si on n'est pas en train de glisser ET qu'il y a une vélocité
-      if (rotationVelocityY !== 0) {
-        // Appliquer la vélocité à la rotation
-        const newRotation = rotationY + rotationVelocityY;
-        setGobelinRotationY(newRotation);
-
-        // Appliquer la friction (réduire la vélocité de 5% par frame)
-        const friction = 0.95; // 0.95 = ralentit de 5% par frame
-        const newVelocity = rotationVelocityY * friction;
-        setRotationVelocityY(newVelocity);
-
-        // Arrêter si la vélocité est très petite (optimisation)
-        if (Math.abs(newVelocity) < 0.001) {
-          setRotationVelocityY(0);
-        }
-      }
-    }
-  });
-
-  return (
-    <group ref={gobelinRef} position={position}>
-      {children}
-    </group>
-  );
-}
-
+ 
+  
 export default function Scene() {
   const [gobelinRotationY, setGobelinRotationY] = useState(0);
   const [rotationVelocityY, setRotationVelocityY] = useState(0);
