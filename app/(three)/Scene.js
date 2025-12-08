@@ -1,12 +1,13 @@
 // import { OrbitControls } from "@react-three/drei/native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { Suspense, useRef, useState, useEffect } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Animated } from "react-native";
 import { OrbitControls } from "@react-three/drei/native";
 import { router } from "expo-router";
 
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
+import { useMenuStore } from "../../src/store/menuStore";
 
 import Avatar from "./Avatar";
 import TabsBar from "../(configurator)/TabsBar";
@@ -111,6 +112,42 @@ export default function Scene() {
 
   // Subscribe to configuration changes - component will rerender when these change
   const configuration = useGobelinStore((state) => state.configuration);
+  const activeMenu = useMenuStore((state) => state.activeMenu);
+  
+  const tabsSlideAnim = useRef(new Animated.Value(0)).current;
+  const guildSlideAnim = useRef(new Animated.Value(300)).current;
+
+  useEffect(() => {
+    if (activeMenu === "guild") {
+      // Slide tabs down, slide guild up
+      Animated.parallel([
+        Animated.timing(tabsSlideAnim, {
+          toValue: 300,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(guildSlideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        })
+      ]).start();
+    } else {
+      // Slide tabs up, slide guild down
+      Animated.parallel([
+        Animated.timing(tabsSlideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(guildSlideAnim, {
+          toValue: 300,
+          duration: 300,
+          useNativeDriver: true,
+        })
+      ]).start();
+    }
+  }, [activeMenu]);
 
   console.log("USER GOBLIN CONFIG IN SCENE:", configuration);
 
@@ -130,9 +167,10 @@ export default function Scene() {
 
       <MenuBar />
 
-      <Canvas
-        shadows
-        dpr={1}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+        <Canvas
+          shadows
+          dpr={1}
         //this code disable awful log that generate expo-gl every tick
         onCreated={(state) => {
           const _gl = state.gl.getContext();
@@ -189,11 +227,24 @@ export default function Scene() {
             <meshStandardMaterial color="red" wireframe={true} />
           </mesh>
         </Suspense>
-      </Canvas>
-
-      <View>
-        <TabsBar />
+        </Canvas>
       </View>
+
+      <Animated.View style={[
+        { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 },
+        { transform: [{ translateY: tabsSlideAnim }] }
+      ]}>
+        <TabsBar />
+      </Animated.View>
+
+      <Animated.View style={[
+        { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 11 },
+        { transform: [{ translateY: guildSlideAnim }] }
+      ]}>
+        <View style={{ padding: 20, backgroundColor: '#fff', minHeight: 200 }}>
+          <ThemedText>Guild Selection Component Here</ThemedText>
+        </View>
+      </Animated.View>
       
     </ThemedView>
   );

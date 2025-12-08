@@ -1,6 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, Animated } from "react-native";
 import SelectorPanel from "./SelectorPanel";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
 import { useUser } from "../../context/UserContext";
@@ -8,6 +8,8 @@ import { useMenuStore } from "../../src/store/menuStore";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 import { TabsInfo } from "../../constants/TabsInfo";
+import { GuildsInfo } from "../../constants/GuildsInfo";
+import GuildChoice from "./GuildChoice";
 
 import ThemedButton from "../../components/ui/ThemedButton";
 
@@ -15,16 +17,28 @@ import ThemedButton from "../../components/ui/ThemedButton";
 
 export default function TabsBar() {
   //  const [activeTab, setActiveTab] = useState('hair');
-    const activeTab = useConfigurateurStore((state) => state.activeTab);
+  const activeTab = useConfigurateurStore((state) => state.activeTab);
   const setActiveTab = useConfigurateurStore((state) => state.setActiveTab);
   const [saveMessage, setSaveMessage] = useState('');
   const { user } = useUser();
 
   const activeMenu = useMenuStore((state) => state.activeMenu);
   const setActiveMenu = useMenuStore((state) => state.setActiveMenu);
+  
+  const slideAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    setActiveTab(TabsInfo[activeMenu][0].id);
+    if (activeMenu === "appearance" || activeMenu === "animation") {
+      setActiveTab(TabsInfo[activeMenu][0].id);
+    }
+  }, [activeMenu]);
+
+  useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: (activeMenu === "appearance" || activeMenu === "animation") ? 0 : 200,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   }, [activeMenu]);
 
   // const handleSave = async () => {
@@ -44,20 +58,26 @@ export default function TabsBar() {
 
   return (
     <View style={styles.container}>
-   
-      <View style={styles.tabs}>
-        {TabsInfo[activeMenu].map((t) => (
-          <TouchableOpacity key={t.id} onPress={() => setActiveTab(t.id)}>
-            <Image source={t.icon} style={activeTab === t.id ? styles.active : styles.normal} />
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <SelectorPanel activeTab={activeTab} />
-       {/* Texte de test pour afficher l'onglet actif */}
-      {(activeTab === "hair" || activeTab === "cloth" || activeTab === "face") && (
-        <Text style={styles.testText}>{activeTab}</Text>
-      )}
+      
+      {(activeMenu === "guild") ? (
+        <View>
+          <GuildChoice />
+        </View>
+      ) : null}
+      
+      <Animated.View style={[
+        styles.tabsContainer,
+        { transform: [{ translateY: slideAnim }] }
+      ]}>
+        <View style={styles.tabs}>
+          {TabsInfo[activeMenu]?.map((t) => (
+            <TouchableOpacity key={t.id} onPress={() => setActiveTab(t.id)}>
+              <Image source={t.icon} style={activeTab === t.id ? styles.active : styles.normal} />
+            </TouchableOpacity>
+          ))}
+        </View>
+        <SelectorPanel activeTab={activeTab} />
+      </Animated.View>
       
     </View>
   );
@@ -70,7 +90,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "#783131ff",
+    height: 270,
+  },
+  tabsContainer: {
+    width: "100%",
+    backgroundColor: "#231f2dff",
   },
   saveContainer: {
     flexDirection: "row",
@@ -88,7 +113,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#3b9d86ff",
   },
   active: {
     width: 40,

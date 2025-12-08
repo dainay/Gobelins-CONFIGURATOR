@@ -10,7 +10,6 @@ export const TabsInfo = {
     { id: "pose", icon: require("../assets/icons/animation.png") },
   ],
   guild: [
-     { id: "Something", icon: require("../assets/icons/animation.png") },
-    { id: "so,ething", icon: require("../assets/icons/animation.png") },
+      
   ],
 };
