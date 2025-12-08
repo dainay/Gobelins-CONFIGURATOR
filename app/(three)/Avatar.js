@@ -19,12 +19,12 @@ export default function ObjectLoad({ hair, cloth, face, accesssoire, animation, 
 
   
   // Play animation 
-  useEffect(() => {
-    if (animation && actions[animation]) {
-      actions[animation].reset().fadeIn(0.5).play()
-      return () => actions[animation]?.fadeOut(0.5)
-    }
-  }, [animation, actions])
+  // useEffect(() => {
+  //   if (animation && actions[animation]) {
+  //     actions[animation].reset().fadeIn(0.5).play()
+  //     return () => actions[animation]?.fadeOut(0.5)
+  //   }
+  // }, [animation, actions])
 
   // Play pose
   useEffect(() => {

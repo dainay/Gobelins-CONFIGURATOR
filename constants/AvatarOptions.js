@@ -39,9 +39,9 @@ export const AvatarOptions = {
   ],
 
   pose: [
-    { id: "p1", label: "Pose1" },
-    { id: "p2", label: "Pose2" },
-    { id: "p3", label: "Pose3" },
-    { id: "p4", label: "Pose4" },
+    { id: "p1", label: "POSE1" },
+    { id: "p2", label: "POSE2" },
+    { id: "p3", label: "POSE3" },
+    { id: "p4", label: "POSE4" },
   ],
 };
