@@ -1,15 +1,12 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import SelectorPanel from "./SelectorPanel";
 import { useEffect, useState } from "react";
-
-import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
-import { useUser } from "../../context/UserContext";
-import { useMenuStore } from "../../src/store/menuStore";
-import { useConfigurateurStore } from "../../src/store/configurateurStore";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import SelectorPanel from "./SelectorPanel";
 
 import { TabsInfo } from "../../constants/TabsInfo";
+import { useUser } from "../../context/UserContext";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
+import { useMenuStore } from "../../src/store/menuStore";
 
-import ThemedButton from "../../components/ui/ThemedButton";
 
 
 
@@ -47,7 +44,12 @@ export default function TabsBar() {
    
       <View style={styles.tabs}>
         {TabsInfo[activeMenu].map((t) => (
-          <TouchableOpacity key={t.id} onPress={() => setActiveTab(t.id)}>
+          <TouchableOpacity 
+            style={activeTab === t.id ? styles.activeContainer : styles.normalContainer} 
+            key={t.id} 
+            onPress={() => setActiveTab(t.id)}
+            activeOpacity={1}
+          >
             <Image source={t.icon} style={activeTab === t.id ? styles.active : styles.normal} />
           </TouchableOpacity>
         ))}
@@ -55,9 +57,9 @@ export default function TabsBar() {
 
       <SelectorPanel activeTab={activeTab} />
        {/* Texte de test pour afficher l'onglet actif */}
-      {(activeTab === "hair" || activeTab === "cloth" || activeTab === "face") && (
+      {/* {(activeTab === "hair" || activeTab === "cloth" || activeTab === "face") && (
         <Text style={styles.testText}>{activeTab}</Text>
-      )}
+      )} */}
       
     </View>
   );
@@ -70,7 +72,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
+    // borderTopWidth: 1,
   },
   saveContainer: {
     flexDirection: "row",
@@ -78,6 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 8,
     gap: 12,
+    backgroundColor: "transparent",
   },
   saveMessage: {
     fontSize: 14,
@@ -85,20 +89,42 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   tabs: {
+    height: 80,
+    width: "100%",
     flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 16,
-    backgroundColor: "#fff",
+    // justifyContent: "space-around",
+    gap: 8,
+    paddingInline: 16,
+    backgroundColor: "transparent",
+    border: "1px solid red",
+    marginBottom: -16,
+    
+  },
+  containerIconOnglet: {
+    flex: 1,
+  },
+  activeContainer: {
+    flex: 1,
+    zIndex: 10,
+  },
+  normalContainer: {
+    flex: 1,
+    zIndex: 1,
   },
   active: {
-    width: 40,
-    height: 40,
+    // width: 40,
+    height: "100%",
     tintColor: "#007AFF",
+    backgroundColor: "green",
+    width: "100%",
   },
   normal: {
-    width: 40,
-    height: 40,
+    // width: 40,
+    height: "100%",
     tintColor: "#999",
+    backgroundColor: "yellow",
+    flex: 1,
+    width: "100%",
   },
     testText: {
     position: "absolute",
