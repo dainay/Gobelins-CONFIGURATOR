@@ -131,8 +131,8 @@ export default function ShakeResultScreen() {
         {JSON.stringify(finalScores, null, 2)}
       </ThemedText>
 
-      <ThemedButton onPress={() => router.push("/")}>
-        Revenir à l'accueil
+      <ThemedButton onPress={() => router.push("/(dashboard)/profile")}>
+        Mon gobelin est prêt !
       </ThemedButton>
     </ThemedView>
   );

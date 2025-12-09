@@ -15,6 +15,7 @@ import ThemedView from "../../components/ui/ThemedView";
 import ThemedButton from "../../components/ui/ThemedButton";
 import ThemedText from "../../components/ui/ThemedText";
 import MenuBar from "../(configurator)/MenuBar";
+import GuildChoice from "../(configurator)/GuildChoice";
 
 function CameraController() {
   const { camera } = useThree();
@@ -141,7 +142,7 @@ export default function Scene() {
           useNativeDriver: true,
         }),
         Animated.timing(guildSlideAnim, {
-          toValue: 300,
+          toValue: 900,
           duration: 300,
           useNativeDriver: true,
         })
@@ -241,9 +242,7 @@ export default function Scene() {
         { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 11 },
         { transform: [{ translateY: guildSlideAnim }] }
       ]}>
-        <View style={{ padding: 20, backgroundColor: '#fff', minHeight: 200 }}>
-          <ThemedText>Guild Selection Component Here</ThemedText>
-        </View>
+        <GuildChoice />
       </Animated.View>
       
     </ThemedView>
