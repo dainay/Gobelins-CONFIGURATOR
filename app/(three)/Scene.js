@@ -1,12 +1,9 @@
 // import { OrbitControls } from "@react-three/drei/native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { Suspense, useRef, useState, useEffect } from "react";
-import { View, TouchableOpacity, Animated } from "react-native";
-import { OrbitControls } from "@react-three/drei/native";
-import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
+import { View, TouchableOpacity, StyleSheet, Animated as RNAnimated } from "react-native";
+import { OrbitControls } from "@react-three/drei/native"; 
 import { router } from "expo-router";
-import { Suspense, useEffect, useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
@@ -16,8 +13,7 @@ import { useGobelinStore } from "../../src/store/gobelinStore";
 
 import MenuBar from "../(configurator)/MenuBar";
 import TabsBar from "../(configurator)/TabsBar";
-import ThemedText from "../../components/ui/ThemedText";
-import MenuBar from "../(configurator)/MenuBar";
+import ThemedText from "../../components/ui/ThemedText"; 
 import GuildChoice from "../(configurator)/GuildChoice";
 import ThemedView from "../../components/ui/ThemedView";
 import Avatar from "./Avatar";
@@ -183,19 +179,19 @@ export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
   const activeMenu = useMenuStore((state) => state.activeMenu);
   
-  const tabsSlideAnim = useRef(new Animated.Value(0)).current;
-  const guildSlideAnim = useRef(new Animated.Value(300)).current;
+  const tabsSlideAnim = useRef(new RNAnimated.Value(0)).current;
+  const guildSlideAnim = useRef(new RNAnimated.Value(300)).current;
 
   useEffect(() => {
     if (activeMenu === "guild") {
       // Slide tabs down, slide guild up
-      Animated.parallel([
-        Animated.timing(tabsSlideAnim, {
+      RNAnimated.parallel([
+        RNAnimated.timing(tabsSlideAnim, {
           toValue: 300,
           duration: 300,
           useNativeDriver: true,
         }),
-        Animated.timing(guildSlideAnim, {
+        RNAnimated.timing(guildSlideAnim, {
           toValue: 0,
           duration: 300,
           useNativeDriver: true,
@@ -203,13 +199,13 @@ export default function Scene() {
       ]).start();
     } else {
       // Slide tabs up, slide guild down
-      Animated.parallel([
-        Animated.timing(tabsSlideAnim, {
+      RNAnimated.parallel([
+        RNAnimated.timing(tabsSlideAnim, {
           toValue: 0,
           duration: 300,
           useNativeDriver: true,
         }),
-        Animated.timing(guildSlideAnim, {
+        RNAnimated.timing(guildSlideAnim, {
           toValue: 900,
           duration: 300,
           useNativeDriver: true,
@@ -309,19 +305,19 @@ export default function Scene() {
         </Canvas>
       </View>
 
-    {!showTutorial && (<Animated.View style={[
+    {!showTutorial && (<RNAnimated.View style={[
         { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 },
         { transform: [{ translateY: tabsSlideAnim }] }
       ]}>
         <TabsBar />
-      </Animated.View>)}
+      </RNAnimated.View>)}
 
-      <Animated.View style={[
+      <RNAnimated.View style={[
         { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 11 },
         { transform: [{ translateY: guildSlideAnim }] }
       ]}>
         <GuildChoice />
-      </Animated.View>
+      </RNAnimated.View>
       
   
       <TutorialOverlay />

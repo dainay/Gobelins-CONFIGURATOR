@@ -3,8 +3,7 @@ import SelectorPanel from "./SelectorPanel";
 import { useEffect } from "react";
 
 import { useMenuStore } from "../../src/store/menuStore";
-import { useConfigurateurStore } from "../../src/store/configurateurStore";
-import { useMenuStore } from "../../src/store/menuStore";
+import { useConfigurateurStore } from "../../src/store/configurateurStore"; 
 
 import { TabsInfo } from "../../constants/TabsInfo";
 
