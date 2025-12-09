@@ -1,4 +1,7 @@
 // import { OrbitControls } from "@react-three/drei/native";
+import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
+import { Suspense, useRef, useState, useEffect } from "react";
+import { View, TouchableOpacity, Animated } from "react-native";
 import { OrbitControls } from "@react-three/drei/native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { router } from "expo-router";
@@ -8,11 +11,14 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 
 import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
+import { useMenuStore } from "../../src/store/menuStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
 import MenuBar from "../(configurator)/MenuBar";
 import TabsBar from "../(configurator)/TabsBar";
 import ThemedText from "../../components/ui/ThemedText";
+import MenuBar from "../(configurator)/MenuBar";
+import GuildChoice from "../(configurator)/GuildChoice";
 import ThemedView from "../../components/ui/ThemedView";
 import Avatar from "./Avatar";
 
@@ -175,6 +181,42 @@ export default function Scene() {
 
   // Subscribe to configuration changes - component will rerender when these change
   const configuration = useGobelinStore((state) => state.configuration);
+  const activeMenu = useMenuStore((state) => state.activeMenu);
+  
+  const tabsSlideAnim = useRef(new Animated.Value(0)).current;
+  const guildSlideAnim = useRef(new Animated.Value(300)).current;
+
+  useEffect(() => {
+    if (activeMenu === "guild") {
+      // Slide tabs down, slide guild up
+      Animated.parallel([
+        Animated.timing(tabsSlideAnim, {
+          toValue: 300,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(guildSlideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        })
+      ]).start();
+    } else {
+      // Slide tabs up, slide guild down
+      Animated.parallel([
+        Animated.timing(tabsSlideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(guildSlideAnim, {
+          toValue: 900,
+          duration: 300,
+          useNativeDriver: true,
+        })
+      ]).start();
+    }
+  }, [activeMenu]);
 
   console.log("USER GOBLIN CONFIG IN SCENE:", configuration);
 
@@ -204,9 +246,10 @@ export default function Scene() {
         </Animated.View>
       )}
 
-      <Canvas
-        shadows
-        dpr={1}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+        <Canvas
+          shadows
+          dpr={1}
         //this code disable awful log that generate expo-gl every tick
         onCreated={(state) => {
           const _gl = state.gl.getContext();
@@ -263,11 +306,24 @@ export default function Scene() {
             <meshStandardMaterial color="red" wireframe={true} />
           </mesh>
         </Suspense>
-      </Canvas>
+        </Canvas>
+      </View>
 
-      {!showTutorial && (<Animated.View style={tabsBarAnimatedStyle}>
+    {!showTutorial && (<Animated.View style={[
+        { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 10 },
+        { transform: [{ translateY: tabsSlideAnim }] }
+      ]}>
         <TabsBar />
       </Animated.View>)}
+
+      <Animated.View style={[
+        { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 11 },
+        { transform: [{ translateY: guildSlideAnim }] }
+      ]}>
+        <GuildChoice />
+      </Animated.View>
+      
+  
       <TutorialOverlay />
     </ThemedView>
   );

@@ -47,6 +47,7 @@ export function UserProvider({ children }) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
     // user will be handled by onAuthStateChange
+    return { success: true, isNewUser: false };
   }
 
   // REGISTER
@@ -60,9 +61,7 @@ export function UserProvider({ children }) {
     if (error) throw new Error(error.message);
 
     await login(email, password);
-    router.push("/intro");
-    
-
+    return { success: true, isNewUser: true };
   }
 
   // LOGOUT

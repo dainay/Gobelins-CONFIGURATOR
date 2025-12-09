@@ -9,7 +9,7 @@ const GuestOnly = ({ children }) => {
 
   useEffect(() => {
     if (authChecked && user) {
-      router.replace("/Scene");
+      router.replace("/(dashboard)/openWorld");
     }
   }, [authChecked, user, router]);
 
