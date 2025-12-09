@@ -26,7 +26,7 @@ const Home = () => {
 
     try {
       await login(email, password)
-      router.push("/profile")  
+      router.replace('/(dashboard)/openWorld');  
     } catch (error) {
       setError(error.message)
     }
@@ -77,25 +77,23 @@ const Home = () => {
         </ThemedText>
       </Link>
 
-       <Link href="/home">
+       {/* <Link href="/home">
         <ThemedText style={styles.link}>
           TABS
         </ThemedText>
-      </Link>
+      </Link> */}
 
-      <Spacer />
-
-      <Link href="/Scene">
+      {/* <Link href="/Scene">
         <ThemedText style={styles.link}>
           DEMO 3D
         </ThemedText>
-      </Link>
+      </Link> */}
 
-      <Link href="/introManager">
+      {/* <Link href="/introManager">
         <ThemedText style={styles.link}>
           INTRO
         </ThemedText>
-      </Link>
+      </Link> */}
 
     </ThemedView>
     </GuestOnly>

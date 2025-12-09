@@ -160,7 +160,7 @@ export default function Scene() {
       // onTouchMove={handleTouchMove}
       // onTouchEnd={handleTouchEnd}
     >
-       <TouchableOpacity onPress={() => router.push("/(dashboard)/profile")}>
+       <TouchableOpacity style={{ marginTop: 400 }} onPress={() => router.push("/(dashboard)/profile")}>
         <ThemedText>
           INDEX
         </ThemedText>

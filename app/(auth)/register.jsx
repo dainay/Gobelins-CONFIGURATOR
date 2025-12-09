@@ -1,5 +1,5 @@
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
 import { Picker } from "@react-native-picker/picker";
 
@@ -20,6 +20,7 @@ const Register = () => {
   const [year, setYear] = useState("1");
 
   const { register } = useUser();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!email || !password || !name) {
@@ -30,6 +31,7 @@ const Register = () => {
     setError(null);
     try {
       await register(email, password, name, year);
+      router.replace('/(intro)/intro');
     } catch (error) {
       setError(error.message);
     }
