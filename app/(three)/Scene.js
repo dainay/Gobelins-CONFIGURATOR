@@ -1,29 +1,33 @@
 // import { OrbitControls } from "@react-three/drei/native";
-import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
-import { Suspense, useRef, useState, useEffect } from "react";
-import { View, TouchableOpacity } from "react-native";
 import { OrbitControls } from "@react-three/drei/native";
+import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { router } from "expo-router";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-import { useGobelinStore } from "../../src/store/gobelinStore";
+import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
+import { useGobelinStore } from "../../src/store/gobelinStore";
 
-import Avatar from "./Avatar";
-import TabsBar from "../(configurator)/TabsBar";
-import ThemedView from "../../components/ui/ThemedView";
-import ThemedButton from "../../components/ui/ThemedButton";
-import ThemedText from "../../components/ui/ThemedText";
 import MenuBar from "../(configurator)/MenuBar";
+import TabsBar from "../(configurator)/TabsBar";
+import ThemedText from "../../components/ui/ThemedText";
+import ThemedView from "../../components/ui/ThemedView";
+import Avatar from "./Avatar";
 
 function CameraController() {
   const { camera } = useThree();
   const cameraZoom = useConfigurateurStore((state) => state.cameraZoom);
   const cameraX = useConfigurateurStore((state) => state.cameraX);
   const cameraY = useConfigurateurStore((state) => state.cameraY);
+  const cameraLookAtY = useConfigurateurStore((state) => state.cameraLookAtY);
 
   const targetZoom = useRef(cameraZoom);
   const targetX = useRef(cameraX);
   const targetY = useRef(cameraY);
+  const targetLookAtY = useRef(cameraLookAtY);
+  const currentLookAtYRef = useRef(cameraLookAtY);
 
   // Position initiale UNE SEULE FOIS au montage
   useEffect(() => {
@@ -31,12 +35,16 @@ function CameraController() {
     targetZoom.current = cameraZoom;
     targetX.current = cameraX;
     targetY.current = cameraY;
+    targetLookAtY.current = cameraLookAtY;
+    currentLookAtYRef.current = cameraLookAtY;
+    camera.lookAt(0, cameraLookAtY, 0);
   }, []);
 
   useFrame(() => {
     targetZoom.current = cameraZoom;
     targetX.current = cameraX;
     targetY.current = cameraY;
+    targetLookAtY.current = cameraLookAtY;
   });
 
 
@@ -74,6 +82,19 @@ function CameraController() {
       camera.position.y = targetYValue;
     }
 
+    // Animation LookAtY 
+    const currentLookAtY = currentLookAtYRef.current;
+    const targetLookAtYValue = targetLookAtY.current;
+    const differenceLookAtY = targetLookAtYValue - currentLookAtY;
+
+    currentLookAtYRef.current += differenceLookAtY * 0.1;
+
+    if (Math.abs(differenceLookAtY) < 0.01) {
+      currentLookAtYRef.current = targetLookAtYValue;
+    }
+
+    camera.lookAt(0, currentLookAtYRef.current, 0);
+
   });
 
   return null;
@@ -85,6 +106,49 @@ export default function Scene() {
   const [rotationVelocityY, setRotationVelocityY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const lastTouchX = useRef(0);
+  const showTutorial = useConfigurateurStore((state) => state.showTutorial);
+  const startTutorial = useConfigurateurStore((state) => state.startTutorial);
+  const tutorialCompleted = useConfigurateurStore((state) => state.tutorialCompleted);
+  const menuBarOpacity = useSharedValue(0);
+  const tabsBarOpacity = useSharedValue(0);
+  const navBarTranslateY = useSharedValue(-100);
+  const tabsBarTranslateY = useSharedValue(150);
+
+
+
+  //Faire affichier le tuto, temporaire, en attendant animation 
+  useEffect(() => {
+      startTutorial();
+  }, []);
+
+  useEffect(() => {
+    if (!showTutorial) {
+      //Apparition du menu et des onglets
+      menuBarOpacity.value = withTiming(1, { duration: 50 });
+      tabsBarOpacity.value = withTiming(1, { duration: 50 });
+      navBarTranslateY.value = withTiming(0, { duration: 100 });
+      tabsBarTranslateY.value = withTiming(0, { duration: 100 });
+    } else {
+      //Disparition du menu et des onglets
+      menuBarOpacity.value = withTiming(0, { duration: 50 });
+      tabsBarOpacity.value = withTiming(0, { duration: 50 });
+      navBarTranslateY.value = withTiming(-100, { duration: 100 });
+      tabsBarTranslateY.value = withTiming(150, { duration: 100 });
+    }
+  }, [showTutorial]);
+
+  const menuBarAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: menuBarOpacity.value,
+      transform: [{ translateY: navBarTranslateY.value }],
+    };
+  });
+  const tabsBarAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: tabsBarOpacity.value,
+      transform: [{ translateY: tabsBarTranslateY.value }],
+    };
+  });
 
   const handleTouchStart = (e) => {
     setIsDragging(true);
@@ -122,13 +186,23 @@ export default function Scene() {
       // onTouchMove={handleTouchMove}
       // onTouchEnd={handleTouchEnd}
     >
-       <TouchableOpacity onPress={() => router.push("/(dashboard)/profile")}>
+       <TouchableOpacity 
+        onPress={() => router.push("/(dashboard)/profile")}
+        style={{ position: 'absolute', zIndex: 1000, top: '50%', right: 10 }}
+      >
         <ThemedText>
           INDEX
         </ThemedText>
       </TouchableOpacity>
 
-      <MenuBar />
+      {!showTutorial && (
+        <Animated.View 
+          style={[menuBarAnimatedStyle, styles.menuBarContainer]}
+          pointerEvents="box-none"
+        >
+          <MenuBar />
+        </Animated.View>
+      )}
 
       <Canvas
         shadows
@@ -191,10 +265,20 @@ export default function Scene() {
         </Suspense>
       </Canvas>
 
-      <View>
+      {!showTutorial && (<Animated.View style={tabsBarAnimatedStyle}>
         <TabsBar />
-      </View>
-      
+      </Animated.View>)}
+      <TutorialOverlay />
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  menuBarContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
+});
