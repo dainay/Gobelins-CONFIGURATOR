@@ -122,7 +122,16 @@ export default function Scene() {
           {!showTutorial && (
             <>
               <directionalLight position={[2, 4, 3]} intensity={1.5} />
-
+              {/* Sol */}
+              <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[10, 10, 1, 1]} />
+                <meshStandardMaterial color="green" wireframe={true} />
+              </mesh>
+              {/* Mur */}
+              <mesh position={[0, 5, -5]}>
+                <planeGeometry args={[10, 10, 1, 1]} />
+                <meshStandardMaterial color="blue" wireframe={true} />
+              </mesh>
               <Suspense fallback={null}>
                 <Avatar
                   accessoire={configuration.accessoire}
@@ -133,6 +142,11 @@ export default function Scene() {
                   pose={configuration.pose}
                 />
               </Suspense>
+              {/* Trepied */}
+              <mesh position={[0, -1, 0]}>  
+                <cylinderGeometry args={[1, 1, 0.5, 32]} />
+                <meshStandardMaterial color="red" wireframe={true} />
+              </mesh>
             </>
           )}
         </Canvas>
