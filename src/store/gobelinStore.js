@@ -34,7 +34,7 @@ export const useGobelinStore = create((set, get) => ({
     return {
       name: state.name,
       guild: state.guild,
-      ...state.configuration, // spread config fields to top level
+      ...state.configuration,  
     };
   },
 

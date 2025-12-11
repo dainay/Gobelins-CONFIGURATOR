@@ -180,7 +180,7 @@ export default function Scene() {
   const activeMenu = useMenuStore((state) => state.activeMenu);
   
   const tabsSlideAnim = useRef(new RNAnimated.Value(0)).current;
-  const guildSlideAnim = useRef(new RNAnimated.Value(300)).current;
+  const guildSlideAnim = useRef(new RNAnimated.Value(900)).current;
 
   useEffect(() => {
     if (activeMenu === "guild") {
@@ -271,7 +271,8 @@ export default function Scene() {
         />
 
         <color attach="background" args={["grey"]} />
-        <ambientLight intensity={1} />
+        <ambientLight intensity={1.2} />
+        <directionalLight position={[2, 2, 3]} intensity={2} />
 
         {/* Sol */}
         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>

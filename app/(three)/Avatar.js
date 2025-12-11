@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei/native'
 import Model from '../../assets/models/bake.glb'
 import { useFrame } from '@react-three/fiber/native'
+import { MeshStandardMaterial } from 'three'
 import {avatarOptions} from '../../constants/AvatarOptions'
  
 
@@ -16,15 +17,6 @@ export default function ObjectLoad({ hair, cloth, face, accesssoire, animation, 
   const hairGroup = scene.getObjectByName("Cheveux")
   const clothesGroup = scene.getObjectByName("Tenue")
   const faceGroup = scene.getObjectByName("Visage")
-
-  
-  // Play animation 
-  // useEffect(() => {
-  //   if (animation && actions[animation]) {
-  //     actions[animation].reset().fadeIn(0.5).play()
-  //     return () => actions[animation]?.fadeOut(0.5)
-  //   }
-  // }, [animation, actions])
 
   // Play pose
   useEffect(() => {
@@ -89,7 +81,7 @@ export default function ObjectLoad({ hair, cloth, face, accesssoire, animation, 
     <>
       {/* Axis Helper: Red=X, Green=Y, Blue=Z */}
       <axesHelper args={[2]} />
-      <primitive position={[0, 0, 0]} object={model.scene} scale={0.5} rotation={[0, Math.PI, 0]} />
+      <primitive position={[0, 0, 0]} object={model.scene} scale={0.9} rotation={[0, 0, 0]} />
     </>
   
     

@@ -83,11 +83,11 @@ const Home = () => {
         </ThemedText>
       </Link> */}
 
-      {/* <Link href="/Scene">
+      <Link href="/Scene">
         <ThemedText style={styles.link}>
           DEMO 3D
         </ThemedText>
-      </Link> */}
+      </Link>
 
       {/* <Link href="/introManager">
         <ThemedText style={styles.link}>

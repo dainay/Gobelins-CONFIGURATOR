@@ -9,6 +9,7 @@ export async function saveGobelinToDatabase(userId) {
   try {
     // Get complete gobelin data from Zustand
     const gobelinData = useGobelinStore.getState().getGobelinData();
+    console.log("Saving gobelin to database:", gobelinData, "for user:", userId);
  
     const { data, error } = await supabase
         .from("gobelins")
