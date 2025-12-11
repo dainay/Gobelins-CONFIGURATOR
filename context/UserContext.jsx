@@ -3,6 +3,9 @@ import { AppState } from "react-native";
 import { loadGobelinFromDatabase } from "../src/lib/saveGobelin";
 import { supabase } from "../src/lib/supabase";
 import { useGobelinStore } from "../src/store/gobelinStore";
+import { useMenuStore } from "../src/store/menuStore";
+import { useConfigurateurStore } from "../src/store/configurateurStore";
+import { useRouter } from "expo-router";
 
 export const UserContext = createContext();
 
@@ -19,6 +22,7 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const setConfig = useGobelinStore((state) => state.setConfig);
+  const router = useRouter();
 
   // AUTO REFRESH TOKEN (RN official)
   useEffect(() => {
@@ -43,11 +47,20 @@ export function UserProvider({ children }) {
   }, [user]);
 
   // LOGIN
-  async function login(email, password) {
+  async function login(email, password, intro = false) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAA  Login attempt for:", intro );
+
     if (error) throw new Error(error.message);
-    // user will be handled by onAuthStateChange
-    return { success: true, isNewUser: false };
+
+    console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  Login attempt for:", intro );
+    
+    if (intro) {
+    router.replace('/(intro)/intro');
+    return;
+    } 
+      
+    
   }
 
   // REGISTER
@@ -60,14 +73,16 @@ export function UserProvider({ children }) {
 
     if (error) throw new Error(error.message);
 
-    await login(email, password);
-    return { success: true, isNewUser: true };
+    await login(email, password, true); 
   }
 
   // LOGOUT
   async function logout() {
     await supabase.auth.signOut();
     // user will be set to null by listener
+    useGobelinStore.getState().reset();
+    useMenuStore.getState().reset();
+    useConfigurateurStore.getState().reset();
   }
 
   // MAIN AUTH LISTENER + INITIAL LOAD

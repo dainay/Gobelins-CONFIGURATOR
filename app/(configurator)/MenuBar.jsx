@@ -14,7 +14,7 @@ export default function MenuBar() {
   const activeMenu = useMenuStore((state) => state.activeMenu);
   const setActiveMenu = useMenuStore((state) => state.setActiveMenu);
 
-  const menuNames = Object.keys(TabsInfo); // ['appearance', 'animation', 'skills']
+  const menuNames = Object.keys(TabsInfo); // ['appearance', 'pose', 'guild']
 
   return (
     <View style={styles.container}>

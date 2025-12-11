@@ -1,107 +1,79 @@
-import React, { useEffect, useRef } from 'react'
-import { useGLTF, useAnimations } from '@react-three/drei/native'
-import Model from '../../assets/models/bake.glb'
-import { useFrame } from '@react-three/fiber/native'
-import { MeshStandardMaterial } from 'three'
-import {avatarOptions} from '../../constants/AvatarOptions'
- 
+import React, { useEffect, useMemo } from "react";
+import { useGLTF, useAnimations } from "@react-three/drei/native";
+import { MeshStandardMaterial } from "three";
+import Model from "../../assets/models/bake.glb";
 
-export default function ObjectLoad({ hair, cloth, face, accesssoire, animation, pose }) {
-  const model = useGLTF(Model)
-  const { animations, scene } = model
-  const { actions, names } = useAnimations(animations, scene)
-  
-  console.log("Available animations:", names)
+export default function ObjectLoad({
+  hair,
+  cloth,
+  face,
+  accesssoire,
+  animation,
+  pose,
+}) {
+  const { scene, animations } = useGLTF(Model);
+  const { actions } = useAnimations(animations, scene);
 
-  const accessoiresGroup = scene.getObjectByName("Accessoires")
-  const hairGroup = scene.getObjectByName("Cheveux")
-  const clothesGroup = scene.getObjectByName("Tenue")
-  const faceGroup = scene.getObjectByName("Visage")
+  // ---------- CACHE GROUPS in MEMO ----------
+  const groups = useMemo(() => {
+    return {
+      accessoires: scene.getObjectByName("Accessoires"),
+      hair: scene.getObjectByName("Cheveux"),
+      clothes: scene.getObjectByName("Tenue"),
+      face: scene.getObjectByName("Visage"),
+    };
+  }, [scene]);
 
-  // Play pose
-  useEffect(() => {
-    if (pose && actions[pose]) {
-      actions[pose].reset().fadeIn(0.5).play()
-      return () => actions[pose]?.fadeOut(0.5)
-    }
-  }, [pose, actions])
+  // ---------- FIX MATERIALS ONCE MB remove ----------
+  // useMemo(() => {
+  //   scene.traverse((obj) => {
+  //     if (!obj.isMesh || !obj.material) return;
 
-  // Hide/show groups based on selected options
-  useEffect(() => {
-    
-    // Hide/show direct children groups of ACCESSOIRES
-    if (accessoiresGroup) {
-      accessoiresGroup.children.forEach((childGroup) => {
-        childGroup.visible = childGroup.name === accesssoire;
-      });
-    }
-
-    // Hide/show direct children groups of HAIR
-    if (hairGroup) {
-      hairGroup.children.forEach((childGroup) => { 
-        childGroup.visible = childGroup.name === hair;
-      });
-    }
-
-    // Hide/show direct children groups of CLOTHES
-    if (clothesGroup) {
-      clothesGroup.children.forEach((childGroup) => {
-        childGroup.visible = childGroup.name === cloth;
-      });
-    }
-
-    // Hide/show direct children groups of FACE
-    if (faceGroup) {
-      faceGroup.children.forEach((childGroup) => {
-        childGroup.visible = childGroup.name === face;
-      });
-    }
-  }, [scene, hair, cloth, face, accesssoire]);
-   
-
-  // const avatarConfig = {
-  //   ear: ["Bandage2"], 
-  // }
-
-  // useEffect(() => {
-  //   Object.values(avatarConfig).flat().forEach((meshName) => {
-  //     if (nodes[meshName]) nodes[meshName].visible = false;
-  //   });
-  // }, [nodes]);
-
-  // useEffect(() => {
-  //   avatarConfig.ea`r.forEach((meshName) => {
-  //     if (nodes[meshName]) {
-  //       nodes[meshName].visible = meshName === selectedEar
+  //     // Если Blender экспортировал MeshBasicMaterial
+  //     if (obj.material.isMeshBasicMaterial) {
+  //       const m = obj.material;
+  //       obj.material = new MeshStandardMaterial({
+  //         color: m.color,
+  //         map: m.map || null,
+  //         roughness: 0.6,
+  //         metalness: 0.1,
+  //       });
+  //       m.dispose();
   //     }
-  //   })
-  // }, [selectedEar, nodes])
+  //     obj.material.needsUpdate = true;
+  //   });
+  // }, [scene]);
+
+  // ---------- APPLY POSE ANIMATION ----------
+  useEffect(() => {
+    if (!pose || !actions[pose]) return;
+
+    actions[pose].reset().fadeIn(0.4).play();
+    return () => actions[pose]?.fadeOut(0.4);
+  }, [pose, actions]);
+
+  // ---------- SHOW/HIDE GROUPS ----------
+  useEffect(() => {
+    const applyVisibility = (group, targetName) => {
+      if (!group) return;
+      group.children.forEach((child) => {
+        child.visible = child.name === targetName;
+      });
+    };
+
+    applyVisibility(groups.accessoires, accesssoire);
+    applyVisibility(groups.hair, hair);
+    applyVisibility(groups.clothes, cloth);
+    applyVisibility(groups.face, face);
+  }, [hair, cloth, face, accesssoire, groups]);
 
   return (
     <>
-      {/* Axis Helper: Red=X, Green=Y, Blue=Z */}
+      {/* remove axesHelper in production */}
       <axesHelper args={[2]} />
-      <primitive position={[0, 0, 0]} object={model.scene} scale={0.9} rotation={[0, 0, 0]} />
+      <primitive object={scene} scale={0.9} />
     </>
-  
-    
-    // <group {...props} dispose={null} scale={0.5}>
-    //   <primitive object={nodes.Bandage2} />
-    //   <primitive object={nodes.MainG} />
-    // </group>
-  )
+  );
 }
 
-useGLTF.preload(Model)
-
-// import { useGLTF } from "@react-three/drei/native";
-// import Model from '../../assets/models/gob.glb'
-
-// export default function ObjectLoad({ }) {
-//   const gltf = useGLTF(Model);
-//   return (
-//     <mesh>
-//       <primitive position={[0, 0, 0]} object={gltf.scene} scale={1} />
-//     </mesh>
-//   );
-// }
+useGLTF.preload(Model);

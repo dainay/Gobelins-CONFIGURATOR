@@ -8,4 +8,7 @@ export const useMenuStore = create((set) => ({
     console.log("Active menu changed to:", menu);
     set({ activeMenu: menu });
   },
+  reset: () => set({
+    activeMenu: 'appearance',
+  }),
 }));
