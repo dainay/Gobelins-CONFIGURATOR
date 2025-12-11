@@ -16,6 +16,7 @@ const Profile = () => {
 
   const name = useGobelinStore((state) => state.name);
   const guild = useGobelinStore((state) => state.guild);
+  const guildObj = guild ? require('../../constants/GuildsInfo').GuildsInfo.guilds.find(g => g.id === guild) : null;
 
   useEffect(() => {
     console.log("User in profile:", user);
@@ -34,7 +35,7 @@ const Profile = () => {
         <Spacer />
 
         <ThemedText>Your gobelin: {name || 'No name yet'}</ThemedText>
-        {guild && <ThemedText>Guild: {guild}</ThemedText>}
+        {guild && <ThemedText>Guild: {guildObj?.name || guild}</ThemedText>}
         <Spacer />
 
         <ThemedButton onPress={logout}>

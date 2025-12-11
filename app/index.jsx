@@ -9,8 +9,7 @@ import ThemedText from "../components/ui/ThemedText"
 import ThemedLogo from "../components/ui/ThemedLogo"
 import Spacer from "../components/ui/Spacer"
 import ThemedButton from "../components/ui/ThemedButton"
-import ThemedTextInput from "../components/ui/ThemedTextInput"
-import GuestOnly from "../components/auth/GuestOnly"
+import ThemedTextInput from "../components/ui/ThemedTextInput" 
 
 
 const Home = () => {
@@ -25,15 +24,13 @@ const Home = () => {
     setError(null)
 
     try {
-      await login(email, password)
-      router.replace('/(dashboard)/openWorld');  
+      await login(email, password)  
     } catch (error) {
       setError(error.message)
     }
   }
 
-  return (
-    <GuestOnly>
+  return ( 
       <ThemedView safe={true} style={styles.container}>
         <ThemedLogo />
         {/* <Spacer /> */}
@@ -83,11 +80,11 @@ const Home = () => {
         </ThemedText>
       </Link> */}
 
-      {/* <Link href="/Scene">
+      <Link href="/Scene">
         <ThemedText style={styles.link}>
           DEMO 3D
         </ThemedText>
-      </Link> */}
+      </Link>
 
       {/* <Link href="/introManager">
         <ThemedText style={styles.link}>
@@ -95,8 +92,7 @@ const Home = () => {
         </ThemedText>
       </Link> */}
 
-    </ThemedView>
-    </GuestOnly>
+    </ThemedView> 
   )
 }
 

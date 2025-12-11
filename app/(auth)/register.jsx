@@ -31,7 +31,7 @@ const Register = () => {
     setError(null);
     try {
       await register(email, password, name, year);
-      router.replace('/(intro)/intro');
+     
     } catch (error) {
       setError(error.message);
     }

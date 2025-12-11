@@ -22,22 +22,21 @@ export const useConfigurateurStore = create((set) => ({
     let lookAtY = 0.5; //valeur par default Y de la camera look at
 
     if (tab === "hair") {
-      zoom = 2.2;
+      zoom = 2.4;
       x = 0;
-      y = 2;
-      lookAtY = 1;
+      y = 1.9;
+      lookAtY = 1.4;
     } else if (tab === "cloth") {
-      zoom = 4;
+      zoom = 3.8;
       x = 0;
-      y = 1.5;
-      lookAtY = 0.75;
+      y = 1.4;
+      lookAtY = 1.0;
     } else if (tab === "face") {
-      zoom = 1.5;
+      zoom = 1.6;
       x = 0;
-      y = 1.25;
-      lookAtY = 1.25;
+      y = 1.35;
+      lookAtY = 1.35;
     }
-
     set({ 
       activeTab: tab ,
       cameraZoom: zoom,
@@ -73,4 +72,14 @@ export const useConfigurateurStore = create((set) => ({
   },
 
 
+  reset: () => set({
+    activeTab: "hair",
+    cameraZoom: 4,
+    cameraX: 0,
+    cameraY: 1.5,
+    cameraLookAtY: 1,
+    showTutorial: false,
+    tutorialStep: 0,
+    tutorialCompleted: false,
+  }),
 }));

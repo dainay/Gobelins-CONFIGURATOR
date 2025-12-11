@@ -1,5 +1,3 @@
-
-import { useState } from 'react';
 import { GuildsInfo } from '../../constants/GuildsInfo';
 import { router } from 'expo-router';
 
@@ -13,6 +11,7 @@ import { OrbitControls } from '@react-three/drei/native';
 
 import Book from '../(three)/Book';
 import Fingers from '../../components/Fingers';
+import { useGobelinStore } from '../../src/store/gobelinStore';
 
 function CameraSetup() {
   const { camera } = useThree();
@@ -23,29 +22,35 @@ function CameraSetup() {
 
 function GuildChoice() {
 
-    const [selectedGuild, setSelectedGuild] = useState('');
+const guild = useGobelinStore((state) => state.guild);
+const setGuild = useGobelinStore((state) => state.setGuild);
 
 const randomGuild = () => {
-    const guild = GuildsInfo.guilds[Math.floor(Math.random() * GuildsInfo.guilds.length)];
-    setSelectedGuild(guild);
+  const guildData = GuildsInfo.guilds[Math.floor(Math.random() * GuildsInfo.guilds.length)];
+  console.log("Selected guild data:", guildData);
+  setGuild(guildData.id);
 }
+
+const selectedGuildData = guild ? GuildsInfo.guilds.find(g => g.id === guild) : null;
 
   return (
     <View style={styles.container}>
       
         <View style={styles.actionContainer}>
-            {selectedGuild ? ( 
-                <>
-                <Text style={styles.result}>Your guild is: {selectedGuild.name} Congratulations! </Text>
-                <Image source={selectedGuild.image} style={styles.guildImage} resizeMode="contain" />
-                <Text style={styles.specialText}>
-                    This guild is very special because you are in.
-                </Text>
+            {guild ? ( 
+              <>
+              <Text style={styles.result}>Your guild is: {selectedGuildData?.name || guild} Congratulations! </Text>
+              {selectedGuildData?.image && (
+                <Image source={selectedGuildData.image} style={styles.guildImage} resizeMode="contain" />
+              )}
+              <Text style={styles.specialText}>
+                This guild is very special because you are in.
+              </Text>
 
-                <ThemedButton onPress={() => router.push("/(test)/shake-text")}>
-                    Time to know your inner Energy
-                </ThemedButton>
-                </>
+              <ThemedButton onPress={() => router.push("/(test)/AnimationChoice")}> 
+                Time to know your inner Energy
+              </ThemedButton>
+              </>
             ) : (
               <>
                <View style={styles.content}>

@@ -16,7 +16,7 @@ export default function TabsBar() {
   const activeMenu = useMenuStore((state) => state.activeMenu);
 
   useEffect(() => {
-    if (activeMenu === "appearance" || activeMenu === "animation") {
+    if (activeMenu === "appearance") {
       setActiveTab(TabsInfo[activeMenu][0].id);
     }
   }, [activeMenu]);

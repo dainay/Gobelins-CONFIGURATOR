@@ -23,8 +23,7 @@ const Login = () => {
     setError(null);
 
     try {
-      await login(email, password);
-      router.replace('/(dashboard)/openWorld');
+      await login(email, password); 
     } catch (error) {
       setError(error.message);
     }
