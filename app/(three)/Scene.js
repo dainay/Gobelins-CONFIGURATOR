@@ -1,25 +1,24 @@
 import { Canvas } from "@react-three/fiber/native";
-import { useEffect } from "react";
-import { Suspense } from "react";
-import { View, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
+import { Suspense, useEffect } from "react";
+import { TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
+import GuildChoice from "../(configurator)/GuildChoice";
+import MenuBar from "../(configurator)/MenuBar";
+import TabsBar from "../(configurator)/TabsBar";
 import CameraController from "../../components/CameraController";
+import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
+import ThemedText from "../../components/ui/ThemedText";
+import ThemedView from "../../components/ui/ThemedView";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useMenuStore } from "../../src/store/menuStore";
 import Avatar from "./Avatar";
-import MenuBar from "../(configurator)/MenuBar";
-import TabsBar from "../(configurator)/TabsBar";
-import GuildChoice from "../(configurator)/GuildChoice";
-import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
-import ThemedText from "../../components/ui/ThemedText";
-import ThemedView from "../../components/ui/ThemedView";
 
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
@@ -117,7 +116,7 @@ export default function Scene() {
         >
           <CameraController />
 
-          <color attach="background" args={["#241f1dff"]} />
+          {/* <color attach="background" args={["#241f1dff"]} /> */}
           <ambientLight intensity={1.2} />
           {!showTutorial && (
             <>
