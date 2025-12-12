@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, Slot } from "expo-router";
 import { Colors } from "../constants/Colors";
 import { useColorScheme, ImageBackground, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -10,20 +10,19 @@ export default function RootLayout() {
   const theme = Colors[colorScheme] ?? Colors.light;
 
   return (
-   
-      <UserProvider> 
-          <StatusBar style="auto" />
-          <Stack
-            screenOptions={{
-              headerStyle: { backgroundColor: 'transparent' },
-              headerTintColor: theme.title,
-              headerTransparent: true,
-              contentStyle: { backgroundColor: 'olive' },
-              headerShown: false,
-            }}
-          >
-          </Stack>
-      </UserProvider> 
+    <UserProvider>
+      <StatusBar style="auto" />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: 'transparent' },
+          headerTintColor: theme.title,
+          headerTransparent: true,
+          headerShown: false,
+        }}
+      >
+        <Slot />
+      </Stack>
+    </UserProvider>
   );
 }
 

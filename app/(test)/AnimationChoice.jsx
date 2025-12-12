@@ -11,7 +11,7 @@ import { useUser } from "../../hooks/useUser";
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
 
 import { calculateShakeMetrics } from "../../src/utils/calculateShakeMetrics";
-import { chooseAnimation } from "../../src/utils/animationSelector";
+ 
 import { ANIMATIONS } from "../../constants/Animations";
 
 import ThemedView from "../../components/ui/ThemedView";
@@ -25,11 +25,12 @@ export default function AnimationChoice() {
   const [isTesting, setIsTesting] = useState(false);
   const [testFinished, setTestFinished] = useState(false);
   const [timeLeft, setTimeLeft] = useState(5);
-  const [selectedAnimation, setSelectedAnimation] = useState(null);
-
+ 
   const { user } = useUser();
   const gobelin = useGobelinStore((state) => state);
   const setConfig = useGobelinStore((state) => state.setConfig);
+
+   const [selectedAnimation, setSelectedAnimation] = useState(gobelin.configuration.pose.label);
 
   // shake data
   const [samples, setSamples] = useState([]);
@@ -171,7 +172,7 @@ export default function AnimationChoice() {
           face={gobelin.configuration.face}
           accesssoire={gobelin.configuration.accessoire}
           animation={gobelin.configuration.animation}
-          pose={gobelin.configuration.pose}
+          pose={selectedAnimation}
         />
       </Canvas>
 

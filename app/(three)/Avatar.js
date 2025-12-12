@@ -29,7 +29,6 @@ export default function ObjectLoad({
   //   scene.traverse((obj) => {
   //     if (!obj.isMesh || !obj.material) return;
 
-  //     // Если Blender экспортировал MeshBasicMaterial
   //     if (obj.material.isMeshBasicMaterial) {
   //       const m = obj.material;
   //       obj.material = new MeshStandardMaterial({
@@ -47,7 +46,8 @@ export default function ObjectLoad({
   // ---------- APPLY POSE ANIMATION ----------
   useEffect(() => {
     if (!pose || !actions[pose]) return;
-
+    
+    console.log("Playing animation:", pose);
     actions[pose].reset().fadeIn(0.4).play();
     return () => actions[pose]?.fadeOut(0.4);
   }, [pose, actions]);

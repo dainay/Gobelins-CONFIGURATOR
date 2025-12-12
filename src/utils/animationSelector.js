@@ -1,48 +1,35 @@
-import { ANIMATIONS } from "../../constants/Animations";
-
 // Normalize shake metrics to 0-1 range for comparison with ideal profiles
-function normalizeMetrics(metrics) {
+
+const MAX_MAG_REAL = 13;
+const MAX_STD_REAL = 3.2;
+const MAX_ZEROX_REAL = 80;
+
+function clamp(v, min = 0, max = 1) {
+  return Math.max(min, Math.min(max, v));
+}
+
+export function normalizeMetrics(metrics, batteryLevel = 0.7) {
   return {
-    energy: Math.min(metrics.maxMag / 20, 1), // max expected magnitude ~20
-    rhythm: Math.min(metrics.zeroX / 100, 1), // max expected zero crossings ~100
-    chaos: Math.min(metrics.stdDev / 5, 1), // max expected std dev ~5
-    smooth: 1 - Math.min(metrics.stdDev / 5, 1), // smooth is inverse of chaos
-    batteryMood: metrics.battery ?? 0.7, // assume 70% if battery not provided
+    energy: clamp(metrics.maxMag / MAX_MAG_REAL),
+    rhythm: clamp(metrics.zeroX / MAX_ZEROX_REAL),
+    chaos: clamp(metrics.stdDev / MAX_STD_REAL),
+    batteryMood: clamp(batteryLevel),
   };
 }
 
-function distance(normalized, ideal) {
+const WEIGHTS = {
+  energy: 2.0,       
+  rhythm: 1.2,
+  chaos: 1.0,
+  batteryMood: 0.4,
+};
+
+export function distance(user, ideal) {
   return (
-    Math.abs(normalized.energy - ideal.energy) +
-    Math.abs(normalized.rhythm - ideal.rhythm) +
-    Math.abs(normalized.chaos - ideal.chaos) +
-    Math.abs(normalized.smooth - ideal.smooth) +
-    Math.abs(normalized.batteryMood - ideal.batteryMood)
+    WEIGHTS.energy * Math.abs(user.energy - ideal.energy) +
+    WEIGHTS.rhythm * Math.abs(user.rhythm - ideal.rhythm) +
+    WEIGHTS.chaos * Math.abs(user.chaos - ideal.chaos) +
+    WEIGHTS.batteryMood * Math.abs(user.batteryMood - ideal.batteryMood)
   );
 }
 
-export function chooseAnimation(metrics, batteryLevel) {
-
-    console.log("Choosing animation with metrics:", metrics, "and battery level:", batteryLevel);
-
-  const normalized = normalizeMetrics({ ...metrics, battery: batteryLevel });
-
-  console.log("Normalized metrics:", normalized);
-
-  let bestAnim = null;
-  let bestScore = Infinity;
-
-  for (const anim in ANIMATIONS) {
-    const score = distance(normalized, ANIMATIONS[anim].ideal);
-
-    if (score < bestScore) {
-      bestScore = score;
-      bestAnim = anim;
-    }
-  }
-
-  console.log("Animation scores:", Object.keys(ANIMATIONS).map(anim => ({ id: anim, score: distance(normalized, ANIMATIONS[anim].ideal) })));
-  console.log("Best animation:", bestAnim, "->", ANIMATIONS[bestAnim].animName);
-  
-  return bestAnim;
-}

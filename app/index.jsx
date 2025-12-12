@@ -1,8 +1,10 @@
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import { Link, router } from 'expo-router' 
 import { useState } from 'react'
 import { Colors } from '../constants/Colors'
-import { useUser } from "../hooks/useUser" 
+import { useUser } from "../hooks/useUser"
+
+import GuestOnly from '../components/auth/GuestOnly'
 
 import ThemedView from "../components/ui/ThemedView"
 import ThemedText from "../components/ui/ThemedText"
@@ -24,14 +26,19 @@ const Home = () => {
     setError(null)
 
     try {
-      await login(email, password)  
+    await login(email, password)
+    router.replace('/(dashboard)/openWorld');
     } catch (error) {
-      setError(error.message)
+    setError(error.message)
     }
   }
 
-  return ( 
-      <ThemedView safe={true} style={styles.container}>
+  return (
+    <ThemedView safe={true} style={styles.container}>
+      <GuestOnly>
+      <View style={styles.bgImageWrapper} pointerEvents="none">
+        <Image source={require('../assets/img/skin.png')} style={styles.bgImage} resizeMode="cover" />
+      </View>
         <ThemedLogo />
         {/* <Spacer /> */}
 
@@ -92,6 +99,7 @@ const Home = () => {
         </ThemedText>
       </Link> */}
 
+      </GuestOnly>
     </ThemedView> 
   )
 }
@@ -101,6 +109,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  bgImageWrapper: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
+  },
+  bgImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
   title: {
     fontSize: 24,
