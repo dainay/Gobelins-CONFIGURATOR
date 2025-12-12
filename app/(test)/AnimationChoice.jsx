@@ -3,15 +3,13 @@ import { StyleSheet, View, Dimensions } from "react-native";
 import { Canvas } from "@react-three/fiber/native";
 import { Accelerometer } from "expo-sensors";
 import * as Battery from "expo-battery";
-
 import { router } from "expo-router";
 
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useUser } from "../../hooks/useUser";
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
-
 import { calculateShakeMetrics } from "../../src/utils/calculateShakeMetrics";
- 
+import { chooseAnimation } from "../../src/utils/chooseAnimation";
 import { ANIMATIONS } from "../../constants/Animations";
 
 import ThemedView from "../../components/ui/ThemedView";
@@ -30,7 +28,7 @@ export default function AnimationChoice() {
   const gobelin = useGobelinStore((state) => state);
   const setConfig = useGobelinStore((state) => state.setConfig);
 
-   const [selectedAnimation, setSelectedAnimation] = useState(gobelin.configuration.pose.label);
+   const [selectedAnimation, setSelectedAnimation] = useState();
 
   // shake data
   const [samples, setSamples] = useState([]);
@@ -49,12 +47,13 @@ export default function AnimationChoice() {
     const metrics = calculateShakeMetrics(samples, zeroCrossings);
 
     Battery.getBatteryLevelAsync().then((battery) => {
-      const animId = chooseAnimation(metrics, battery);
+      const animName = chooseAnimation(metrics, battery);
 
-      setSelectedAnimation(animId);
+        console.log("Chosen animation name:", animName);
+      setSelectedAnimation( animName);
       // Don't set config here - will be set on handleConfirm
 
-      console.log("Selected animation:", animId);
+      console.log("Selected animation:", ANIMATIONS[animName].animName);
     });
   }, [testFinished]);
 
@@ -170,9 +169,8 @@ export default function AnimationChoice() {
           hair={gobelin.configuration.hair}
           cloth={gobelin.configuration.cloth}
           face={gobelin.configuration.face}
-          accesssoire={gobelin.configuration.accessoire}
-          animation={gobelin.configuration.animation}
-          pose={selectedAnimation}
+          accesssoire={gobelin.configuration.accessoire} 
+          pose={selectedAnimation ? ANIMATIONS[selectedAnimation].animName : gobelin.configuration.pose}
         />
       </Canvas>
 
@@ -180,7 +178,7 @@ export default function AnimationChoice() {
         {!testFinished ? (
           !isTesting ? (
             <>
-              <ThemedText title style={styles.text}>Relie ton énergie à ton Gobelin…</ThemedText>
+              <ThemedText  style={styles.text}>Relie ton énergie à ton Gobelin…</ThemedText>
               <ThemedButton onPress={startTest}>
                 Commencer le test
               </ThemedButton>
@@ -193,7 +191,7 @@ export default function AnimationChoice() {
           )
         ) : selectedAnimation ? (
           <>
-            <ThemedText title style={styles.text}>
+            <ThemedText style={styles.text}>
               {ANIMATIONS[selectedAnimation].title}
             </ThemedText>
 

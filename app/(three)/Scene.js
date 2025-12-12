@@ -78,7 +78,7 @@ export default function Scene() {
   return (
     <ThemedView safe style={{ flex: 1 }}>
       <TouchableOpacity
-        onPress={() => router.push("/(dashboard)/profile")}
+        onPress={() => router.replace("/(dashboard)/profile")}
         style={{ position: "absolute", zIndex: 1000, top: "50%", right: 10 }}
       >
         <ThemedText>INDEX</ThemedText>

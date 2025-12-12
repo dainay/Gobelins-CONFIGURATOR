@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei/native";
 import { MeshStandardMaterial } from "three";
 import Model from "../../assets/models/bake.glb";
@@ -13,6 +13,7 @@ export default function ObjectLoad({
 }) {
   const { scene, animations } = useGLTF(Model);
   const { actions } = useAnimations(animations, scene);
+  const currentAction = useRef(null);
 
   // ---------- CACHE GROUPS in MEMO ----------
   const groups = useMemo(() => {
@@ -23,6 +24,8 @@ export default function ObjectLoad({
       face: scene.getObjectByName("Visage"),
     };
   }, [scene]);
+
+  console.log("avaliable animations into Avatar:", animations);
 
   // ---------- FIX MATERIALS ONCE MB remove ----------
   // useMemo(() => {
@@ -46,11 +49,24 @@ export default function ObjectLoad({
   // ---------- APPLY POSE ANIMATION ----------
   useEffect(() => {
     if (!pose || !actions[pose]) return;
+
+    const nextAction = actions[pose];
     
     console.log("Playing animation:", pose);
-    actions[pose].reset().fadeIn(0.4).play();
-    return () => actions[pose]?.fadeOut(0.4);
-  }, [pose, actions]);
+     // stop previous
+  if (currentAction.current && currentAction.current !== nextAction) {
+    currentAction.current.fadeOut(0.3);
+  }
+
+  // play new
+  nextAction
+    .reset()
+    .fadeIn(0.3)
+    .play();
+
+  currentAction.current = nextAction;
+
+}, [pose, actions]); 
 
   // ---------- SHOW/HIDE GROUPS ----------
   useEffect(() => {
@@ -70,7 +86,7 @@ export default function ObjectLoad({
   return (
     <>
       {/* remove axesHelper in production */}
-      <axesHelper args={[2]} />
+      {/* <axesHelper args={[2]} /> */}
       <primitive object={scene} scale={0.9} />
     </>
   );

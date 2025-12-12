@@ -1,4 +1,5 @@
 import { Stack, Slot } from "expo-router";
+import DisableBackHandler from "../components/DisableBackHandler";
 import { Colors } from "../constants/Colors";
 import { useColorScheme, ImageBackground, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -12,6 +13,7 @@ export default function RootLayout() {
   return (
     <UserProvider>
       <StatusBar style="auto" />
+      {/* <DisableBackHandler /> */}
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: 'transparent' },

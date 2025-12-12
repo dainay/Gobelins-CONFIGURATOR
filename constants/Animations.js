@@ -1,6 +1,6 @@
 export const ANIMATIONS = {
   catwalk: {
-    animName: "an2",
+    animName: "catwalk",
     ideal: {
       energy: 0.1,
       rhythm: 0.05,
@@ -14,7 +14,7 @@ export const ANIMATIONS = {
   },
 
   waveSlow: {
-    animName: "an8",
+    animName: "danse7wave",
     ideal: {
       energy: 0.15,
       rhythm: 0.15,
@@ -28,7 +28,7 @@ export const ANIMATIONS = {
   },
 
   waveDance: {
-    animName: "an3",
+    animName: "danse8",
     ideal: {
       energy: 0.3,
       rhythm: 0.25,
@@ -42,7 +42,7 @@ export const ANIMATIONS = {
   },
 
   jazzStep: {
-    animName: "an4",
+    animName: "danse4",
     ideal: {
       energy: 0.45,
       rhythm: 0.7,
@@ -56,7 +56,7 @@ export const ANIMATIONS = {
   },
 
   hiphopSoft: {
-    animName: "an11",
+    animName: "hiphop",
     ideal: {
       energy: 0.6,
       rhythm: 0.6,
@@ -70,7 +70,7 @@ export const ANIMATIONS = {
   },
 
   hiphopHard: {
-    animName: "an9",
+    animName: "danse6twerk",
     ideal: {
       energy: 0.8,
       rhythm: 0.8,
@@ -84,7 +84,7 @@ export const ANIMATIONS = {
   },
 
   cancan: {
-    animName: "an6",
+    animName: "danse3",
     ideal: {
       energy: 0.7,
       rhythm: 0.85,
@@ -98,7 +98,7 @@ export const ANIMATIONS = {
   },
 
   twerk: {
-    animName: "an7",
+    animName: "danse6twerk",
     ideal: {
       energy: 0.85,
       rhythm: 0.55,
@@ -112,7 +112,7 @@ export const ANIMATIONS = {
   },
 
   breakdance: {
-    animName: "an5",
+    animName: "danse5",
     ideal: {
       energy: 0.95,
       rhythm: 0.9,
@@ -123,19 +123,5 @@ export const ANIMATIONS = {
     title: "Ton Gobelin entre en mode extrême !",
     reason: "Énergie maximale et mouvements explosifs.",
     detail: "Une performance totalement débridée.",
-  },
-
-  gettingHit: {
-    animName: "an10",
-    ideal: {
-      energy: 0.5,
-      rhythm: 0.2,
-      chaos: 0.7,
-      smooth: 0.3,
-      batteryMood: 0.4,
-    },
-    title: "Ton Gobelin est pris par surprise !",
-    reason: "Mouvement brusque et désorganisé.",
-    detail: "Une réaction imprévisible.",
-  },
-};
+  }
+};  

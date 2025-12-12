@@ -1,6 +1,6 @@
 import { ANIMATIONS } from "../../constants/Animations";
-import { normalizeMetrics } from "./normalizeMetrics";
-import { distance } from "./distance";
+import { normalizeMetrics } from "./animationSelector";
+import { distance } from "./animationSelector";
 
 export function chooseAnimation(metrics, batteryLevel) {
   const normalized = normalizeMetrics(metrics, batteryLevel);

@@ -47,7 +47,7 @@ const selectedGuildData = guild ? GuildsInfo.guilds.find(g => g.id === guild) : 
                 This guild is very special because you are in.
               </Text>
 
-              <ThemedButton onPress={() => router.push("/(test)/AnimationChoice")}> 
+              <ThemedButton onPress={() => router.replace("/(test)/AnimationChoice")}> 
                 Time to know your inner Energy
               </ThemedButton>
               </>
