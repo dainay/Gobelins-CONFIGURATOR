@@ -1,6 +1,5 @@
+import { useAnimations, useGLTF } from "@react-three/drei/native";
 import React, { useEffect, useMemo } from "react";
-import { useGLTF, useAnimations } from "@react-three/drei/native";
-import { MeshStandardMaterial } from "three";
 import Model from "../../assets/models/bake.glb";
 
 export default function ObjectLoad({
@@ -66,6 +65,16 @@ export default function ObjectLoad({
     applyVisibility(groups.clothes, cloth);
     applyVisibility(groups.face, face);
   }, [hair, cloth, face, accesssoire, groups]);
+
+  // ---------- ACTIVATE SHADOWS ----------
+  useEffect(() => {
+    scene.traverse((obj) => {
+      if (obj.isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+    });
+  }, [scene]);
 
   return (
     <>

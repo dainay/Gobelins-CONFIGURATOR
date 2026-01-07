@@ -5,8 +5,8 @@ import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 
 const tutorialPages1 = [
-    {title : "Bienvenue dans le configurateur", description : "Dans cette section, vous pouvez configurer l'apparence de votre gobelin."},
-    {title : "Configuration de l'apparence", description : "Vous pouvez configurer l'apparence de votre gobelin en utilisant les différents onglets."},
+    {title : "Bienvenue dans le configurateur", description : "Dans cet espace, tu peux configurer l’apparence de ton gobelin."},
+    {title : "À toi de créer", description : "Parcours les différents onglets pour ajuster son style, ses traits et révéler sa personnalité.."},
 ]
 
 
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
         zIndex: 1000,
         justifyContent: "center",
         alignItems: "center",
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     containerPageTutorial: {
         width: "100%",
         maxWidth: 400,
-        borderRadius: 20,
+        // borderRadius: 20,
         padding: 24,
         shadowColor: "#000",
         shadowOffset: {
@@ -121,6 +121,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 20,
         elevation: 10,
+        paddingBlock: 50,
+        height: "65%",
+        justifyContent: "space-between",
     },
     progressContainer: {
         width: "100%",

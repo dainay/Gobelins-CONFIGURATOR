@@ -19,6 +19,7 @@ import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useMenuStore } from "../../src/store/menuStore";
 import Avatar from "./Avatar";
+import ConfiguratorBackground from "./ConfiguratorBackground";
 
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
@@ -116,21 +117,44 @@ export default function Scene() {
         >
           <CameraController />
 
-          {/* <color attach="background" args={["#241f1dff"]} /> */}
+          <color attach="background" args={["#000000"]} />
+ 
+          {/* Fog lumineux */}
+          <fog attach="fog" args={["#000000", 4, 15]} />
           <ambientLight intensity={1.2} />
           {!showTutorial && (
             <>
-              <directionalLight position={[2, 4, 3]} intensity={1.5} />
+              <directionalLight 
+                position={[0, 4, 3.5]} 
+                intensity={1}
+                castShadow
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+                shadow-camera-far={50}
+                shadow-camera-left={-10}
+                shadow-camera-right={10}
+                shadow-camera-top={10}
+                shadow-camera-bottom={-10}
+              />
+
+    
+
+              {/* Fond du configurateur (mur de fond + sol) */}
+              <Suspense fallback={null}>
+                <ConfiguratorBackground />
+              </Suspense>
 
               <Suspense fallback={null}>
-                <Avatar
-                  accessoire={configuration.accessoire}
-                  hair={configuration.hair}
-                  cloth={configuration.cloth}
-                  face={configuration.face}
-                  animation={configuration.animation}
-                  pose={configuration.pose}
-                />
+                <group position={[0, 1, 0]}>
+                  <Avatar
+                    accessoire={configuration.accessoire}
+                    hair={configuration.hair}
+                    cloth={configuration.cloth}
+                    face={configuration.face}
+                    animation={configuration.animation}
+                    pose={configuration.pose}
+                  />
+                </group>
               </Suspense>
             </>
           )}

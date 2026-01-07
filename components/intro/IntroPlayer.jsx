@@ -1,6 +1,6 @@
-import { Video } from 'expo-av';
+import { Audio, Video } from 'expo-av';
 import React, { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import ThemedButton from '../../components/ui/ThemedButton';
 import ThemedText from '../../components/ui/ThemedText';
@@ -13,15 +13,18 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
   const setName = useGobelinStore((state) => state.setName);
   const videoConfig = [
     {
+      id: 1,
       source: require('../../assets/video/intro/intro-partie-1.mp4'),
       isLooping: false, 
       requiresInteraction: true, 
-      clickImage: require('../../assets/intro/CTA/click.png'),
+      // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
+      clickText: 'Eveille l\'étincelle',
       isSkipable: true,
       requireUsername: false,
     },
     
     {
+      id: 2,
       source: require('../../assets/video/intro/intro-partie-2.mp4'),
       isLooping: true, 
       requiresInteraction: false, 
@@ -30,23 +33,18 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       requireUsername: false,
     },
     {
+      id: 3,
       source: require('../../assets/video/intro/intro-partie-3.mp4'),
       isLooping: true, 
       requiresInteraction: true, 
-      clickImage: require('../../assets/intro/CTA/click.png'),
+      // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
+      clickText: 'Mais aujourd\'hui ?',
       isSkipable: true,
       requireUsername: false,
     },
-    // {
-    //   source: require('../../assets/video/intro/scene1.mp4'),
-    //   isLooping: false, 
-    //   requiresInteraction: false, 
-    //   clickImage: null,
-    //   isSkipable: true,
-    //   requireUsername: false,
-    // },
     {
-      source: require('../../assets/video/intro/scene4.mp4'),
+      id: 4,
+      source: require('../../assets/video/intro/intro-partie-4.mp4'),
       isLooping: false, 
       requiresInteraction: false, 
       clickImage: null,
@@ -54,11 +52,22 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       requireUsername: true,
     },
     {
+      id: 5,
+      source: require('../../assets/video/intro/intro-partie-5.mp4'),
+      isLooping: false, 
+      requiresInteraction: true, 
+      // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
+      clickText: 'Prêt ?',
+      isSkipable: true,
+      requireUsername: false,
+    },
+    {
+      id: 6,
       source: require('../../assets/video/intro/intro-partie-6.mp4'),
       isLooping: false, 
       requiresInteraction: false, 
       clickImage: null,
-      isSkipable: true,
+      isSkipable: false,
       requireUsername: false,
     },
   ];
@@ -71,11 +80,16 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const videoRef0 = useRef(null);
   const videoRef1 = useRef(null);
+  const audioRef = useRef(null);
+  const creativityAudioRef = useRef(null);
   const fadeAnim0 = useSharedValue(1);
   const fadeAnim1 = useSharedValue(0);
-  const imageFadeAnim = useSharedValue(0);
+  // const imageFadeAnim = useSharedValue(0); // Système d'image de clic désactivé temporairement
   const usernameIntroFadeAnim = useSharedValue(0);
   const usernameScaleIntroAnim = useSharedValue(0.75);
+  const overlayFadeAnim = useSharedValue(0);
+  const skipButtonFadeAnim = useSharedValue(0);
+  const clickTextFadeAnim = useSharedValue(0);
   const currentConfig = videoConfig[currentIndex];
 
   const goToNextVideo = async () => {
@@ -160,9 +174,16 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
         }
         // Marquer la vidéo comme terminée pour permettre le clic
         setIsVideoFinished(true);
-        // Afficher l'image de clic si disponible
-        if (currentConfig.clickImage) {
-          imageFadeAnim.value = withTiming(1, { duration: 300 });
+        // Afficher l'overlay noir rapidement
+        overlayFadeAnim.value = withTiming(0.5, { duration: 200 });
+        // Système d'image de clic désactivé temporairement
+        // // Afficher l'image de clic si disponible
+        // if (currentConfig.clickImage) {
+        //   imageFadeAnim.value = withTiming(1, { duration: 300 });
+        // }
+        // Afficher le texte de clic si disponible
+        if (currentConfig.clickText) {
+          clickTextFadeAnim.value = withTiming(1, { duration: 300 });
         }
         return;
       }
@@ -182,17 +203,51 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
 
     // Vidéo avec interaction : passer à la suivante uniquement si la vidéo est terminée
     if (currentConfig.requiresInteraction && isVideoFinished) {
-      imageFadeAnim.value = withTiming(0, { duration: 300 });
+      // Jouer l'audio pour l'avant-dernière vidéo (vidéo 5, id: 5)
+      if (currentConfig.id === 5) {
+        const playCreativityAudio = async () => {
+          try {
+            if (creativityAudioRef.current) {
+              await creativityAudioRef.current.unloadAsync();
+            }
+            const { sound } = await Audio.Sound.createAsync(
+              require('../../assets/audio/intro/montre-nous-ta-creativite.mp3'),
+              { shouldPlay: true, volume: 1.0 }
+            );
+            creativityAudioRef.current = sound;
+          } catch (error) {
+            console.log('Error playing creativity audio:', error);
+          }
+        };
+        playCreativityAudio();
+      }
+      
+      // Système d'image de clic désactivé temporairement
+      // imageFadeAnim.value = withTiming(0, { duration: 300 });
+      overlayFadeAnim.value = withTiming(0, { duration: 200 });
+      clickTextFadeAnim.value = withTiming(0, { duration: 300 });
       goToNextVideo();
     }
   };
 
   const handleSkipIntro = () => {
+    overlayFadeAnim.value = withTiming(0, { duration: 200 });
     goToNextVideo();
   }
 
   const handleSubmitUsername = () => {
     if (username.trim().length > 0) {
+      // Arrêter l'audio si il est en cours de lecture
+      if (audioRef.current) {
+        audioRef.current.stopAsync().catch((error) => {
+          console.log('Error stopping audio:', error);
+        });
+        audioRef.current.unloadAsync().catch((error) => {
+          console.log('Error unloading audio:', error);
+        });
+        audioRef.current = null;
+      }
+      
       // Save to Zustand store
       setName(username.trim());
       
@@ -239,8 +294,33 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
 
   // Masquer l'image de clic et réinitialiser l'état quand on change de vidéo
   useEffect(() => {
-    imageFadeAnim.value = 0;
+    // Système d'image de clic désactivé temporairement
+    // imageFadeAnim.value = 0;
+    overlayFadeAnim.value = 0;
+    clickTextFadeAnim.value = 0;
     setIsVideoFinished(false);
+    
+    // Arrêter et décharger l'audio quand on change de vidéo
+    if (audioRef.current) {
+      audioRef.current.stopAsync().catch((error) => {
+        console.log('Error stopping audio:', error);
+      });
+      audioRef.current.unloadAsync().catch((error) => {
+        console.log('Error unloading audio:', error);
+      });
+      audioRef.current = null;
+    }
+    
+    // Arrêter et décharger l'audio de créativité quand on change de vidéo
+    if (creativityAudioRef.current) {
+      creativityAudioRef.current.stopAsync().catch((error) => {
+        console.log('Error stopping creativity audio:', error);
+      });
+      creativityAudioRef.current.unloadAsync().catch((error) => {
+        console.log('Error unloading creativity audio:', error);
+      });
+      creativityAudioRef.current = null;
+    }
   }, [currentIndex]);
 
   const animatedStyle0 = useAnimatedStyle(() => {
@@ -255,11 +335,12 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     };
   });
 
-  const imageIntroStyle = useAnimatedStyle(() => {
-    return {
-      opacity: imageFadeAnim.value,
-    }
-  })
+  // Système d'image de clic désactivé temporairement
+  // const imageIntroStyle = useAnimatedStyle(() => {
+  //   return {
+  //     opacity: imageFadeAnim.value,
+  //   }
+  // })
 
   const usernameOverlayIntroStyle = useAnimatedStyle(() => {
     return {
@@ -268,22 +349,62 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     };
   });
 
-  useEffect(() => {
-    // L'image de clic sera gérée dans handlePlaybackStatusUpdate quand la vidéo se termine
-    // On initialise à 0 ici
-    imageFadeAnim.value = 0;
-  }, [currentIndex]);
+  const overlayStyle = useAnimatedStyle(() => {
+    return {
+      opacity: overlayFadeAnim.value,
+    };
+  });
+
+  const skipButtonStyle = useAnimatedStyle(() => {
+    return {
+      opacity: skipButtonFadeAnim.value,
+    };
+  });
+
+  const clickTextStyle = useAnimatedStyle(() => {
+    return {
+      opacity: clickTextFadeAnim.value,
+    };
+  });
+
+  // Système d'image de clic désactivé temporairement
+  // useEffect(() => {
+  //   // L'image de clic sera gérée dans handlePlaybackStatusUpdate quand la vidéo se termine
+  //   // On initialise à 0 ici
+  //   imageFadeAnim.value = 0;
+  // }, [currentIndex]);
 
   useEffect(() => {
+    // Réinitialiser l'opacité à 0 au changement de vidéo
+    skipButtonFadeAnim.value = 0;
     setShowSkipButton(false);
 
-    const timeout = setTimeout(() => {
-      if (currentConfig.isSkipable) {
-        setShowSkipButton(true);
-      }
+    if (!currentConfig.isSkipable) {
+      return;
+    }
+
+    let hideTimeout;
+
+    const showTimeout = setTimeout(() => {
+      setShowSkipButton(true);
+      // Animer l'opacité à 1 en 300ms
+      skipButtonFadeAnim.value = withTiming(1, { duration: 300 });
+      
+      // Faire disparaître le bouton après 3 secondes d'affichage
+      hideTimeout = setTimeout(() => {
+        // Animer l'opacité à 0 en 300ms
+        skipButtonFadeAnim.value = withTiming(0, { duration: 300 }, () => {
+          runOnJS(setShowSkipButton)(false);
+        });
+      }, 3000); // 3 secondes après l'apparition
     }, 1000);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(showTimeout);
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+      }
+    };
   }, [currentIndex]);
 
 
@@ -291,12 +412,55 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     if (showUsernameInput) {
       usernameIntroFadeAnim.value = withTiming(1, { duration: 200 });
       usernameScaleIntroAnim.value = withTiming(1, { duration: 200 });
+      
+      // Jouer l'audio pour la vidéo 4 (index 3) quand l'input apparaît
+      if (currentIndex === 3) {
+        const playAudio = async () => {
+          try {
+            if (audioRef.current) {
+              await audioRef.current.unloadAsync();
+            }
+            const { sound } = await Audio.Sound.createAsync(
+              require('../../assets/audio/intro/input-name.mp3'),
+              { shouldPlay: true, volume: 1.0 }
+            );
+            audioRef.current = sound;
+          } catch (error) {
+            console.log('Error playing audio:', error);
+          }
+        };
+        playAudio();
+      }
     }
     // else {
     //   usernameIntroFadeAnim.value = 0;
     //   usernameScaleIntroAnim.value = 0;
     // }
-  }, [showUsernameInput]);
+  }, [showUsernameInput, currentIndex]);
+
+  // Nettoyer l'audio quand le composant est démonté
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.stopAsync().catch((error) => {
+          console.log('Error stopping audio on unmount:', error);
+        });
+        audioRef.current.unloadAsync().catch((error) => {
+          console.log('Error unloading audio on unmount:', error);
+        });
+        audioRef.current = null;
+      }
+      if (creativityAudioRef.current) {
+        creativityAudioRef.current.stopAsync().catch((error) => {
+          console.log('Error stopping creativity audio on unmount:', error);
+        });
+        creativityAudioRef.current.unloadAsync().catch((error) => {
+          console.log('Error unloading creativity audio on unmount:', error);
+        });
+        creativityAudioRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <Pressable style={styles.container} onPress={handlePress}>
@@ -304,7 +468,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
         <Video
           ref={videoRef0}
           style={styles.video}
-          resizeMode="contain"
+          resizeMode="cover"
           volume={1.0}
           onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(status, 0)}
         />
@@ -313,22 +477,37 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
         <Video
           ref={videoRef1}
           style={styles.video}
-          resizeMode="contain"
+          resizeMode="cover"
           volume={1.0}
           onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(status, 1)}
         />
       </Animated.View>
-      {currentConfig.requiresInteraction && currentConfig.clickImage && (
+      {currentConfig.requiresInteraction && isVideoFinished && (
+        <Animated.View style={[styles.interactionOverlay, overlayStyle]} />
+      )}
+      {currentConfig.requiresInteraction && currentConfig.clickText && isVideoFinished && (
+        <Animated.View style={[styles.clickTextContainer, clickTextStyle]}>
+          <ThemedText style={styles.clickText}>{currentConfig.clickText}</ThemedText>
+        </Animated.View>
+      )}
+      {/* Système d'image de clic désactivé temporairement */}
+      {/* {currentConfig.requiresInteraction && currentConfig.clickImage && (
         <Animated.Image 
         source={currentConfig.clickImage} 
         style={[styles.clickImageIntro, imageIntroStyle]}
         resizeMode="contain"
         />
-      )}
+      )} */}
       {showSkipButton && (
-        <ThemedButton style={styles.skipButton} onPress={handleSkipIntro}>
-          Skip
-        </ThemedButton>
+        <Animated.View style={[styles.skipButtonContainer, skipButtonStyle]}>
+          <Pressable onPress={handleSkipIntro} style={styles.skipButtonPressable}>
+            <Image 
+              source={require('../../assets/ui/buttons/skip-button.png')}
+              style={styles.skipButtonImage}
+              resizeMode="contain"
+            />
+          </Pressable>
+        </Animated.View>
       )}
       {showUsernameInput && currentConfig.requireUsername && (
         <Animated.View style={[styles.usernameIntroOverlay, usernameOverlayIntroStyle]}>
@@ -373,22 +552,59 @@ const styles = StyleSheet.create({
   video: {
     flex: 1,
   },
-  //IMAGE CTA INTRO
-  clickImageIntro: {
+  //OVERLAY INTERACTION
+  interactionOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'black',
+    zIndex: 50,
+  },
+  //TEXT CLICK INTRO
+  clickTextContainer: {
     position: 'absolute',
     top: '50%',
-    left: '50%',
-    transform: [{ translateX: '-50%' }, { translateY: '-50%' }],
-    zIndex: 100,
-    width: '75%',
-
+    left: 0,
+    right: 0,
+    zIndex: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
+  clickText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    // textShadowOffset: { width: 0, height: 2 },
+    // textShadowRadius: 4,
+    fontFamily: 'LibreBaskerville',
+  },
+  //IMAGE CTA INTRO - Système d'image de clic désactivé temporairement
+  // clickImageIntro: {
+  //   position: 'absolute',
+  //   top: '50%',
+  //   left: '50%',
+  //   transform: [{ translateX: '-50%' }, { translateY: '-50%' }],
+  //   zIndex: 100,
+  //   width: '50%',
+  // },
   //BUTTON SKIP INTRO
-  skipButton: {
+  skipButtonContainer: {
     position: 'absolute',
-    bottom: '10%',
-    right: '10%',
+    top: '2%',
+    right: '5%',
     zIndex: 100,
+  },
+  skipButtonPressable: {
+    padding: 10,
+  },
+  skipButtonImage: {
+    width: 80,
+    height: 80,
   },
   //INPUT PRENOM INTRO
   usernameIntroOverlay: {
