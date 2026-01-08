@@ -156,6 +156,11 @@ export default function Scene() {
                   />
                 </group>
               </Suspense>
+              {/* Trepied */}
+              <mesh position={[0, -1, 0]}>  
+                <cylinderGeometry args={[1, 1, 0.5, 32]} />
+                <meshStandardMaterial color="red" wireframe={true} />
+              </mesh>
             </>
           )}
         </Canvas>
