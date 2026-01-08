@@ -1,20 +1,31 @@
-import { View, TouchableOpacity, Image, StyleSheet, Text } from "react-native";
-import SelectorPanel from "./SelectorPanel";
-import { useState } from "react";
-import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useMenuStore } from "../../src/store/menuStore";
 
 import { TabsInfo } from "../../constants/TabsInfo";
 
-import ThemedButton from "../../components/ui/ThemedButton";
 
 
 
 export default function MenuBar() {
   const activeMenu = useMenuStore((state) => state.activeMenu);
   const setActiveMenu = useMenuStore((state) => state.setActiveMenu);
+  const setActiveTab = useConfigurateurStore((state) => state.setActiveTab);
 
   const menuNames = Object.keys(TabsInfo); // ['appearance', 'pose', 'guild']
+
+  const handleMenuChange = (menuName) => {
+    setActiveMenu(menuName);
+
+    const tabsForMenu = TabsInfo[menuName];
+
+    if (tabsForMenu && tabsForMenu.length > 0) {
+      const firstTabId = tabsForMenu[0].id;
+      setActiveTab(firstTabId);
+    } else {
+      setActiveTab("default");
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -22,7 +33,7 @@ export default function MenuBar() {
         {menuNames.map((menuName) => (
           <TouchableOpacity
             key={menuName}
-            onPress={() => setActiveMenu(menuName)}
+            onPress={() => handleMenuChange(menuName)}
             style={
               activeMenu === menuName
                 ? styles.activeButton

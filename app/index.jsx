@@ -1,17 +1,18 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { Link, router } from 'expo-router' 
 import { useState } from 'react'
+import { StyleSheet } from 'react-native'
 import { Colors } from '../constants/Colors'
 import { useUser } from "../hooks/useUser"
 
 import GuestOnly from '../components/auth/GuestOnly'
 
-import ThemedView from "../components/ui/ThemedView"
-import ThemedText from "../components/ui/ThemedText"
-import ThemedLogo from "../components/ui/ThemedLogo"
 import Spacer from "../components/ui/Spacer"
 import ThemedButton from "../components/ui/ThemedButton"
-import ThemedTextInput from "../components/ui/ThemedTextInput" 
+import ThemedLogo from "../components/ui/ThemedLogo"
+import ThemedText from "../components/ui/ThemedText"
+import ThemedTextInput from "../components/ui/ThemedTextInput"
+import ThemedView from "../components/ui/ThemedView"
 
 
 const Home = () => {
@@ -93,11 +94,11 @@ const Home = () => {
         </ThemedText>
       </Link>
 
-      {/* <Link href="/introManager">
+      <Link href="/introManager">
         <ThemedText style={styles.link}>
           INTRO
         </ThemedText>
-      </Link> */}
+      </Link>
 
       </GuestOnly>
     </ThemedView> 

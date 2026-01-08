@@ -83,6 +83,16 @@ export default function ObjectLoad({
     applyVisibility(groups.face, face);
   }, [hair, cloth, face, accesssoire, groups]);
 
+  // ---------- ACTIVATE SHADOWS ----------
+  useEffect(() => {
+    scene.traverse((obj) => {
+      if (obj.isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+    });
+  }, [scene]);
+
   return (
     <>
       {/* remove axesHelper in production */}
