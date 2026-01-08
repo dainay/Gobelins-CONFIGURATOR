@@ -24,7 +24,7 @@ const Profile = () => {
 
   return (
     <ThemedView style={styles.wrapper}>
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
+      <Pressable style={styles.backButton} onPress={() => router.replace('/(dashboard)/openWorld')}>
         <ThemedText style={styles.backText}>✕</ThemedText>
       </Pressable>
 

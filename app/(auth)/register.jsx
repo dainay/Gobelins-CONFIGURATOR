@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, Image } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
 import { Picker } from "@react-native-picker/picker";
@@ -40,6 +40,9 @@ const Register = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedView style={styles.container}>
+        <View style={styles.bgImageWrapper} pointerEvents="none">
+          <Image source={require('../../assets/img/skin.png')} style={styles.bgImage} resizeMode="cover" />
+        </View>
         <Spacer />
         <ThemedText title={true} style={styles.title}>
           Register an Account
@@ -110,6 +113,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  bgImageWrapper: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
+  },
+  bgImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
   title: {
     textAlign: "center",

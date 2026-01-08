@@ -1,5 +1,7 @@
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, Slot } from "expo-router";
+import DisableBackHandler from "../components/DisableBackHandler"; 
+import { useColorScheme, ImageBackground, StyleSheet } from "react-native";
+import { useFonts } from "expo-font"; 
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -31,20 +33,20 @@ export default function RootLayout() {
   }
 
   return (
-   
-      <UserProvider> 
-          <StatusBar style="auto" />
-          <Stack
-            screenOptions={{
-              headerStyle: { backgroundColor: 'transparent' },
-              headerTintColor: theme.title,
-              headerTransparent: true,
-              contentStyle: { backgroundColor: 'olive' },
-              headerShown: false,
-            }}
-          >
-          </Stack>
-      </UserProvider> 
+    <UserProvider>
+      <StatusBar style="auto" />
+      {/* <DisableBackHandler /> */}
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: 'transparent' },
+          headerTintColor: theme.title,
+          headerTransparent: true,
+          headerShown: false,
+        }}
+      >
+        <Slot />
+      </Stack>
+    </UserProvider>
   );
 }
 

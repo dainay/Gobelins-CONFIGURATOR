@@ -14,7 +14,7 @@ const openWorld = () => {
   return (
     <ThemedView safe={true} style={styles.container}>
       {/* Avatar with name on the top page - redirection to page perso */}
-      <Pressable style={styles.avatarSection} onPress={() => router.push('/(dashboard)/profile')}>
+      <Pressable style={styles.avatarSection} onPress={() => router.replace('/(dashboard)/profile')}>
         <View style={styles.avatarPlaceholder}>
           <Text style={styles.avatarText}>👤</Text>
         </View>
