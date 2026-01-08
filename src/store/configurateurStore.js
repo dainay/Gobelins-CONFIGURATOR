@@ -16,16 +16,16 @@ export const useConfigurateurStore = create((set) => ({
     console.log("Active tab changed to:", tab);
     set({ activeTab: tab });
 
-    let zoom = 4; //valeur par default Z de la camera 
+    let zoom = 3.8; //valeur par default Z de la camera 
     let x = 0; //valeur par default X de la camera 
-    let y = 2; //valeur par default Y de la camera 
-    let lookAtY = 0.5; //valeur par default Y de la camera look at
+    let y = 1; //valeur par default Y de la camera 
+    let lookAtY = 1; //valeur par default Y de la camera look at
 
     if (tab === "hair") {
       zoom = 2.4;
       x = 0;
-      y = 1.9;
-      lookAtY = 1.4;
+      y = 2.4;
+      lookAtY = 1.9;
     } else if (tab === "cloth") {
       zoom = 3.8;
       x = 0;
@@ -34,8 +34,8 @@ export const useConfigurateurStore = create((set) => ({
     } else if (tab === "face") {
       zoom = 1.6;
       x = 0;
-      y = 1.35;
-      lookAtY = 1.35;
+      y = 1.9;
+      lookAtY = 1.9;
     }
     set({ 
       activeTab: tab ,

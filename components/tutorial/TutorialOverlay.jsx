@@ -1,10 +1,12 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { Colors } from "../../constants/Colors";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 
 const tutorialPages1 = [
-    {title : "Bienvenue dans le configurateur", description : "Dans cette section, vous pouvez configurer l'apparence de votre gobelin."},
-    {title : "Configuration de l'apparence", description : "Vous pouvez configurer l'apparence de votre gobelin en utilisant les différents onglets."},
+    {title : "Bienvenue dans le configurateur", description : "Dans cet espace, tu peux configurer l’apparence de ton gobelin."},
+    {title : "À toi de créer", description : "Parcours les différents onglets pour ajuster son style, ses traits et révéler sa personnalité.."},
 ]
 
 
@@ -14,6 +16,8 @@ export default function TutorialOverlay() {
     const tutorialStep = useConfigurateurStore((state) => state.tutorialStep);
     const nextTutorialStep = useConfigurateurStore((state) => state.nextTutorialStep);
     const finishTutorial = useConfigurateurStore((state) => state.finishTutorial);
+    const colorScheme = useColorScheme();
+    const theme = Colors[colorScheme] ?? Colors.light;
 
     if (!showTutorial) {
         return null;
@@ -37,17 +41,56 @@ export default function TutorialOverlay() {
         }
     }
 
+    // Calculer la largeur de la barre de progression
+    const progressWidth = ((tutorialStep + 1) / tutorialPages1.length) * 100;
 
     return (
         <Pressable onPress={handlePress} style={styles.containerPressableTutorial}>
-            <View style={styles.containerPageTutorial}>
-                <Text style={styles.titlePageTutorial}>{currentPage.title}</Text>
-                <Text style={styles.descriptionPageTutorial}>{currentPage.description}</Text>
-                <Text style={styles.progress}>
-                    {tutorialStep + 1} / {tutorialPages1.length}
-                </Text>
-                <Text style={styles.buttonNextPageTutorial}>Appuyez pour continuer</Text>
-            </View>
+            <Animated.View 
+                entering={FadeIn.duration(300)}
+                exiting={FadeOut.duration(200)}
+                style={[styles.containerPageTutorial, { backgroundColor: theme.uiBackground }]}
+            >
+                {/* Indicateur de progression */}
+                <View style={styles.progressContainer}>
+                    <View style={[styles.progressBar, { backgroundColor: theme.iconColor }]}>
+                        <View 
+                            style={[
+                                styles.progressFill, 
+                                { 
+                                    width: `${progressWidth}%`,
+                                    backgroundColor: Colors.primary 
+                                }
+                            ]} 
+                        />
+                    </View>
+                    <Text style={[styles.progressText, { color: theme.text }]}>
+                        {tutorialStep + 1} / {tutorialPages1.length}
+                    </Text>
+                </View>
+
+                {/* Contenu principal */}
+                <View style={styles.contentContainer}>
+                    <Text style={[styles.titlePageTutorial, { color: theme.title }]}>
+                        {currentPage.title}
+                    </Text>
+                    <Text style={[styles.descriptionPageTutorial, { color: theme.text }]}>
+                        {currentPage.description}
+                    </Text>
+                </View>
+
+                {/* Bouton d'action */}
+                <View style={styles.buttonContainer}>
+                    <View style={[styles.button, { backgroundColor: Colors.primary }]}>
+                        <Text style={styles.buttonText}>
+                            {isLastPage ? "Commencer" : "Continuer"}
+                        </Text>
+                    </View>
+                    <Text style={[styles.hintText, { color: theme.iconColor }]}>
+                        Appuyez n'importe où pour continuer
+                    </Text>
+                </View>
+            </Animated.View>
         </Pressable>
     )
 }
@@ -63,35 +106,90 @@ const styles = StyleSheet.create({
         zIndex: 1000,
         justifyContent: "center",
         alignItems: "center",
-    },
-    containerPageTutorial: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
         padding: 20,
     },
+    containerPageTutorial: {
+        width: "100%",
+        maxWidth: 400,
+        // borderRadius: 20,
+        padding: 24,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 10,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 20,
+        elevation: 10,
+        paddingBlock: 50,
+        height: "65%",
+        justifyContent: "space-between",
+    },
+    progressContainer: {
+        width: "100%",
+        marginBottom: 32,
+    },
+    progressBar: {
+        width: "100%",
+        height: 4,
+        borderRadius: 2,
+        overflow: "hidden",
+        marginBottom: 8,
+    },
+    progressFill: {
+        height: "100%",
+        borderRadius: 2,
+    },
+    progressText: {
+        fontSize: 12,
+        fontWeight: "600",
+        textAlign: "right",
+        letterSpacing: 0.5,
+    },
+    contentContainer: {
+        marginBottom: 32,
+    },
     titlePageTutorial: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: "bold",
         textAlign: "center",
-        color: "black",
+        marginBottom: 16,
+        letterSpacing: 0.5,
     },
     descriptionPageTutorial: {
         fontSize: 16,
-        color: "black",
         textAlign: "center",
-        marginBottom: 20,
+        lineHeight: 24,
+        letterSpacing: 0.2,
     },
-    progress: {
-        fontSize: 16,
-        color: "black",
-        textAlign: "center",
-        marginBottom: 20,
+    buttonContainer: {
+        alignItems: "center",
     },
-    buttonNextPageTutorial: {
+    button: {
+        width: "100%",
+        paddingVertical: 16,
+        paddingHorizontal: 32,
+        borderRadius: 12,
+        marginBottom: 12,
+        shadowColor: Colors.primary,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    buttonText: {
+        color: "#ffffff",
         fontSize: 16,
-        color: "black",
+        fontWeight: "600",
         textAlign: "center",
-        marginBottom: 20,
+        letterSpacing: 0.5,
+    },
+    hintText: {
+        fontSize: 12,
+        textAlign: "center",
+        fontStyle: "italic",
     },
 })
