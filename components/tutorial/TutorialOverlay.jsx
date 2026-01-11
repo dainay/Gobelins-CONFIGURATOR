@@ -1,11 +1,11 @@
-import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { ImageBackground, Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { Colors } from "../../constants/Colors";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 
 
 const tutorialPages1 = [
-    {title : "Bienvenue dans le configurateur", description : "Dans cet espace, tu peux configurer l’apparence de ton gobelin."},
+    {title : "Bienvenue dans le configurateur", description : "Dans cet espace, tu peux configurer l'apparence de ton gobelin."},
     {title : "À toi de créer", description : "Parcours les différents onglets pour ajuster son style, ses traits et révéler sa personnalité.."},
 ]
 
@@ -44,13 +44,21 @@ export default function TutorialOverlay() {
     // Calculer la largeur de la barre de progression
     const progressWidth = ((tutorialStep + 1) / tutorialPages1.length) * 100;
 
+    // Créer un composant ImageBackground animé
+    const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+
     return (
         <Pressable onPress={handlePress} style={styles.containerPressableTutorial}>
-            <Animated.View 
+            <AnimatedImageBackground 
+                source={require('../../assets/ui/tutorial/tutorial-background.png')}
                 entering={FadeIn.duration(300)}
                 exiting={FadeOut.duration(200)}
-                style={[styles.containerPageTutorial, { backgroundColor: theme.uiBackground }]}
+                style={styles.containerPageTutorial}
+                resizeMode="stretch"
+                imageStyle={styles.backgroundImage}
             >
+                {/* Conteneur interne avec le padding pour le contenu */}
+                <View style={styles.contentWrapper}>
                 {/* Indicateur de progression */}
                 <View style={styles.progressContainer}>
                     <View style={[styles.progressBar, { backgroundColor: theme.iconColor }]}>
@@ -64,33 +72,36 @@ export default function TutorialOverlay() {
                             ]} 
                         />
                     </View>
-                    <Text style={[styles.progressText, { color: theme.text }]}>
+                    <Text style={styles.progressText}>
                         {tutorialStep + 1} / {tutorialPages1.length}
                     </Text>
                 </View>
 
                 {/* Contenu principal */}
                 <View style={styles.contentContainer}>
-                    <Text style={[styles.titlePageTutorial, { color: theme.title }]}>
+                    <Text style={styles.titlePageTutorial}>
                         {currentPage.title}
                     </Text>
-                    <Text style={[styles.descriptionPageTutorial, { color: theme.text }]}>
+                    <Text style={styles.descriptionPageTutorial}>
                         {currentPage.description}
                     </Text>
                 </View>
 
                 {/* Bouton d'action */}
                 <View style={styles.buttonContainer}>
+                    {isLastPage && (
                     <View style={[styles.button, { backgroundColor: Colors.primary }]}>
                         <Text style={styles.buttonText}>
-                            {isLastPage ? "Commencer" : "Continuer"}
+                                Démarrer
                         </Text>
                     </View>
-                    <Text style={[styles.hintText, { color: theme.iconColor }]}>
+                    )}
+                    <Text style={styles.hintText}>
                         Appuyez n'importe où pour continuer
                     </Text>
                 </View>
-            </Animated.View>
+                </View>
+            </AnimatedImageBackground>
         </Pressable>
     )
 }
@@ -111,8 +122,8 @@ const styles = StyleSheet.create({
     containerPageTutorial: {
         width: "100%",
         maxWidth: 400,
-        // borderRadius: 20,
-        padding: 24,
+        height: "65%",
+        minHeight: 500, 
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -121,13 +132,28 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 20,
         elevation: 10,
+        overflow: "hidden", // Pour que l'image ne dépasse pas
+    },
+    backgroundImage: {
+        width: "100%",
+        height: "100%",
+    },
+    contentWrapper: {
+        flex: 1,
+        // padding: 24,
+        paddingTop: 0,
         paddingBlock: 50,
-        height: "65%",
         justifyContent: "space-between",
     },
     progressContainer: {
         width: "100%",
-        marginBottom: 32,
+        // marginBottom: 32,
+        borderWidth: 1,
+        paddingTop: 24,
+        paddingInline: 36,
+        borderColor: "red",
+        height: 60,
+        justifyContent: "center",
     },
     progressBar: {
         width: "100%",
@@ -145,22 +171,27 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         textAlign: "right",
         letterSpacing: 0.5,
+        color: Colors.brownText,
+        fontFamily: 'Merriweather',
     },
     contentContainer: {
         marginBottom: 32,
     },
     titlePageTutorial: {
-        fontSize: 28,
-        fontWeight: "bold",
+        fontSize: 24,
         textAlign: "center",
         marginBottom: 16,
         letterSpacing: 0.5,
+        color: Colors.brownText,
+        fontFamily: 'Merriweather-Bold',
     },
     descriptionPageTutorial: {
         fontSize: 16,
         textAlign: "center",
         lineHeight: 24,
         letterSpacing: 0.2,
+        color: Colors.brownText,
+        fontFamily: 'Merriweather',
     },
     buttonContainer: {
         alignItems: "center",
@@ -186,10 +217,13 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         textAlign: "center",
         letterSpacing: 0.5,
+        fontFamily: 'Merriweather',
     },
     hintText: {
         fontSize: 12,
         textAlign: "center",
         fontStyle: "italic",
+        color: Colors.brownText,
+        fontFamily: 'Merriweather',
     },
 })

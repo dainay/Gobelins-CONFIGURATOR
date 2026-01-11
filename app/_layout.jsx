@@ -16,19 +16,29 @@ export default function RootLayout() {
   const theme = Colors[colorScheme] ?? Colors.light;
 
   // Charger les fonts personnalisées
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     'LibreBaskerville': require('../assets/fonts/LibreBaskerville.ttf'),
+    'LibreBaskerville-Bold': require('../assets/fonts/LibreBaskerville-Bold.ttf'),
+    'Merriweather': require('../assets/fonts/Merriweather-Regular.ttf'),
+    'Merriweather-Bold': require('../assets/fonts/Merriweather-Bold.ttf'),
+    'Merriweather-Light': require('../assets/fonts/Merriweather Light.ttf'),
+    'Merriweather-UltraBold': require('../assets/fonts/Merriweather UltraBold.ttf'),
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    // Masquer le splash screen immédiatement, ne pas attendre les polices
+    // Les polices se chargeront en arrière-plan et seront disponibles quand prêtes
+    SplashScreen.hideAsync();
+    
+    if (fontError) {
+      // Log uniquement en cas d'erreur pour le débogage
+      console.warn('⚠️ Erreur de chargement des polices (utilisation des polices système):', fontError);
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return null; // Affiche le splash screen pendant le chargement
-  }
+  // Ne pas bloquer l'app si les polices ne se chargent pas
+  // L'app continuera avec les polices système par défaut
+  // On ne vérifie plus fontsLoaded pour le rendu, l'app démarre toujours
 
   return (
    
