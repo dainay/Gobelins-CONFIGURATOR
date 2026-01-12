@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import { Link, router } from 'expo-router' 
+import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { Colors } from '../constants/Colors'
 import { useUser } from "../hooks/useUser"
 
