@@ -47,23 +47,24 @@ const Home = () => {
         </ThemedText>
 
       <ThemedTextInput
-        style={{ width: "80%", marginBottom: 20 }}
+      
         placeholder="Email"
         keyboardType="email-address"
         onChangeText={setEmail}
         value={email}
+        background={"bar1"}
       />
 
-      <ThemedTextInput
-        style={{ width: "80%", marginBottom: 20 }}
+      <ThemedTextInput 
         placeholder="Password"
         secureTextEntry
         onChangeText={setPassword}
         value={password}
+        background={"bar2"}
       />
 
-      <ThemedButton onPress={handleSubmit}>
-        Login
+      <ThemedButton onPress={handleSubmit} type="button1">
+        Connecter
       </ThemedButton>
 
       {/* <Spacer /> */}

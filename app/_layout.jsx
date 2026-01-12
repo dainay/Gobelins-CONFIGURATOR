@@ -23,6 +23,9 @@ export default function RootLayout() {
     'Merriweather-Bold': require('../assets/fonts/Merriweather-Bold.ttf'),
     'Merriweather-Light': require('../assets/fonts/Merriweather Light.ttf'),
     'Merriweather-UltraBold': require('../assets/fonts/Merriweather UltraBold.ttf'),
+    'ChristmasBold': require('../assets/fonts/christmas-bold.ttf'),
+    'Christmas': require('../assets/fonts/christmas.ttf'),
+    'Sofia': require('../assets/fonts/sofia.ttf'),
   });
 
   useEffect(() => {
