@@ -1,7 +1,5 @@
-import { Stack, Slot } from "expo-router";
-import DisableBackHandler from "../components/DisableBackHandler"; 
-import { useColorScheme, ImageBackground, StyleSheet } from "react-native";
-import { useFonts } from "expo-font"; 
+import { useFonts } from "expo-font";
+import { Slot, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
