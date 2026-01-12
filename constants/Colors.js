@@ -21,5 +21,8 @@ export const Colors = {
     iconColor: "#686477",
     iconColorFocused: "#201e2b",
     uiBackground: "#d6d5e1",
+
+     mainText: "#333333",
+   accentColor1: '#D89640'
   },
 }

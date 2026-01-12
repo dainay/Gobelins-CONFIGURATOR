@@ -1,28 +1,63 @@
-import { TextInput, useColorScheme } from 'react-native'
-import { Colors } from '../../constants/Colors'
- 
+import { ImageBackground, TextInput, useColorScheme, View } from 'react-native';
+import Bar1 from '../../assets/ui/bars/bar1.png';
+import Bar2 from '../../assets/ui/bars/bar2.png';
+import { Colors } from '../../constants/Colors';
 
-const ThemedTextImport = ({style, ...props}) => {
+const BAR_CONFIG = {
+  bar1: {
+    image: Bar1,
+    height: 60,
+    paddingX: 50,
+    width: 330,
+    transform: [{ translateX: 5 }],
+  },
+  bar2: {
+    image: Bar2,
+    height: 60,
+    paddingX: 40,
+    width: 300,
+     transform: [{ translateX: 0 }],
+  },
+};
 
-     const colorScheme = useColorScheme()
-      const theme = Colors[colorScheme] ?? Colors.light
+
+const ThemedTextInput = ({ style, background = 'bar1', ...props }) => {
+  const colorScheme = useColorScheme();
+  const theme = Colors[colorScheme] ?? Colors.light;
+
+  const bar = BAR_CONFIG[background] ?? BAR_CONFIG.bar1;
 
   return (
-    
-      <TextInput
-       style={[{ 
-        backgroundColor: theme.background,
-        color: theme.text,
-        borderWidth: 1,
-        padding: 20,
-        borderRadius: 5,
-        width: '90%',
-        }, style]}
+    <View style={{ width: '100%', alignItems: 'center' }}>
+      <ImageBackground
+        source={bar.image}
+        resizeMode="stretch"
+        style={{
+          width: '80%',
+          height: bar.height,
+          justifyContent: 'center',
+          width: bar.width,
+          transform: bar.transform,
+          marginVertical: 5,
+        }}
+      >
+        <TextInput
+          style={[
+            {
+              width: '100%',
+              height: '100%',
+              color: theme.text,
+              paddingHorizontal: bar.paddingX,
+              fontFamily: 'LibreBaskerville',
+              fontSize: 15,
+            },
+            style,
+          ]}
+          {...props}
+        />
+      </ImageBackground>
+    </View>
+  );
+};
 
-        {...props}
-      />
-  )
-}
-
-export default ThemedTextImport
- 
+export default ThemedTextInput;
