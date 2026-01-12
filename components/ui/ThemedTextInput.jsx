@@ -46,10 +46,10 @@ const ThemedTextInput = ({ style, background = 'bar1', ...props }) => {
             {
               width: '100%',
               height: '100%',
-              color: theme.text,
+              color:  Colors.black,
               paddingHorizontal: bar.paddingX,
-              fontFamily: 'LibreBaskerville',
-              fontSize: 15,
+              fontFamily: 'Merriweather-Light',
+              fontSize: 16, 
             },
             style,
           ]}

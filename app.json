@@ -4,7 +4,7 @@
     "scheme": "gobelink",
     "slug": "gobelink",
     "version": "1.0.0",
-    "orientation": "portrait", 
+    "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -13,8 +13,11 @@
     "android": {
       "adaptiveIcon": {},
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.dainay.gobelink"
     },
+    
     "web": {
       "output": "static"
     },
@@ -37,6 +40,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e60d0d6b-65e2-4596-90f2-523d0071f474"
+      }
     }
   }
 }

@@ -1,8 +1,13 @@
+import { error } from "three";
+
 export const Colors = {
   primary: "#6849a7",
   warning: "#cc475a",
-  black: "#000",
+ 
   brownText: "#4e2914",
+  
+  error: "#ff6b6b",
+   black: "#0c0c0cff",
   
   dark: {
     text: "#d4d4d4",
@@ -12,6 +17,10 @@ export const Colors = {
     iconColor: "#9591a5",
     iconColorFocused: "#fff",
     uiBackground: "#2f2b3d",
+
+     accentColor1: '#D89640',
+     magicGreen: '#71F235',
+    
   },
   light: {
     text: "#625f72",

@@ -7,9 +7,9 @@ import Button1 from "../../assets/ui/buttons/button1-dark.png";
 const BUTTON_CONFIG = {
   button1: {
     image: Button1,
-    height: 150, 
+    height: 200, 
     width: 330,
-    transform: [{ translateX: 5 }],
+    transform: [{ translateX: -5 }],
   },
   // button2: {
   //   image: Button2,
@@ -59,6 +59,8 @@ const styles = StyleSheet.create({
     fontFamily: "Sofia",
     fontSize: 37,
     textAlign: "center", 
+    paddingTop: 8,
+    paddingLeft: 10,
   },
 });
 
