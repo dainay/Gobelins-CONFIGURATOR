@@ -26,6 +26,7 @@ export default function RootLayout() {
     'ChristmasBold': require('../assets/fonts/christmas-bold.ttf'),
     'Christmas': require('../assets/fonts/christmas.ttf'),
     'Sofia': require('../assets/fonts/sofia.ttf'),
+    
   });
 
   useEffect(() => {
