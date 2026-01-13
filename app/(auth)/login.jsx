@@ -1,15 +1,19 @@
-import { StyleSheet, Text } from "react-native";
 import { Link } from "expo-router";
+import { Image, StyleSheet, Text, View, useColorScheme } from "react-native";
 import { Colors } from "../../constants/Colors";
 
-import ThemedView from "../../components/ui/ThemedView";
-import ThemedText from "../../components/ui/ThemedText";
 import Spacer from "../../components/ui/Spacer";
 import ThemedButton from "../../components/ui/ThemedButton";
+import ThemedText from "../../components/ui/ThemedText";
 import ThemedTextInput from "../../components/ui/ThemedTextInput";
+import ThemedView from "../../components/ui/ThemedView";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
+
+import backgroundImage from "../../assets/img/temp-back.png";
+
+import FirefliesSimple from "../../components/ui/FirefliesSimple";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +21,9 @@ const Login = () => {
   const [error, setError] = useState(null);
 
   const { login } = useUser();
+
+  const colorScheme = useColorScheme();
+  const theme = Colors[colorScheme] ?? Colors.light;
 
   const handleSubmit = async () => {
     console.log("login form submitted");
@@ -30,44 +37,49 @@ const Login = () => {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={styles.container} safe={true} keyboard={true}>
+      <View style={styles.bgImageWrapper} pointerEvents="none">
+        <Image
+          source={backgroundImage}
+          style={[styles.bgImage]}
+          resizeMode="cover"
+        />
+      </View>
       <Spacer />
-      <ThemedText title={true} style={styles.title}>
-        Login to Your Account
+      <ThemedText title={true} style={styles.title} font="christmasBold">
+        J'ai déjà mon gobelin
       </ThemedText>
 
       <ThemedTextInput
-        style={{ width: "80%", marginBottom: 20 }}
-        placeholder="Email"
+        placeholder="Adresse e-mail"
         keyboardType="email-address"
         onChangeText={setEmail}
         value={email}
+        background = 'bar1'
       />
 
       <ThemedTextInput
-        style={{ width: "80%", marginBottom: 20 }}
-        placeholder="Password"
+        placeholder="Mot de passe"
         secureTextEntry
         onChangeText={setPassword}
         value={password}
       />
 
       <ThemedButton onPress={handleSubmit}>
-        Login
+        <Text style={{ color: "#f2f2f2" }}>Se connecter</Text>
       </ThemedButton>
 
       <Spacer />
+      <FirefliesSimple count={15}/>  
       
       {error && (
         <ThemedText style={{ color: Colors.error, marginTop: 10 }}>
           {error}
         </ThemedText>
-      )}
-
-      <Spacer height={100} />
+      )} 
       <Link href="/register" replace>
-        <ThemedText style={{ textAlign: "center" }}>
-          Register instead
+        <ThemedText style={{ textAlign: "center", color: theme.accentColor1, ...styles.link }}>
+          Créer un compte
         </ThemedText>
       </Link>
  
@@ -85,7 +97,25 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 40,
     marginBottom: 30,
   },
+  bgImageWrapper: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
+  },
+  bgImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  link: {
+    color: "#ffffffff",
+    marginTop: 10,
+    textAlign: "center",
+    textDecorationLine: 'underline',
+    fontFamily: 'Merriweather-Light',
+  }
 });

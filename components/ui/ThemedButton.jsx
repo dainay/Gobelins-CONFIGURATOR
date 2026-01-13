@@ -1,3 +1,4 @@
+import React from "react";
 import { ImageBackground, Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
 
 import { Colors } from '../../constants/Colors';
@@ -21,11 +22,26 @@ const BUTTON_CONFIG = {
 };
 
 function ThemedButton({ style, children, textStyle, type = "button1", ...props}) {
-
   const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme] ?? Colors.light;
+  const theme = Colors[colorScheme] ?? Colors.light;
 
-    const button = BUTTON_CONFIG[type] ?? BUTTON_CONFIG.button1;
+  const button = BUTTON_CONFIG[type] ?? BUTTON_CONFIG.button1;
+
+  // If children is a React element of type Text, clone it and merge styles so theme color applies.
+  const renderLabel = () => {
+    if (React.isValidElement(children) && children.type === Text) {
+      const childStyle = children.props.style || {};
+      return React.cloneElement(children, {
+        style: [styles.text, { color: theme.accentColor1 }, childStyle, textStyle],
+      });
+    }
+
+    // Otherwise render a Text wrapper with themed style
+    return (
+      <Text style={[styles.text, { color: theme.accentColor1 }, textStyle]}>{children}</Text>
+    );
+  };
+
   return (
     <View style={{ width: "100%", alignItems: "center" }}>
       <ImageBackground
@@ -40,11 +56,7 @@ function ThemedButton({ style, children, textStyle, type = "button1", ...props})
           marginVertical: 5,
         }}
       >
-        <Pressable
-          {...props}
-        >
-          <Text style={[styles.text,  { color: theme.accentColor1 }]}>{children}</Text>
-        </Pressable>
+        <Pressable {...props}>{renderLabel()}</Pressable>
       </ImageBackground>
     </View>
   );

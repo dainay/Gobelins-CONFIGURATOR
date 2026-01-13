@@ -12,6 +12,7 @@ import { useUser } from "../hooks/useUser";
 
 import GuestOnly from "../components/auth/GuestOnly";
 
+import Spacer from "../components/ui/Spacer";
 import ThemedButton from "../components/ui/ThemedButton";
 import ThemedLogo from "../components/ui/ThemedLogo";
 import ThemedText from "../components/ui/ThemedText";
@@ -25,7 +26,6 @@ const Home = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  // Анимация opacity для заголовка
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -118,11 +118,11 @@ const Home = () => {
         />
 
        
-  <FirefliesSimple count={10}/>  
+        <FirefliesSimple count={15}/>  
 
 
         <ThemedButton onPress={handleSubmit} type="button1">
-          Connecter
+          Se connecter
         </ThemedButton>
 
         {error && (
@@ -133,7 +133,7 @@ const Home = () => {
 
         <Link href="/register">
           <ThemedText style={styles.link}>
-            Don't have an account? Register here
+            Pas encore de gobelin ? {"\n"} Crée le tien ici
           </ThemedText>
         </Link>
 
@@ -143,11 +143,12 @@ const Home = () => {
         </ThemedText>
       </Link> */}
 
-        {/* <Link href="/Scene">
+          <Spacer></Spacer>
+        <Link href="/Scene">
           <ThemedText style={styles.link}>DEMO 3D</ThemedText>
         </Link>
 
-        <Link href="/introManager">
+        {/* <Link href="/introManager">
           <ThemedText style={styles.link}>INTRO</ThemedText>
         </Link> */}
       </GuestOnly>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   secondTitle: {
-    fontSize: 35,
+    fontSize: 40,
   },
   container: {
     flex: 1,
@@ -186,13 +187,14 @@ const styles = StyleSheet.create({
     right: 0,
   },
   title: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
     marginBottom: 20,
   },
   link: {
-    color: "#007AFF",
+    color: "#ffffffff",
     marginTop: 10,
+    textAlign: "center",
   },
 });
 

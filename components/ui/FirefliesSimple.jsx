@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Animated, Dimensions, View, Platform } from "react-native";
+import { Animated, Dimensions, View } from "react-native";
 
 function Spark({ left, top, size, duration, delay }) {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -31,29 +31,8 @@ function Spark({ left, top, size, duration, delay }) {
         borderRadius: size,
         backgroundColor: "rgba(255,230,120,1)",
         opacity,
-        // iOS shadow
-        shadowColor: '#fffbe6',
-        shadowOpacity: 0.9,
-        shadowRadius: size * 2.2,
-        shadowOffset: { width: 0, height: 0 },
       }}
-    >
-      {/* Android simple bloom effect */}
-      {Platform.OS === 'android' && (
-        <View
-          style={{
-            position: 'absolute',
-            left: -size,
-            top: -size,
-            width: size * 3,
-            height: size * 3,
-            borderRadius: size * 1.5,
-            backgroundColor: 'rgba(255,230,120,0.18)',
-            opacity: 0.7,
-          }}
-        />
-      )}
-    </Animated.View>
+    />
   );
 }
 

@@ -10,18 +10,19 @@ const BAR_CONFIG = {
     paddingX: 50,
     width: 330,
     transform: [{ translateX: 5 }],
+    
   },
   bar2: {
     image: Bar2,
     height: 60,
     paddingX: 40,
     width: 300,
-     transform: [{ translateX: 0 }],
+     transform: [{ translateX: 0 }], 
   },
 };
 
 
-const ThemedTextInput = ({ style, background = 'bar1', ...props }) => {
+const ThemedTextInput = ({ style, background = 'bar2', ...props }) => {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
 
@@ -32,8 +33,7 @@ const ThemedTextInput = ({ style, background = 'bar1', ...props }) => {
       <ImageBackground
         source={bar.image}
         resizeMode="stretch"
-        style={{
-          width: '80%',
+        style={{ 
           height: bar.height,
           justifyContent: 'center',
           width: bar.width,
@@ -49,7 +49,9 @@ const ThemedTextInput = ({ style, background = 'bar1', ...props }) => {
               color:  Colors.black,
               paddingHorizontal: bar.paddingX,
               fontFamily: 'Merriweather-Light',
-              fontSize: 16, 
+              fontSize: 16,
+              textAlignVertical: "center",
+               includeFontPadding: false
             },
             style,
           ]}
