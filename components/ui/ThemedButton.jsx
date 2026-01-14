@@ -4,21 +4,26 @@ import { ImageBackground, Pressable, StyleSheet, Text, useColorScheme, View } fr
 import { Colors } from '../../constants/Colors';
 
 import Button1 from "../../assets/ui/buttons/button1-dark.png";
-// import Button2 from '../../assets/ui/buttons/button2.png';
+import Button2 from '../../assets/ui/guilds/button-guild.png';
+
 const BUTTON_CONFIG = {
   button1: {
     image: Button1,
     height: 200, 
     width: 330,
     transform: [{ translateX: -5 }],
+    color: Colors.accentColor1,
+    paddingTop: 8,
   },
-  // button2: {
-  //   image: Button2,
-  //   height: 60,
-  //   paddingX: 40,
-  //   width: 300,
-  //   transform: [{ translateX: 0 }],
-  // },
+  button2: {
+    image: Button2,
+    paddingX: 40,
+    width: 300,
+    height: 100,
+    transform: [{ translateX: 0 }],
+    color: Colors.black,
+    paddingTop: 25,
+  },
 };
 
 function ThemedButton({ style, children, textStyle, type = "button1", ...props}) {
@@ -32,13 +37,13 @@ function ThemedButton({ style, children, textStyle, type = "button1", ...props})
     if (React.isValidElement(children) && children.type === Text) {
       const childStyle = children.props.style || {};
       return React.cloneElement(children, {
-        style: [styles.text, { color: theme.accentColor1 }, childStyle, textStyle],
+        style: [styles.text, { color: button.color }, childStyle, textStyle],
       });
     }
 
     // Otherwise render a Text wrapper with themed style
     return (
-      <Text style={[styles.text, { color: theme.accentColor1 }, textStyle]}>{children}</Text>
+      <Text style={[styles.text, { color: button.color, paddingTop: button.paddingTop }, textStyle]}>{children}</Text>
     );
   };
 
@@ -70,8 +75,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Sofia",
     fontSize: 37,
-    textAlign: "center", 
-    paddingTop: 8,
+    textAlign: "center",  
     paddingLeft: 10,
   },
 });

@@ -8,6 +8,7 @@ export const Colors = {
   
   error: "#ff6b6b",
    black: "#0c0c0cff",
+      accentColor1: '#D89640',
   
   dark: {
     text: "#d4d4d4",

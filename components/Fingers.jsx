@@ -1,29 +1,52 @@
+import LottieView from 'lottie-react-native';
 import { useRef, useState } from "react";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
+import { Colors } from "../constants/Colors";
+import ThemedText from "./ui/ThemedText";
+
+const AnimatedLottie = Animated.createAnimatedComponent(LottieView);
+
+const AnimatedThemedText = Animated.createAnimatedComponent(ThemedText);
 
 export default function Fingers({ onHandDetected }) {
-  const MIN_TOUCHES = 2;      // Чётко столько пальцев нужно
-  const HOLD_TIME = 2500;     // Время удержания
+  const MIN_TOUCHES = 2;       
+  const HOLD_TIME = 2500;    
 
   const [detected, setDetected] = useState(false);
   const [isShining, setIsShining] = useState(false);
-  const [currentPhrase, setCurrentPhrase] = useState(null);
+  
+  const phraseBank = [
+    "Le voile gobelin s'ouvre…",
+    "Les runes murmurent ton nom...",
+    "Un souffle ancien te reconnaît...",
+    "La guilde sourit à ta présence...",
+    "Les esprits gobelins s'éveillent...",
+  ];
+  
+  const currentPhraseRef = useRef(null);
 
   const timerRef = useRef(null);
   const shineAnim = useRef(new Animated.Value(0)).current;
 
+  const animatedTextColor = shineAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [Colors.black, '#35d224'],
+  });
+
   // ---------------- Glow animation ----------------
   const startShine = () => {
+    
+    currentPhraseRef.current = phraseBank[Math.floor(Math.random() * phraseBank.length)];
     Animated.loop(
       Animated.sequence([
         Animated.timing(shineAnim, {
           toValue: 1,
-          duration: 400,
+          duration: 100,
           useNativeDriver: false,
         }),
         Animated.timing(shineAnim, {
           toValue: 0,
-          duration: 400,
+          duration: 1000,
           useNativeDriver: false,
         }),
       ])
@@ -33,6 +56,7 @@ export default function Fingers({ onHandDetected }) {
   const stopShine = () => {
     shineAnim.stopAnimation();
     shineAnim.setValue(0);
+    currentPhraseRef.current = null;
   };
 
   // ---------------- Timer logic ----------------
@@ -63,17 +87,6 @@ export default function Fingers({ onHandDetected }) {
     }
 
     if (count === MIN_TOUCHES) {
-      // choose a random lore phrase to show while holding
-      if (!currentPhrase) {
-        const bank = [
-          "Le voile gobelin s'ouvre…",
-          "Les runes murmurent ton nom.",
-          "Un souffle ancien te reconnaît.",
-          "La guilde sourit à ta présence.",
-          "Les esprits gobelins s'éveillent.",
-        ];
-        setCurrentPhrase(bank[Math.floor(Math.random() * bank.length)]);
-      }
 
       if (!timerRef.current) startHoldTimer();
       if (!isShining) {
@@ -84,12 +97,28 @@ export default function Fingers({ onHandDetected }) {
   };
 
   return (
-    <View
-      style={styles.touchZone}
-      onTouchStart={(e) => processTouches(e.nativeEvent.touches)}
-      onTouchMove={(e) => processTouches(e.nativeEvent.touches)}
-      onTouchEnd={(e) => processTouches(e.nativeEvent.touches)}
-    >
+    <View style={styles.container}>
+      <AnimatedLottie
+        pointerEvents="none"
+        source={require('../assets/lottie/Magma.json')}
+        autoPlay
+        loop
+        style={{
+          width: '90%',
+          height: 300,
+          alignSelf: 'center',
+          marginVertical: -30,
+          transform: [{ scale: shineAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.2] }) }],
+          opacity: isShining ? 1 : 0.9,
+        }}
+      />
+
+      <View
+        style={styles.touchZone}
+        onTouchStart={(e) => processTouches(e.nativeEvent.touches)}
+        onTouchMove={(e) => processTouches(e.nativeEvent.touches)}
+        onTouchEnd={(e) => processTouches(e.nativeEvent.touches)}
+      >
       {/* Glow background */}
       <Animated.View
         style={[
@@ -97,16 +126,17 @@ export default function Fingers({ onHandDetected }) {
           {
             backgroundColor: shineAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: ["#888", "#b9aaff"],
+              outputRange: ["#3e351500", "#3b5c3714"],
             }),
             shadowOpacity: isShining ? 0.5 : 0,
           },
         ]}
       />
 
-      <Text style={styles.text}>
-        {detected ? "Main détectée !" : (isShining && currentPhrase ? currentPhrase : `Pose exactement ${MIN_TOUCHES} doigts`)}
-      </Text>
+      <AnimatedThemedText font="christmasBold" style={[styles.textFingers, { color: animatedTextColor }]}> 
+        {detected ? "Main gobeline reconnue " : (isShining && currentPhraseRef.current ? currentPhraseRef.current : `Pose ${MIN_TOUCHES} doigts ici. \n Lance le rite d'initiation pour découvrir ta guilde`)}
+      </AnimatedThemedText>
+      </View>
     </View>
   );
 }
@@ -115,7 +145,7 @@ const styles = StyleSheet.create({
   touchZone: {
     width: "100%",
     height: 300,
-    backgroundColor: "#888",
+    backgroundColor: "#edb55525",
     borderRadius: 16,
     // justifyContent: "center",
     // alignItems: "center",
@@ -124,14 +154,25 @@ const styles = StyleSheet.create({
 
   glow: {
     ...StyleSheet.absoluteFillObject,
-    shadowColor: "#c7b5ff",
+    shadowColor: "#1ba7325d",
     shadowRadius: 25,
   },
 
   text: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: "white",
-    zIndex: 10,
+    fontSize: 30, 
+    color: Colors.black,
+    // zIndex: 10,
+    textAlign: "center",
+    marginVertical: 110,
+    width: "80%",
+    alignSelf: "center",
   },
+  textFingers:{
+     fontSize: 30, 
+    color: Colors.black,
+     marginTop: 90,
+    textAlign: "center",
+    width: "80%",
+    alignSelf: "center",
+  }
 });
