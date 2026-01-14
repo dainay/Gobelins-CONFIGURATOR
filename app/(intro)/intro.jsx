@@ -47,7 +47,7 @@ export default function IntroRoute() {
         pointerEvents={started ? 'none' : 'auto'}
       >
         <Pressable style={styles.fullArea} onPress={handleStart}>
-          <Text style={styles.startText}>START</Text>
+          <Text style={styles.startText}>Entrer</Text>
         </Pressable>
       </Animated.View>
     </>
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
   },
   startText: {
     color: 'white',
-    fontSize: 32,
-    letterSpacing: 8,
+    fontSize: 28,
+    letterSpacing: 0.5,
+    fontFamily: 'Merriweather-Bold',
   },
 });

@@ -7,10 +7,6 @@ export default function ConfiguratorBackground() {
   const backWallNormalMap = useTexture(require("../../assets/images/configurateur/NormalMap-wall-conf.jpg"));
   const groundTexture = useTexture(require("../../assets/images/configurateur/sol-configurateur.jpg"));
   const groundNormalMap = useTexture(require("../../assets/images/configurateur/NormalMap-ground.jpg"));
-  const textureTonneaux = useTexture(require("../../assets/images/configurateur/tonneau-texture.png"));
-  const textureTable = useTexture(require("../../assets/images/configurateur/table-texture.png"));
-  const textureLights = useTexture(require("../../assets/images/configurateur/texture-light-verte.png"));
-  const textureHerbe = useTexture(require("../../assets/images/configurateur/texture-herbe.png"));
   
   return (
     <>

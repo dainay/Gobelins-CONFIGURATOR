@@ -88,7 +88,7 @@ export default function Scene() {
         <Animated.View
           style={[
             menuStyle,
-            { position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 },
+            { position: "absolute", top: 20, left: 0, right: 0, zIndex: 10 },
           ]}
         >
           <MenuBar />
@@ -122,47 +122,41 @@ export default function Scene() {
           {/* Fog lumineux */}
           <fog attach="fog" args={["#000000", 4, 15]} />
           <ambientLight intensity={1.2} />
-          {!showTutorial && (
-            <>
-              <directionalLight 
-                position={[0, 4, 3.5]} 
-                intensity={1}
-                castShadow
-                shadow-mapSize-width={2048}
-                shadow-mapSize-height={2048}
-                shadow-camera-far={50}
-                shadow-camera-left={-10}
-                shadow-camera-right={10}
-                shadow-camera-top={10}
-                shadow-camera-bottom={-10}
+          <directionalLight 
+            position={[0, 4, 3.5]} 
+            intensity={1}
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-camera-far={50}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
+          />
+
+          {/* Fond du configurateur (mur de fond + sol) */}
+          <Suspense fallback={null}>
+            <ConfiguratorBackground />
+          </Suspense>
+
+          <Suspense fallback={null}>
+            <group position={[0, 1, 0]}>
+              <Avatar
+                accessoire={configuration.accessoire}
+                hair={configuration.hair}
+                cloth={configuration.cloth}
+                face={configuration.face}
+                animation={configuration.animation}
+                pose={configuration.pose}
               />
-
-    
-
-              {/* Fond du configurateur (mur de fond + sol) */}
-              <Suspense fallback={null}>
-                <ConfiguratorBackground />
-              </Suspense>
-
-              <Suspense fallback={null}>
-                <group position={[0, 1, 0]}>
-                  <Avatar
-                    accessoire={configuration.accessoire}
-                    hair={configuration.hair}
-                    cloth={configuration.cloth}
-                    face={configuration.face}
-                    animation={configuration.animation}
-                    pose={configuration.pose}
-                  />
-                </group>
-              </Suspense>
-              {/* Trepied */}
-              <mesh position={[0, -1, 0]}>  
-                <cylinderGeometry args={[1, 1, 0.5, 32]} />
-                <meshStandardMaterial color="red" wireframe={true} />
-              </mesh>
-            </>
-          )}
+            </group>
+          </Suspense>
+          {/* Trepied */}
+          <mesh position={[0, -1, 0]}>  
+            <cylinderGeometry args={[1, 1, 0.5, 32]} />
+            <meshStandardMaterial color="red" wireframe={true} />
+          </mesh>
         </Canvas>
       </View>
 

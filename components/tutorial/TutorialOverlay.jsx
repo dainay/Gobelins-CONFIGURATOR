@@ -1,7 +1,9 @@
-import { ImageBackground, Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { Image, ImageBackground, Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { Colors } from "../../constants/Colors";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
+import GreenButton from "../ui/GreenButton";
+import ProgressDiamonds from "../ui/ProgressDiamonds";
 
 
 const tutorialPages1 = [
@@ -61,20 +63,10 @@ export default function TutorialOverlay() {
                 <View style={styles.contentWrapper}>
                 {/* Indicateur de progression */}
                 <View style={styles.progressContainer}>
-                    <View style={[styles.progressBar, { backgroundColor: theme.iconColor }]}>
-                        <View 
-                            style={[
-                                styles.progressFill, 
-                                { 
-                                    width: `${progressWidth}%`,
-                                    backgroundColor: Colors.primary 
-                                }
-                            ]} 
-                        />
-                    </View>
-                    <Text style={styles.progressText}>
-                        {tutorialStep + 1} / {tutorialPages1.length}
-                    </Text>
+                    <ProgressDiamonds 
+                        currentStep={tutorialStep} 
+                        totalSteps={tutorialPages1.length} 
+                    />
                 </View>
 
                 {/* Contenu principal */}
@@ -82,6 +74,11 @@ export default function TutorialOverlay() {
                     <Text style={styles.titlePageTutorial}>
                         {currentPage.title}
                     </Text>
+                    <Image 
+                        source={require('../../assets/ui/tutorial/bar-subtitle.png')}
+                        style={styles.subtitleTutorialImage}
+                        resizeMode="contain"
+                    />
                     <Text style={styles.descriptionPageTutorial}>
                         {currentPage.description}
                     </Text>
@@ -90,11 +87,7 @@ export default function TutorialOverlay() {
                 {/* Bouton d'action */}
                 <View style={styles.buttonContainer}>
                     {isLastPage && (
-                    <View style={[styles.button, { backgroundColor: Colors.primary }]}>
-                        <Text style={styles.buttonText}>
-                                Démarrer
-                        </Text>
-                    </View>
+                        <GreenButton title="Démarrer" />
                     )}
                     <Text style={styles.hintText}>
                         Appuyez n'importe où pour continuer
@@ -117,11 +110,11 @@ const styles = StyleSheet.create({
         zIndex: 1000,
         justifyContent: "center",
         alignItems: "center",
-        padding: 20,
+        
     },
     containerPageTutorial: {
-        width: "100%",
-        maxWidth: 400,
+        width: "105%",
+        maxWidth: 425,
         height: "65%",
         minHeight: 500, 
         shadowColor: "#000",
@@ -133,6 +126,8 @@ const styles = StyleSheet.create({
         shadowRadius: 20,
         elevation: 10,
         overflow: "hidden", // Pour que l'image ne dépasse pas
+        //borderWidth: 3,
+        //borderColor: "blue",
     },
     backgroundImage: {
         width: "100%",
@@ -140,18 +135,16 @@ const styles = StyleSheet.create({
     },
     contentWrapper: {
         flex: 1,
-        // padding: 24,
+        padding: 24,
         paddingTop: 0,
         paddingBlock: 50,
         justifyContent: "space-between",
     },
     progressContainer: {
-        width: "100%",
-        // marginBottom: 32,
-        borderWidth: 1,
+        width: "70%",
         paddingTop: 24,
-        paddingInline: 36,
-        borderColor: "red",
+        paddingInline: 48,
+        marginHorizontal: "auto",
         height: 60,
         justifyContent: "center",
     },
@@ -176,6 +169,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         marginBottom: 32,
+        paddingInline: 36,
     },
     titlePageTutorial: {
         fontSize: 24,
@@ -184,6 +178,11 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         color: Colors.brownText,
         fontFamily: 'Merriweather-Bold',
+    },
+    subtitleTutorialImage: {
+        width: "50%",
+        marginBottom: 16,
+        alignSelf: "center",
     },
     descriptionPageTutorial: {
         fontSize: 16,
@@ -195,29 +194,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignItems: "center",
-    },
-    button: {
-        width: "100%",
-        paddingVertical: 16,
-        paddingHorizontal: 32,
-        borderRadius: 12,
-        marginBottom: 12,
-        shadowColor: Colors.primary,
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    buttonText: {
-        color: "#ffffff",
-        fontSize: 16,
-        fontWeight: "600",
-        textAlign: "center",
-        letterSpacing: 0.5,
-        fontFamily: 'Merriweather',
+        //borderWidth: 1,
+        //borderColor: "blue",
     },
     hintText: {
         fontSize: 12,
