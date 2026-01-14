@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { useRef, useState } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
 
 export default function Fingers({ onHandDetected }) {
   const MIN_TOUCHES = 2;      // Чётко столько пальцев нужно
@@ -7,6 +7,7 @@ export default function Fingers({ onHandDetected }) {
 
   const [detected, setDetected] = useState(false);
   const [isShining, setIsShining] = useState(false);
+  const [currentPhrase, setCurrentPhrase] = useState(null);
 
   const timerRef = useRef(null);
   const shineAnim = useRef(new Animated.Value(0)).current;
@@ -62,6 +63,18 @@ export default function Fingers({ onHandDetected }) {
     }
 
     if (count === MIN_TOUCHES) {
+      // choose a random lore phrase to show while holding
+      if (!currentPhrase) {
+        const bank = [
+          "Le voile gobelin s'ouvre…",
+          "Les runes murmurent ton nom.",
+          "Un souffle ancien te reconnaît.",
+          "La guilde sourit à ta présence.",
+          "Les esprits gobelins s'éveillent.",
+        ];
+        setCurrentPhrase(bank[Math.floor(Math.random() * bank.length)]);
+      }
+
       if (!timerRef.current) startHoldTimer();
       if (!isShining) {
         setIsShining(true);
@@ -92,7 +105,7 @@ export default function Fingers({ onHandDetected }) {
       />
 
       <Text style={styles.text}>
-        {detected ? "Main détectée !" : `Pose exactement ${MIN_TOUCHES} doigts`}
+        {detected ? "Main détectée !" : (isShining && currentPhrase ? currentPhrase : `Pose exactement ${MIN_TOUCHES} doigts`)}
       </Text>
     </View>
   );

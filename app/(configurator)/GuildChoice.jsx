@@ -1,13 +1,13 @@
-import { GuildsInfo } from '../../constants/GuildsInfo';
 import { router } from 'expo-router';
+import { GuildsInfo } from '../../constants/GuildsInfo';
 
-import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+import { Canvas, useThree } from '@react-three/fiber/native';
+import { Dimensions, Image, StyleSheet, useColorScheme, View } from 'react-native';
 import ThemedButton from '../../components/ui/ThemedButton';
 import ThemedText from '../../components/ui/ThemedText';
-import { Canvas, useThree } from '@react-three/fiber/native';
-import { OrbitControls } from '@react-three/drei/native';
+import { Colors } from '../../constants/Colors';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 import Book from '../(three)/Book';
 import Fingers from '../../components/Fingers';
@@ -33,19 +33,20 @@ const randomGuild = () => {
 
 const selectedGuildData = guild ? GuildsInfo.guilds.find(g => g.id === guild) : null;
 
+  const colorScheme = useColorScheme();
+  const theme = Colors[colorScheme] ?? Colors.light;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.uiBackground }]}> 
       
         <View style={styles.actionContainer}>
             {guild ? ( 
               <>
-              <Text style={styles.result}>Your guild is: {selectedGuildData?.name || guild} Congratulations! </Text>
+              <ThemedText style={styles.result} title={false} font="merriweather">Ta guilde : {selectedGuildData?.name || guild} — bravo !</ThemedText>
               {selectedGuildData?.image && (
                 <Image source={selectedGuildData.image} style={styles.guildImage} resizeMode="contain" />
               )}
-              <Text style={styles.specialText}>
-                This guild is very special because you are in.
-              </Text>
+              <ThemedText style={styles.specialText} font="merriweatherLight">Cette guilde te protège et grandit avec tes bonnes actions.</ThemedText>
 
               <ThemedButton onPress={() => router.replace("/(test)/AnimationChoice")}> 
                 Time to know your inner Energy
@@ -53,10 +54,10 @@ const selectedGuildData = guild ? GuildsInfo.guilds.find(g => g.id === guild) : 
               </>
             ) : (
               <>
-               <View style={styles.content}>
-          <Text style={styles.title}>Are you ready to discover your guild?</Text>
+                <View style={styles.content}>
+          <ThemedText style={styles.title} font="sofia">Prêt·e à découvrir ta guilde&nbsp;?</ThemedText>
 
-          <Text style={styles.description}>Your guild is like your little gobelin family: the more you help others, the more points your guild wins</Text>
+          <ThemedText style={styles.description} font="merriweatherLight">Ta guilde est ta petite famille gobeline : aide les autres et elle gagnera en prestige.</ThemedText>
         </View>
               <View style={styles.canvasContainer}>
                 <Canvas
