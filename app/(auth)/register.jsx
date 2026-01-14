@@ -1,16 +1,26 @@
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, Image } from "react-native";
 import { Link, useRouter } from "expo-router";
+import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Colors } from "../../constants/Colors";
-import { Picker } from "@react-native-picker/picker";
 
-import ThemedView from "../../components/ui/ThemedView";
-import ThemedText from "../../components/ui/ThemedText";
 import Spacer from "../../components/ui/Spacer";
 import ThemedButton from "../../components/ui/ThemedButton";
+import ThemedText from "../../components/ui/ThemedText";
 import ThemedTextInput from "../../components/ui/ThemedTextInput";
+import ThemedView from "../../components/ui/ThemedView";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
+
+import backgroundImage from "../../assets/img/temp-back.png";
+import ThemedPicker from "../../components/ui/ThemedPicker";
+
+const yearItems = [
+  { label: "1ère année", value: "1" },
+  { label: "2ème année", value: "2" },
+  { label: "3ème année", value: "3" },
+  { label: "4ème année", value: "4" },
+  { label: "5ème année", value: "5" },
+];
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +34,7 @@ const Register = () => {
 
   const handleSubmit = async () => {
     if (!email || !password || !name) {
-    setError('All fields are required'); 
+    setError("Tous les champs sont requis"); 
     return;
   }
     // console.log("register form submitted");
@@ -41,53 +51,48 @@ const Register = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedView style={styles.container}>
         <View style={styles.bgImageWrapper} pointerEvents="none">
-          <Image source={require('../../assets/img/skin.png')} style={styles.bgImage} resizeMode="cover" />
+          <Image
+            source={backgroundImage}
+            style={[styles.bgImage]}
+            resizeMode="cover" 
+          />
         </View>
         <Spacer />
-        <ThemedText title={true} style={styles.title}>
-          Register an Account
+        <ThemedText title={true} style={styles.title}  font="christmasBold">
+          Créer un compte
         </ThemedText>
 
-        <ThemedTextInput
-          style={{ width: "80%", marginBottom: 20 }}
-          placeholder="Email"
+        <ThemedTextInput 
+          placeholder="Adresse e-mail"
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}
+          background={"bar1"}
         />
 
-        <ThemedTextInput
-          style={{ width: "80%", marginBottom: 20 }}
-          placeholder="Password"
+        <ThemedTextInput 
+          placeholder="Mot de passe"
           secureTextEntry
           onChangeText={setPassword}
           value={password}
         />
 
-        <ThemedTextInput
-          style={{ width: "80%", marginBottom: 20 }}
-          placeholder="Name"
+        <ThemedTextInput 
+          placeholder="Nom"
           onChangeText={setName}
           value={name}
         />
 
-        <View style={styles.pickerContainer}>
-          <ThemedText style={styles.pickerLabel}>Quelle année êtes-vous?</ThemedText>
-          <Picker
-            selectedValue={year}
-            onValueChange={setYear}
-            style={styles.picker}
-          >
-            <Picker.Item label="1ère année" value="1" />
-            <Picker.Item label="2ème année" value="2" />
-            <Picker.Item label="3ème année" value="3" />
-            <Picker.Item label="4ème année" value="4" />
-            <Picker.Item label="5ème année" value="5" />
-          </Picker>
-        </View>
+        <ThemedPicker
+          label="Quelle année êtes-vous ?"
+          items={yearItems}
+          value={year}
+          onChange={setYear}
+          background="bar2"
+        />
 
         <ThemedButton onPress={handleSubmit}>
-          <Text style={{ color: "#f2f2f2" }}>Register</Text>
+          <Text style={{ color: "#f2f2f2" }}>S'inscrire</Text>
         </ThemedButton>
 
            
@@ -97,9 +102,9 @@ const Register = () => {
         </ThemedText>
       )}
 
-        <Spacer height={100} />
+        <Spacer height={10} />
         <Link href="/login" replace>
-          <ThemedText style={{ textAlign: "center" }}>Login instead</ThemedText>
+          <ThemedText style={{ textAlign: "center", ...styles.link }}>Se connecter</ThemedText>
         </Link>
       </ThemedView>
     </TouchableWithoutFeedback>
@@ -129,7 +134,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 40,
     marginBottom: 30,
   },
   pickerContainer: {
@@ -145,4 +150,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     borderRadius: 8,
   },
+  link: {
+    color: "#ffffffff",
+    marginTop: 10,
+    textAlign: "center",
+    textDecorationLine: 'underline',
+    fontFamily: 'Merriweather-Light', 
+  }
 });
