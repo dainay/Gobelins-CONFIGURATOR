@@ -1,6 +1,7 @@
 import { Audio, Video } from 'expo-av';
+import LottieView from 'lottie-react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet, Vibration } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import ThemedButton from '../../components/ui/ThemedButton';
 import ThemedText from '../../components/ui/ThemedText';
@@ -19,6 +20,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       requiresInteraction: true, 
       // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
       clickText: 'Eveille l\'étincelle',
+      lottieSource: require('../../assets/lottie/anim-etincelle.json'),
       isSkipable: true,
       requireUsername: false,
     },
@@ -39,6 +41,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       requiresInteraction: true, 
       // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
       clickText: 'Mais aujourd\'hui ?',
+      lottieSource: undefined, // Ajoutez votre fichier Lottie ici : require('../../assets/lottie/animation.json')
       isSkipable: true,
       requireUsername: false,
     },
@@ -58,6 +61,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       requiresInteraction: true, 
       // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
       clickText: 'Prêt ?',
+      lottieSource: undefined, // Ajoutez votre fichier Lottie ici : require('../../assets/lottie/animation.json')
       isSkipable: true,
       requireUsername: false,
     },
@@ -82,6 +86,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
   const videoRef1 = useRef(null);
   const audioRef = useRef(null);
   const creativityAudioRef = useRef(null);
+  const lottieRef = useRef(null);
   const fadeAnim0 = useSharedValue(1);
   const fadeAnim1 = useSharedValue(0);
   // const imageFadeAnim = useSharedValue(0); // Système d'image de clic désactivé temporairement
@@ -172,19 +177,20 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
         if (currentVideoRef.current) {
           currentVideoRef.current.pauseAsync();
         }
-        // Marquer la vidéo comme terminée pour permettre le clic
-        setIsVideoFinished(true);
-        // Afficher l'overlay noir rapidement
-        overlayFadeAnim.value = withTiming(0.5, { duration: 200 });
+        // Afficher l'overlay noir avec un fade doux
+        overlayFadeAnim.value = withTiming(0.5, { duration: 600 });
         // Système d'image de clic désactivé temporairement
         // // Afficher l'image de clic si disponible
         // if (currentConfig.clickImage) {
         //   imageFadeAnim.value = withTiming(1, { duration: 300 });
         // }
-        // Afficher le texte de clic si disponible
+        // Afficher le texte de clic si disponible avec un fade doux
         if (currentConfig.clickText) {
-          clickTextFadeAnim.value = withTiming(1, { duration: 300 });
+          clickTextFadeAnim.value = withTiming(1, { duration: 600 });
         }
+        // Marquer la vidéo comme terminée pour permettre le clic
+        setIsVideoFinished(true);
+        // L'animation Lottie sera lancée lors du press (onPressIn)
         return;
       }
 
@@ -197,9 +203,22 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     }
   };
 
+  const handlePressIn = () => {
+    // Ne pas gérer si on est en train de saisir le username
+    if (showUsernameInput) return;
+
+    // Démarrer l'animation Lottie quand on commence à appuyer
+    if (currentConfig.requiresInteraction && isVideoFinished && currentConfig.lottieSource && lottieRef.current) {
+      lottieRef.current.play();
+    }
+  };
+
   const handlePress = async () => {
     // Ne pas gérer le clic si on est en train de saisir le username
     if (showUsernameInput) return;
+
+    // Pour la scène 1, on utilise le maintien (handleLongPress) au lieu du clic
+    if (currentConfig.id === 1) return;
 
     // Vidéo avec interaction : passer à la suivante uniquement si la vidéo est terminée
     if (currentConfig.requiresInteraction && isVideoFinished) {
@@ -226,6 +245,31 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       // imageFadeAnim.value = withTiming(0, { duration: 300 });
       overlayFadeAnim.value = withTiming(0, { duration: 200 });
       clickTextFadeAnim.value = withTiming(0, { duration: 300 });
+      // Arrêter l'animation Lottie
+      if (lottieRef.current) {
+        lottieRef.current.pause();
+      }
+      goToNextVideo();
+    }
+  };
+
+  const handleLongPress = async () => {
+    // Ne pas gérer le maintien si on est en train de saisir le username
+    if (showUsernameInput) return;
+
+    // Maintien uniquement pour la scène 1
+    if (currentConfig.id === 1 && currentConfig.requiresInteraction && isVideoFinished) {
+      // Vibration quand on passe de la partie 1 à la partie 2
+      Vibration.vibrate(200);
+      
+      // Système d'image de clic désactivé temporairement
+      // imageFadeAnim.value = withTiming(0, { duration: 300 });
+      overlayFadeAnim.value = withTiming(0, { duration: 200 });
+      clickTextFadeAnim.value = withTiming(0, { duration: 300 });
+      // Arrêter l'animation Lottie
+      if (lottieRef.current) {
+        lottieRef.current.pause();
+      }
       goToNextVideo();
     }
   };
@@ -299,6 +343,11 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     overlayFadeAnim.value = 0;
     clickTextFadeAnim.value = 0;
     setIsVideoFinished(false);
+    
+    // Réinitialiser l'animation Lottie
+    if (lottieRef.current) {
+      lottieRef.current.reset();
+    }
     
     // Arrêter et décharger l'audio quand on change de vidéo
     if (audioRef.current) {
@@ -463,7 +512,13 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
   }, []);
 
   return (
-    <Pressable style={styles.container} onPress={handlePress}>
+    <Pressable 
+      style={styles.container} 
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onLongPress={handleLongPress}
+      delayLongPress={2500}
+    >
       <Animated.View style={[styles.videoContainer, animatedStyle0]}>
         <Video
           ref={videoRef0}
@@ -482,12 +537,23 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
           onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(status, 1)}
         />
       </Animated.View>
-      {currentConfig.requiresInteraction && isVideoFinished && (
+      {currentConfig.requiresInteraction && (
         <Animated.View style={[styles.interactionOverlay, overlayStyle]} />
       )}
-      {currentConfig.requiresInteraction && currentConfig.clickText && isVideoFinished && (
+      {currentConfig.requiresInteraction && currentConfig.clickText && (
         <Animated.View style={[styles.clickTextContainer, clickTextStyle]}>
           <ThemedText style={styles.clickText}>{currentConfig.clickText}</ThemedText>
+        </Animated.View>
+      )}
+      {currentConfig.requiresInteraction && currentConfig.lottieSource && isVideoFinished && (
+        <Animated.View style={[styles.lottieContainer, clickTextStyle]} pointerEvents="none">
+          <LottieView
+            ref={lottieRef}
+            source={currentConfig.lottieSource}
+            autoPlay={false}
+            loop={true}
+            style={styles.lottieAnimation}
+          />
         </Animated.View>
       )}
       {/* Système d'image de clic désactivé temporairement */}
@@ -512,12 +578,12 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       {showUsernameInput && currentConfig.requireUsername && (
         <Animated.View style={[styles.usernameIntroOverlay, usernameOverlayIntroStyle]}>
           <ThemedView style={styles.usernameIntroContainer}>
-            <ThemedText style={styles.usernameIntroQuestion}>Enter your username</ThemedText>
+            <ThemedText style={styles.usernameIntroQuestion}>Quel est son nom ?</ThemedText>
             <ThemedTextInput 
               style={styles.usernameIntroInput} 
               value={username} 
               onChangeText={setUsername} 
-              placeholder="Quel est son nom ?" 
+              placeholder="On jugera pas…" 
               autoFocus={true}
             />
             <ThemedButton 
@@ -573,6 +639,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
+  lottieContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 60,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 20,
+  },
+  lottieAnimation: {
+    width: '100%',
+    aspectRatio: 1,
+  },
   clickText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -581,7 +661,7 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     // textShadowOffset: { width: 0, height: 2 },
     // textShadowRadius: 4,
-    fontFamily: 'LibreBaskerville',
+    fontFamily: 'Merriweather-Bold',
   },
   //IMAGE CTA INTRO - Système d'image de clic désactivé temporairement
   // clickImageIntro: {
@@ -640,6 +720,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
     letterSpacing: 0.5,
+    fontFamily: 'Merriweather-Bold',
   },
   usernameIntroInput: {
     width: '100%',
@@ -649,6 +730,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontSize: 16,
     borderWidth: 2,
+    fontFamily: 'Merriweather',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
