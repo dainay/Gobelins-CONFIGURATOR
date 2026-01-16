@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export const useGobelinStore = create((set, get) => ({
-  name: "",
+  name: "Gobelin",
   guild: "",
   configuration: {
     hair: null,

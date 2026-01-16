@@ -4,7 +4,13 @@ import { ImageBackground, Pressable, StyleSheet, Text, useColorScheme, View } fr
 import { Colors } from '../../constants/Colors';
 
 import Button1 from "../../assets/ui/buttons/button1-dark.png";
+import Button3 from '../../assets/ui/buttons/button3.png';
+import Button4 from '../../assets/ui/buttons/button4.png';
+import Button5 from '../../assets/ui/buttons/button5.png';
+import Button6 from '../../assets/ui/buttons/button6.png';
 import Button2 from '../../assets/ui/guilds/button-guild.png';
+
+
 
 const BUTTON_CONFIG = {
   button1: {
@@ -24,15 +30,47 @@ const BUTTON_CONFIG = {
     color: Colors.black,
     paddingTop: 25,
   },
+  button3: {
+    image: Button3,
+    height: 150,
+    width: 300,
+    transform: [{ translateX: 0 }],
+    color: Colors.accentColor1,
+    paddingTop: 10,
+  },
+  button4: {
+    image: Button4,
+    height: 170,
+    width: 350,
+    transform: [{ translateX: 0 }],
+    color: Colors.black,
+    paddingTop: 8,
+  },
+  button5: {  
+    image: Button5,
+    height: 90,
+    width: 240,
+    transform: [{ translateX: 0 }],
+    color: Colors.black,
+    paddingTop: 5,
+  },
+  button6: {
+    image: Button6,
+    height: 100,
+    width: 250,
+    transform: [{ translateX: 0 }],
+    color: 'white',
+    paddingTop: -5,
+  },
 };
 
-function ThemedButton({ style, children, textStyle, type = "button1", ...props}) {
+function ThemedButton({ style, children, textStyle, type = "button1", width, height, ...props}) {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
 
   const button = BUTTON_CONFIG[type] ?? BUTTON_CONFIG.button1;
 
-  // If children is a React element of type Text, clone it and merge styles so theme color applies.
+  
   const renderLabel = () => {
     if (React.isValidElement(children) && children.type === Text) {
       const childStyle = children.props.style || {};
@@ -40,8 +78,7 @@ function ThemedButton({ style, children, textStyle, type = "button1", ...props})
         style: [styles.text, { color: button.color }, childStyle, textStyle],
       });
     }
-
-    // Otherwise render a Text wrapper with themed style
+ 
     return (
       <Text style={[styles.text, { color: button.color, paddingTop: button.paddingTop }, textStyle]}>{children}</Text>
     );
@@ -53,10 +90,10 @@ function ThemedButton({ style, children, textStyle, type = "button1", ...props})
         source={button.image}
         resizeMode="stretch"
         style={{
-          width: "80%",
-          height: button.height,
+          
+          height: height || button.height,
           justifyContent: "center",
-          width: button.width,
+          width: width || button.width,
           transform: button.transform,
           marginVertical: 5,
         }}
@@ -73,7 +110,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   text: {
-    fontFamily: "Sofia",
+    fontFamily: "ChristmasBold",
     fontSize: 37,
     textAlign: "center",  
     paddingLeft: 10,

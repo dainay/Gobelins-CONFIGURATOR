@@ -1,6 +1,6 @@
 export const ANIMATIONS = {
   catwalk: {
-    animName: "catwalk",
+    animName: "ANIM_catwalk",
     ideal: {
       energy: 0.1,
       rhythm: 0.05,
@@ -14,7 +14,7 @@ export const ANIMATIONS = {
   },
 
   waveSlow: {
-    animName: "danse7wave",
+    animName: "ANIM_danse1",
     ideal: {
       energy: 0.15,
       rhythm: 0.15,
@@ -28,7 +28,7 @@ export const ANIMATIONS = {
   },
 
   waveDance: {
-    animName: "danse8",
+    animName: "ANIM_danse5",
     ideal: {
       energy: 0.3,
       rhythm: 0.25,
@@ -42,7 +42,7 @@ export const ANIMATIONS = {
   },
 
   jazzStep: {
-    animName: "danse4",
+    animName: "ANIM_danse2",
     ideal: {
       energy: 0.45,
       rhythm: 0.7,
@@ -56,7 +56,7 @@ export const ANIMATIONS = {
   },
 
   hiphopSoft: {
-    animName: "hiphop",
+    animName: "ANIM_danse3",
     ideal: {
       energy: 0.6,
       rhythm: 0.6,
@@ -70,7 +70,7 @@ export const ANIMATIONS = {
   },
 
   hiphopHard: {
-    animName: "danse6twerk",
+    animName: "ANIM_danse4", //cancan
     ideal: {
       energy: 0.8,
       rhythm: 0.8,
@@ -80,11 +80,11 @@ export const ANIMATIONS = {
     },
     title: "Ton Gobelin lâche tout !",
     reason: "Mouvements rapides et très rythmés.",
-    detail: "Un groove intense et percutant.",
+    detail: "Can-can ! Une énergie débordante.",
   },
 
   cancan: {
-    animName: "danse3",
+    animName: "ANIM_danse7",
     ideal: {
       energy: 0.7,
       rhythm: 0.85,
@@ -98,7 +98,7 @@ export const ANIMATIONS = {
   },
 
   twerk: {
-    animName: "danse6twerk",
+    animName: "ANIM_danse6",
     ideal: {
       energy: 0.85,
       rhythm: 0.55,
@@ -107,12 +107,12 @@ export const ANIMATIONS = {
       batteryMood: 0.6,
     },
     title: "Ton Gobelin se déchaîne sans retenue.",
-    reason: "Beaucoup d'énergie et de chaos.",
-    detail: "Une danse brute, libre et provocante.",
+    reason: "Pas mal d'énergie et de chaos.",
+    detail: "Une danse libre et provocante.",
   },
 
   breakdance: {
-    animName: "danse5",
+    animName: "ANIM_danse8",
     ideal: {
       energy: 0.95,
       rhythm: 0.9,
