@@ -31,18 +31,7 @@ const openWorld = () => {
   const router = useRouter();
   const { user } = useUser();
   const gobelinName = useGobelinStore((s) => s.name);
-  const gobelin = useGobelinStore((s) => s);
-
-  // console.log(
-  //   "User in openWorld:",
-  //   user,
-  //   Colors,
-  //   Arrow,
-  //   ImgBack,
-  //   Main,
-  //   ThemedText,
-  //   ThemedButton
-  // );
+  const gobelin = useGobelinStore((s) => s); 
 
   const [listGobelins, setListGobelins] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +39,22 @@ const openWorld = () => {
   const [page, setPage] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+
+const [activeAnimation, setActiveAnimation] = useState(null);
+
+useEffect(() => {
+  setActiveAnimation(null);
+}, [currentIndex]);
+
+const playTempAnimation = () => {
+  if (!currentGobelin?.animation) return;
+
+  setActiveAnimation(currentGobelin.animation);
+
+  setTimeout(() => {
+    setActiveAnimation(null);
+  }, 3000);
+};
 
 
   const loadGobelins = async (targetPage, { append = false } = {}) => {
@@ -60,14 +65,7 @@ const openWorld = () => {
     const safe = list || [];
 
     setListGobelins((prev) => (append ? [...prev, ...safe] : safe));
-    setPage(targetPage);
-
-    console.log(
-      append ? "Appended gobelins:" : "Loaded gobelins:",
-      safe.length,
-      "page:",
-      targetPage
-    );
+    setPage(targetPage); 
 
     if (safe.length === 0) setHasMore(false);
 
@@ -180,8 +178,7 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
                 left: -25,
                 right: 0,
                 height: 400,
-                zIndex: 999,
-                pointerEvents: "none",
+                zIndex: 999, 
               }}
             >
             <ThemedText style={[styles.names, {fontSize: 34, top: 40 }]} font="sofia">{currentGobelin?.name || "Incognito"}</ThemedText>
@@ -212,8 +209,7 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
                         default:
                           return;
                       }
-                    };
-                    // Ensure camera looks at the character's approximate origin
+                    }; 
                     state.camera.lookAt(0, 1, 0);
                   }}
                 >
@@ -222,8 +218,9 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
 
                   <Suspense fallback={null}>
                     <Avatar
-                      //  animation={currentGobelin.animation}
-                      pose={currentGobelin.pose}
+                      onPress={playTempAnimation}
+                      animation={activeAnimation}
+                      pose={!activeAnimation ? currentGobelin.pose : undefined}
                       hair={currentGobelin.hair}
                       cloth={currentGobelin.cloth}
                     />

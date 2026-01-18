@@ -30,7 +30,7 @@ function hideAllByPrefix(root, prefix) {
 }
 
 
-export default function Avatar({ hair, cloth, face, accesssoire, animation,  pose,
+export default function Avatar({onPress, hair, cloth,  animation,  pose,
 }) {
   const { scene, animations } = useGLTF(Model);
   const group = useRef();
@@ -54,8 +54,7 @@ export default function Avatar({ hair, cloth, face, accesssoire, animation,  pos
     // hats
     if (!hair) hideAllByPrefix(roots.head, "hat_");
     else toggleVariantsByPrefix(roots.head, "hat_", hair);
-
-    // outfits (в GLB есть "outfit1" без underscore!)
+ 
     if (!cloth) hideAllByPrefix(roots.hips, "outfit");
     else toggleVariantsByPrefix(roots.hips, "outfit", cloth);
   }, [hair, cloth, roots]);
@@ -76,7 +75,7 @@ const playAction = (name, fade = 0.25) => {
 };
 
 useEffect(() => { 
-  const name = pose || animation;
+  const name = animation || pose;
   playAction(name, 0.3);
 }, [pose, animation, actions]); 
 
@@ -92,9 +91,20 @@ useEffect(() => {
 
   return (
     <>
-      {/* remove axesHelper in production */}
-      {/* <axesHelper args={[2]} /> */}
-      <primitive ref={group} object={scene} scale={0.9} />
+      <group>
+        
+        <mesh
+           position={[0, 0.7, 0]}  
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            onPress?.();
+          }}
+        >
+          <boxGeometry args={[1.3, 1.7, 1.2]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+        <primitive ref={group} object={scene} scale={0.9} />
+      </group>
     </>
   );
 }
