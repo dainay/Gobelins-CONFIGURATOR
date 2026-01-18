@@ -20,6 +20,7 @@ import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useMenuStore } from "../../src/store/menuStore";
 import Avatar from "./Avatar";
 import ConfiguratorBackground from "./ConfiguratorBackground";
+import Cylinder from "./Cylinder";
 
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
@@ -88,7 +89,7 @@ export default function Scene() {
         <Animated.View
           style={[
             menuStyle,
-            { position: "absolute", top: 20, left: 0, right: 0, zIndex: 10 },
+            { position: "absolute", top: 25, left: 0, right: 0, zIndex: 10 },
           ]}
         >
           <MenuBar />
@@ -143,20 +144,19 @@ export default function Scene() {
           <Suspense fallback={null}>
             <group position={[0, 1, 0]}>
               <Avatar
-                accessoire={configuration.accessoire}
+                // accessoire={configuration.accessoire}
                 hair={configuration.hair}
                 cloth={configuration.cloth}
-                face={configuration.face}
+                // face={configuration.face}
                 animation={configuration.animation}
                 pose={configuration.pose}
               />
             </group>
           </Suspense>
-          {/* Trepied */}
-          <mesh position={[0, -1, 0]}>  
-            <cylinderGeometry args={[1, 1, 0.5, 32]} />
-            <meshStandardMaterial color="red" wireframe={true} />
-          </mesh>
+          {/* Trepied - Test visible */}
+          <Suspense fallback={null}>
+            <Cylinder />
+          </Suspense>
         </Canvas>
       </View>
 

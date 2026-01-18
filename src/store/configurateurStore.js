@@ -31,12 +31,13 @@ export const useConfigurateurStore = create((set) => ({
       x = 0;
       y = 1.4;
       lookAtY = 1.0;
-    } else if (tab === "face") {
-      zoom = 1.6;
-      x = 0;
-      y = 1.9;
-      lookAtY = 1.9;
     }
+    // else if (tab === "face") {
+    //   zoom = 1.6;
+    //   x = 0;
+    //   y = 1.9;
+    //   lookAtY = 1.9;
+    // }
     set({ 
       activeTab: tab ,
       cameraZoom: zoom,

@@ -82,6 +82,8 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
   const [username, setUsername] = useState('');
   const [showUsernameInput, setShowUsernameInput] = useState(false);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
+  const [videoError, setVideoError] = useState(null);
+  const isLottiePlayingRef = useRef(false); // Pour éviter de relancer l'animation plusieurs fois
   const videoRef0 = useRef(null);
   const videoRef1 = useRef(null);
   const audioRef = useRef(null);
@@ -157,7 +159,12 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     // Ne traiter que les événements de la vidéo active
     if (videoIndex !== activeVideo) return;
     
-
+    // Mettre à jour le statut d'erreur
+    if (status.error) {
+      setVideoError(status.error || 'Erreur lors de la lecture de la vidéo');
+    } else if (status.isLoaded) {
+      setVideoError(null);
+    }
     
     if (status.didJustFinish) {
 
@@ -207,8 +214,9 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     // Ne pas gérer si on est en train de saisir le username
     if (showUsernameInput) return;
 
-    // Démarrer l'animation Lottie quand on commence à appuyer
-    if (currentConfig.requiresInteraction && isVideoFinished && currentConfig.lottieSource && lottieRef.current) {
+    // Démarrer l'animation Lottie quand on commence à appuyer (une seule fois)
+    if (currentConfig.requiresInteraction && isVideoFinished && currentConfig.lottieSource && lottieRef.current && !isLottiePlayingRef.current) {
+      isLottiePlayingRef.current = true;
       lottieRef.current.play();
     }
   };
@@ -245,10 +253,12 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       // imageFadeAnim.value = withTiming(0, { duration: 300 });
       overlayFadeAnim.value = withTiming(0, { duration: 200 });
       clickTextFadeAnim.value = withTiming(0, { duration: 300 });
-      // Arrêter l'animation Lottie
+      // Arrêter et réinitialiser l'animation Lottie
       if (lottieRef.current) {
         lottieRef.current.pause();
+        lottieRef.current.reset();
       }
+      isLottiePlayingRef.current = false;
       goToNextVideo();
     }
   };
@@ -266,16 +276,24 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       // imageFadeAnim.value = withTiming(0, { duration: 300 });
       overlayFadeAnim.value = withTiming(0, { duration: 200 });
       clickTextFadeAnim.value = withTiming(0, { duration: 300 });
-      // Arrêter l'animation Lottie
+      // Arrêter et réinitialiser l'animation Lottie
       if (lottieRef.current) {
         lottieRef.current.pause();
+        lottieRef.current.reset();
       }
+      isLottiePlayingRef.current = false;
       goToNextVideo();
     }
   };
 
   const handleSkipIntro = () => {
     overlayFadeAnim.value = withTiming(0, { duration: 200 });
+    // Arrêter l'animation Lottie si elle est en cours
+    if (lottieRef.current) {
+      lottieRef.current.pause();
+      lottieRef.current.reset();
+    }
+    isLottiePlayingRef.current = false;
     goToNextVideo();
   }
 
@@ -314,13 +332,24 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       if (videoRef0.current) {
         const config = videoConfig[0];
         try {
+          console.log('Loading first video:', config.source);
           await videoRef0.current.loadAsync(
             config.source,
-            { shouldPlay: shouldStart, isLooping: false }
+            { shouldPlay: false, isLooping: false }
           );
+          console.log('First video loaded successfully');
+          setVideoError(null);
+          // Si shouldStart est déjà true, démarrer la vidéo immédiatement
+          if (shouldStart) {
+            console.log('shouldStart is true, playing video immediately');
+            await videoRef0.current.playAsync();
+          }
         } catch (error) {
-          console.log('Error loading/playing video:', error);
+          console.error('Error loading/playing video:', error);
+          setVideoError(error.message || 'Erreur lors du chargement de la vidéo');
         }
+      } else {
+        console.log('videoRef0.current is null');
       }
     };
     // Petit délai pour s'assurer que le ref est disponible
@@ -329,12 +358,47 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
 
   // Démarrer la vidéo quand shouldStart devient true
   useEffect(() => {
-    if (shouldStart && videoRef0.current && currentIndex === 0 && activeVideo === 0) {
-      videoRef0.current.playAsync().catch((error) => {
-        console.log('Error playing video:', error);
-      });
-    }
-  }, [shouldStart]);
+    const startVideo = async () => {
+      if (shouldStart && videoRef0.current && currentIndex === 0 && activeVideo === 0) {
+        console.log('shouldStart changed to true, attempting to play video');
+        try {
+          // Vérifier que la vidéo est chargée avant de la jouer
+          const status = await videoRef0.current.getStatusAsync();
+          console.log('Video status:', status);
+          if (status.isLoaded) {
+            console.log('Video is loaded, playing...');
+            await videoRef0.current.playAsync();
+            console.log('Video play command sent');
+          } else {
+            console.log('Video not loaded yet, waiting...');
+            // Si la vidéo n'est pas encore chargée, attendre un peu et réessayer
+            setTimeout(async () => {
+              try {
+                const retryStatus = await videoRef0.current.getStatusAsync();
+                console.log('Retry video status:', retryStatus);
+                if (retryStatus.isLoaded) {
+                  await videoRef0.current.playAsync();
+                  console.log('Video play command sent after delay');
+                } else {
+                  console.log('Video still not loaded after delay');
+                }
+              } catch (error) {
+                console.error('Error playing video after delay:', error);
+              }
+            }, 200);
+          }
+        } catch (error) {
+          console.error('Error playing video:', error);
+        }
+      } else {
+        if (!shouldStart) console.log('shouldStart is false');
+        if (!videoRef0.current) console.log('videoRef0.current is null');
+        if (currentIndex !== 0) console.log('currentIndex is not 0:', currentIndex);
+        if (activeVideo !== 0) console.log('activeVideo is not 0:', activeVideo);
+      }
+    };
+    startVideo();
+  }, [shouldStart, currentIndex, activeVideo]);
 
   // Masquer l'image de clic et réinitialiser l'état quand on change de vidéo
   useEffect(() => {
@@ -343,11 +407,14 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
     overlayFadeAnim.value = 0;
     clickTextFadeAnim.value = 0;
     setIsVideoFinished(false);
+    setVideoError(null);
     
     // Réinitialiser l'animation Lottie
     if (lottieRef.current) {
       lottieRef.current.reset();
+      lottieRef.current.pause();
     }
+    isLottiePlayingRef.current = false;
     
     // Arrêter et décharger l'audio quand on change de vidéo
     if (audioRef.current) {
@@ -526,6 +593,10 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
           resizeMode="cover"
           volume={1.0}
           onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(status, 0)}
+          onError={(error) => {
+            console.error('Video 0 error:', error);
+            setVideoError('Erreur lors de la lecture de la vidéo');
+          }}
         />
       </Animated.View>
       <Animated.View style={[styles.videoContainer, styles.videoOverlay, animatedStyle1]}>
@@ -535,6 +606,10 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
           resizeMode="cover"
           volume={1.0}
           onPlaybackStatusUpdate={(status) => handlePlaybackStatusUpdate(status, 1)}
+          onError={(error) => {
+            console.error('Video 1 error:', error);
+            setVideoError('Erreur lors de la lecture de la vidéo');
+          }}
         />
       </Animated.View>
       {currentConfig.requiresInteraction && (
@@ -553,6 +628,12 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
             autoPlay={false}
             loop={true}
             style={styles.lottieAnimation}
+            onAnimationFinish={() => {
+              // Réinitialiser le flag quand l'animation se termine (si loop est false)
+              // Mais avec loop=true, cette fonction ne sera jamais appelée
+              // On la garde au cas où on change loop à false plus tard
+              isLottiePlayingRef.current = false;
+            }}
           />
         </Animated.View>
       )}
@@ -593,6 +674,12 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
               Valider
             </ThemedButton>
           </ThemedView>
+        </Animated.View>
+      )}
+      {videoError && (
+        <Animated.View style={[styles.errorContainer]}>
+          <ThemedText style={styles.errorText}>{videoError}</ThemedText>
+          <ThemedText style={styles.errorSubtext}>Vérifiez que les fichiers vidéo existent dans assets/video/intro/</ThemedText>
         </Animated.View>
       )}
     </Pressable>
@@ -705,6 +792,8 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 20,
     alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -751,5 +840,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
+  },
+  //ERROR
+  errorContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    zIndex: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 12,
+    fontFamily: 'Merriweather-Bold',
+  },
+  errorSubtext: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+    fontFamily: 'Merriweather',
   },
 });

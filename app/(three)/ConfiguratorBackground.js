@@ -2,10 +2,10 @@ import { useTexture } from "@react-three/drei/native";
 
 export default function ConfiguratorBackground() {
   // Charger la texture du mur de fond
-  const backWallTexture = useTexture(require("../../assets/images/configurateur/fond-configurateur.jpg"));
+  const backWallTexture = useTexture(require("../../assets/images/configurateur/fond-configurateur-resize.jpg"));
   // Charger la normal map
   const backWallNormalMap = useTexture(require("../../assets/images/configurateur/NormalMap-wall-conf.jpg"));
-  const groundTexture = useTexture(require("../../assets/images/configurateur/sol-configurateur.jpg"));
+  const groundTexture = useTexture(require("../../assets/images/configurateur/sol-configurateur-resize.jpg"));
   const groundNormalMap = useTexture(require("../../assets/images/configurateur/NormalMap-ground.jpg"));
   
   return (

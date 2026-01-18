@@ -13,7 +13,7 @@ export default function GreenButton({
             <ImageBackground 
                 source={require('../../assets/ui/buttons/green-button.png')}
                 style={styles.buttonImage}
-                resizeMode="stretch"
+                resizeMode="contain"
             >
                 <Text style={[styles.buttonText, textStyle]}>
                     {title}
@@ -25,7 +25,7 @@ export default function GreenButton({
 
 const styles = StyleSheet.create({
     button: {
-        height: 56,
+        height: 80,
         marginBottom: 12,
         shadowColor: Colors.primary,
         shadowOffset: {
@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
         textAlign: "center",
         letterSpacing: 0.5,
         fontFamily: 'Merriweather',
-        textShadowColor: '#000',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2,
+        // textShadowColor: '#000',
+        // textShadowOffset: { width: 1, height: 1 },
+        // textShadowRadius: 2,
     },
 });

@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ImageBackground, StyleSheet, TouchableOpacity, View } from "react-native";
 import ProgressDiamonds from "../../components/ui/ProgressDiamonds";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useMenuStore } from "../../src/store/menuStore";
@@ -63,22 +63,18 @@ export default function MenuBar() {
           activeOpacity={isFirstMenu ? 1 : 0.7}
         >
           <ImageBackground
-            source={require('../../assets/ui/menu-bar/pierre-gauche.png')}
+            source={isFirstMenu 
+              ? require('../../assets/ui/menu-bar/pierre-gauche-off.png')
+              : require('../../assets/ui/menu-bar/pierre-gauche-on.png')
+            }
             style={styles.sideButtonBackground}
             resizeMode="cover"
-          >
-            <Text style={[
-              styles.sideButtonText,
-              isFirstMenu && styles.sideButtonTextDisabled
-            ]}>
-              ‹
-            </Text>
-          </ImageBackground>
+          />
         </TouchableOpacity>
 
         {/* Conteneur des diamants de progression au milieu */}
         <ImageBackground
-          source={require('../../assets/ui/menu-bar/barre-bois.png')}
+          source={require('../../assets/ui/menu-bar/barre-bois-crop.png')}
           style={styles.menuButtons}
           resizeMode="stretch"
         >
@@ -97,17 +93,13 @@ export default function MenuBar() {
           activeOpacity={isLastMenu ? 1 : 0.7}
         >
           <ImageBackground
-            source={require('../../assets/ui/menu-bar/pierrre-droite.png')}
+            source={isLastMenu 
+              ? require('../../assets/ui/menu-bar/pierre-droite-off.png')
+              : require('../../assets/ui/menu-bar/pierre-droite-on.png')
+            }
             style={styles.sideButtonBackground}
             resizeMode="cover"
-          >
-            <Text style={[
-              styles.sideButtonText,
-              isLastMenu && styles.sideButtonTextDisabled
-            ]}>
-              ›
-            </Text>
-          </ImageBackground>
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -141,14 +133,6 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
-  },
-  sideButtonText: {
-    fontSize: 32,
-    color: "#007AFF",
-    fontWeight: "bold",
-  },
-  sideButtonTextDisabled: {
-    color: "#999",
   },
   menuButtons: {
     justifyContent: "center",

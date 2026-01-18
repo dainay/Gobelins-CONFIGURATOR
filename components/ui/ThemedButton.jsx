@@ -15,8 +15,8 @@ import Button2 from '../../assets/ui/guilds/button-guild.png';
 const BUTTON_CONFIG = {
   button1: {
     image: Button1,
-    height: 200, 
-    width: 330,
+    height: 150,
+    width: 250,
     transform: [{ translateX: -5 }],
     color: Colors.accentColor1,
     paddingTop: 8,
