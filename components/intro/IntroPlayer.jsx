@@ -1,6 +1,6 @@
 import { Audio, Video } from 'expo-av';
 import LottieView from 'lottie-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Vibration } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import ThemedButton from '../../components/ui/ThemedButton';
@@ -18,7 +18,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       source: require('../../assets/video/intro/intro-partie-1.mp4'),
       isLooping: false, 
       requiresInteraction: true, 
-      // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
+      clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
       clickText: 'Eveille l\'étincelle',
       lottieSource: require('../../assets/lottie/anim-etincelle.json'),
       isSkipable: true,

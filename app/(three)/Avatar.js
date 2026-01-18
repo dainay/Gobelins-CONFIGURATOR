@@ -1,91 +1,88 @@
 import { useAnimations, useGLTF } from "@react-three/drei/native";
-import React, { useEffect, useMemo, useRef } from "react";
-import Model from "../../assets/models/bake.glb";
+import { useEffect, useMemo, useRef } from "react";
+// import Model from "../../assets/models/bake.glb";
+import Model from "../../assets/models/GOBLINK6.glb";
 
-export default function ObjectLoad({
-  hair,
-  cloth,
-  // face,
-  // accesssoire,
-  animation,
-  pose,
+// ======= visibility utils =======
+function setVisibleDeep(obj, visible) {
+  if (!obj) return;
+  obj.visible = visible;
+  obj.traverse?.((o) => {
+    o.visible = visible;
+  });
+}
+
+function toggleVariantsByPrefix(root, prefix, chosenName) {
+  if (!root) return;
+
+  root.children.forEach((child) => {
+    if (!child.name.startsWith(prefix)) return;
+    setVisibleDeep(child, child.name === chosenName);
+  });
+}
+
+function hideAllByPrefix(root, prefix) {
+  if (!root) return;
+  root.children.forEach((child) => {
+    if (!child.name.startsWith(prefix)) return;
+    setVisibleDeep(child, false);
+  });
+}
+
+
+export default function Avatar({onPress, hair, cloth,  animation,  pose,
 }) {
   const { scene, animations } = useGLTF(Model);
-  const { actions } = useAnimations(animations, scene);
+  const group = useRef();
+  const { actions } = useAnimations(animations, group);
   const currentAction = useRef(null);
 
   // ---------- CACHE GROUPS in MEMO ----------
-  const groups = useMemo(() => {
+  const roots = useMemo(() => {
     return {
-      accessoires: scene.getObjectByName("Accessoires"),
-      hair: scene.getObjectByName("Cheveux"),
-      clothes: scene.getObjectByName("Tenue"),
-      face: scene.getObjectByName("Visage"),
+      head: scene.getObjectByName("Ctrl_Head"), // hat_* root
+      hips: scene.getObjectByName("Ctrl_Hips"), // outfit* root
     };
   }, [scene]);
 
-  console.log("avaliable animations into Avatar:", animations);
+  // console.log("avaliable animations into Avatar:", animations);
 
-  // ---------- FIX MATERIALS ONCE MB remove ----------
-  // useMemo(() => {
-  //   scene.traverse((obj) => {
-  //     if (!obj.isMesh || !obj.material) return;
+   // ---------- SHOW/HIDE HATS + OUTFITS ----------
+  useEffect(() => {
+    if (!roots.head || !roots.hips) return;
 
-  //     if (obj.material.isMeshBasicMaterial) {
-  //       const m = obj.material;
-  //       obj.material = new MeshStandardMaterial({
-  //         color: m.color,
-  //         map: m.map || null,
-  //         roughness: 0.6,
-  //         metalness: 0.1,
-  //       });
-  //       m.dispose();
-  //     }
-  //     obj.material.needsUpdate = true;
-  //   });
-  // }, [scene]);
+    // hats
+    if (!hair) hideAllByPrefix(roots.head, "hat_");
+    else toggleVariantsByPrefix(roots.head, "hat_", hair);
+ 
+    if (!cloth) hideAllByPrefix(roots.hips, "outfit");
+    else toggleVariantsByPrefix(roots.hips, "outfit", cloth);
+  }, [hair, cloth, roots]);
 
   // ---------- APPLY POSE ANIMATION ----------
-  useEffect(() => {
-    if (!pose || !actions[pose]) return;
+ 
+const playAction = (name, fade = 0.25) => {
+  if (!name || !actions?.[name]) return;
 
-    const nextAction = actions[pose];
-    
-    console.log("Playing animation:", pose);
-     // stop previous
-  if (currentAction.current && currentAction.current !== nextAction) {
-    currentAction.current.fadeOut(0.3);
+  const next = actions[name];
+
+  if (currentAction.current && currentAction.current !== next) {
+    currentAction.current.fadeOut(fade);
   }
 
-  // play new
-  nextAction
-    .reset()
-    .fadeIn(0.3)
-    .play();
+  next.reset().fadeIn(fade).play();
+  currentAction.current = next;
+};
 
-  currentAction.current = nextAction;
+useEffect(() => { 
+  const name = animation || pose;
+  playAction(name, 0.3);
+}, [pose, animation, actions]); 
 
-}, [pose, actions]); 
-
-  // ---------- SHOW/HIDE GROUPS ----------
-  useEffect(() => {
-    const applyVisibility = (group, targetName) => {
-      if (!group) return;
-      group.children.forEach((child) => {
-        child.visible = child.name === targetName;
-      });
-    };
-
-    // applyVisibility(groups.accessoires, accesssoire);
-    applyVisibility(groups.hair, hair);
-    applyVisibility(groups.clothes, cloth);
-    // applyVisibility(groups.face, face);
-  }, [hair, cloth, /* face, accesssoire, */ groups]);
-
-  // ---------- ACTIVATE SHADOWS ----------
+  // ---------- SHADOWS (mesh + skinnedMesh) ----------
   useEffect(() => {
     scene.traverse((obj) => {
-      if (obj.isMesh) {
+      if (obj.isMesh || obj.isSkinnedMesh) {
         obj.castShadow = true;
         obj.receiveShadow = true;
       }
@@ -94,9 +91,20 @@ export default function ObjectLoad({
 
   return (
     <>
-      {/* remove axesHelper in production */}
-      {/* <axesHelper args={[2]} /> */}
-      <primitive object={scene} scale={0.9} />
+      <group>
+        
+        <mesh
+           position={[0, 0.7, 0]}  
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            onPress?.();
+          }}
+        >
+          <boxGeometry args={[1.3, 1.7, 1.2]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+        <primitive ref={group} object={scene} scale={0.9} />
+      </group>
     </>
   );
 }

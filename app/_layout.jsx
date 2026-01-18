@@ -43,8 +43,7 @@ export default function RootLayout() {
   // Ne pas bloquer l'app si les polices ne se chargent pas
   // L'app continuera avec les polices système par défaut
   // On ne vérifie plus fontsLoaded pour le rendu, l'app démarre toujours
- if (!fontsLoaded) return null;
- 
+
   return (
     <UserProvider>
       <StatusBar style="auto" />

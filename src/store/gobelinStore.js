@@ -1,12 +1,10 @@
 import { create } from "zustand";
 
 export const useGobelinStore = create((set, get) => ({
-  name: "",
+  name: "Gobelin",
   guild: "",
   configuration: {
     hair: null,
-    face: null,
-    accessoire: null,
     cloth: null,
     animation: null,
     pose: null,
@@ -44,8 +42,6 @@ export const useGobelinStore = create((set, get) => ({
     guild: "",
     configuration: {
       hair: null,
-      face: null,
-      accessoire: null,
       cloth: null,
       animation: null,
       pose: null,

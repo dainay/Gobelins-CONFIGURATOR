@@ -5,7 +5,7 @@ import { supabase } from "./supabase";
  * Save the complete gobelin from Zustand store to Supabase 
  */
 
-export async function saveGobelinToDatabase(userId) {
+export async function saveGobelinToDatabase(userId, userName) {
   try {
     // Get complete gobelin data from Zustand
     const gobelinData = useGobelinStore.getState().getGobelinData();
@@ -16,6 +16,7 @@ export async function saveGobelinToDatabase(userId) {
         .insert({
           ...gobelinData,
           user_id: userId,
+          user_name: userName,
         })
         .select()
         .single();
@@ -51,8 +52,6 @@ export async function loadGobelinFromDatabase(userId) {
       setGuild(data.guild || "");
       setConfig({
         hair: data.hair || AvatarOptions.hair[0].label,
-        // face: data.face || AvatarOptions.face[0].label,
-        // accessoire: data.accessoire || AvatarOptions.accessoire[0].label,
         cloth: data.cloth || AvatarOptions.cloth[0].label,
         animation: data.animation || AvatarOptions.animation[0].label,
         pose: data.pose || AvatarOptions.pose[0].label,
@@ -65,11 +64,9 @@ export async function loadGobelinFromDatabase(userId) {
       console.log("No gobelin found for user, setting defaults");
       setConfig({
         hair: AvatarOptions.hair[0].label,
-        // face: AvatarOptions.face[0].label,
-        // accessoire: AvatarOptions.accessoire[0].label,
         cloth: AvatarOptions.cloth[0].label,
         animation: AvatarOptions.animation[0].label,
-        pose: AvatarOptions.pose[0].label,
+        pose: 'ANIM_talking',
       });
       return null;
     }
