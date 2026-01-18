@@ -50,6 +50,7 @@ export default function OptionsPanel() {
   console.log("Active Tab:", activeTab);
 
   const handlePress = (item) => {
+    
     setConfig({ [activeTab]: item.label });
   };
 

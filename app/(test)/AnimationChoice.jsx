@@ -1,23 +1,23 @@
-import { useState, useRef, useEffect } from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
 import { Canvas } from "@react-three/fiber/native";
-import { Accelerometer } from "expo-sensors";
 import * as Battery from "expo-battery";
 import { router } from "expo-router";
+import { Accelerometer } from "expo-sensors";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { ImageBackground, StyleSheet, View } from "react-native";
 
-import { useGobelinStore } from "../../src/store/gobelinStore";
+import { ANIMATIONS } from "../../constants/Animations";
 import { useUser } from "../../hooks/useUser";
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
+import { useGobelinStore } from "../../src/store/gobelinStore";
 import { calculateShakeMetrics } from "../../src/utils/calculateShakeMetrics";
 import { chooseAnimation } from "../../src/utils/chooseAnimation";
-import { ANIMATIONS } from "../../constants/Animations";
 
-import ThemedView from "../../components/ui/ThemedView";
-import ThemedText from "../../components/ui/ThemedText";
-import ThemedButton from "../../components/ui/ThemedButton";
 import Avatar from "../(three)/Avatar";
+import ConfiguratorBackground from "../(three)/ConfiguratorBackground";
+import ThemedButton from "../../components/ui/ThemedButton";
+import ThemedText from "../../components/ui/ThemedText";
+import { Colors } from "../../constants/Colors";
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function AnimationChoice() {
   const [isTesting, setIsTesting] = useState(false);
@@ -37,6 +37,8 @@ export default function AnimationChoice() {
   const lastValueRef = useRef(null);
   const prevDiffRef = useRef(null);
   const subscriptionRef = useRef(null);
+
+  console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD:", user);
 
   // ---------------------------------------------------
   // CALCULATE ANIMATION ON TEST FINISH
@@ -134,7 +136,7 @@ export default function AnimationChoice() {
     setConfig({ animation: ANIMATIONS[selectedAnimation].animName });
     
     // Save complete gobelin to database
-    await saveGobelinToDatabase(user.id);
+    await saveGobelinToDatabase(user.id, user.user_metadata.display_name);
     
     router.replace("/(dashboard)/openWorld");
   };
@@ -162,51 +164,75 @@ export default function AnimationChoice() {
           };
         }}
       >
-        <ambientLight intensity={1.5} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
-        
-        <Avatar 
-          hair={gobelin.configuration.hair}
-          cloth={gobelin.configuration.cloth}
-          face={gobelin.configuration.face}
-          accesssoire={gobelin.configuration.accessoire} 
-          pose={selectedAnimation ? ANIMATIONS[selectedAnimation].animName : gobelin.configuration.pose}
-        />
+        <ambientLight intensity={0.9} />
+        <directionalLight position={[5, 5, 5]} intensity={2} />
+         {/* Fond du configurateur (mur de fond + sol) */}
+          <Suspense fallback={null}>
+            <ConfiguratorBackground />
+          </Suspense>
+         <Suspense fallback={null}>
+          <Avatar 
+            hair={gobelin.configuration.hair}
+            cloth={gobelin.configuration.cloth}
+            face={gobelin.configuration.face}
+            accesssoire={gobelin.configuration.accessoire} 
+            pose={selectedAnimation ? ANIMATIONS[selectedAnimation].animName : gobelin.configuration.pose}
+          />
+        </Suspense>
       </Canvas>
 
+<ImageBackground
+  source={require('../../assets/ui/animations/anim-back.png')}
+        resizeMode="stretch"
+        style={{ 
+          position: "absolute",
+          bottom: 20,
+          width: "100%",
+          alignSelf: "center",
+          minHeight: 390,
+          justifyContent: "center",
+          left: "50%",
+          transform: [{ translateX: "-50%" }],
+            
+        }}
+>
       <View style={styles.contentContainer}>
         {!testFinished ? (
           !isTesting ? (
             <>
-              <ThemedText  style={styles.text}>Relie ton énergie à ton Gobelin…</ThemedText>
-              <ThemedButton onPress={startTest}>
-                Commencer le test
+            <ThemedText style={[styles.title, { color: Colors.black }]}>C’est le moment final !</ThemedText>
+              <ThemedText style={[styles.text, { color: Colors.black }]}>Transmets ton énergie à ton Gobelin. Secoue ton téléphone : danse douce ou rage totale… à toi de décider.</ThemedText>
+              <ThemedButton onPress={startTest} type="button6" textStyle={{ fontSize: 30, paddingbottom: 5 }}>
+               En scène !
               </ThemedButton>
             </>
           ) : (
             <>
-              <ThemedText style={styles.text}>Continue de bouger…</ThemedText>
-              <ThemedText style={styles.text}>{timeLeft}s</ThemedText>
+              <View style ={{ alignItems: "center", textAlign: 'center' }}>
+                <ThemedText style={[styles.text, { color: Colors.black, textAlign: 'center' }]}>Continue de bouger…</ThemedText>
+                <ThemedText style={[styles.text, { color: Colors.black, textAlign: 'center' }]}>{timeLeft}s</ThemedText>
+              </View>
             </>
           )
         ) : selectedAnimation ? (
-          <>
-            <ThemedText style={styles.text}>
+          <View style={{ alignItems: "center", textAlign: 'center'}}>
+            <ThemedText style={[styles.text, { color: Colors.black }]}>
               {ANIMATIONS[selectedAnimation].title}
             </ThemedText>
 
-            <ThemedText style={styles.text}>
+            <ThemedText style={[styles.text, { color: Colors.black }]}>
               {ANIMATIONS[selectedAnimation].detail}
             </ThemedText>
 
-            <ThemedButton onPress={handleConfirm}>
+            <ThemedButton onPress={handleConfirm}  type="button4" textStyle={{ fontSize: 30, marginTop: 10 }}>
               Mon gobelin est prêt !
             </ThemedButton>
-          </>
+          </View>
         ) : (
-          <ThemedText style={styles.text}>Calcul de ton animation...</ThemedText>
+          <ThemedText style={[styles.text, { color: Colors.black }]}>Calcul de ton animation...</ThemedText>
         )}
       </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -219,13 +245,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     left: 20,
-    right: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    right: 20, 
     padding: 20,
     borderRadius: 12,
     alignItems: "center",
   },
-  text: {
-    color: '#000',
+  text: { 
+    fontSize: 20,
+    textAlign: 'center',
+    fontFamily: "MerriweatherLight",
+    width: "80%",
+    textAlign: "center",
+    selfalign: "center",
+  },
+  title: {
+  
+    fontSize: 38,
+    textAlign: 'center',
+    marginBottom: 15,
+    fontFamily: "Sofia",
   },
 });
