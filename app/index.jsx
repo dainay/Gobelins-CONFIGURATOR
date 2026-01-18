@@ -12,7 +12,6 @@ import { useUser } from "../hooks/useUser";
 
 import GuestOnly from "../components/auth/GuestOnly";
 
-import Spacer from "../components/ui/Spacer";
 import ThemedButton from "../components/ui/ThemedButton";
 import ThemedLogo from "../components/ui/ThemedLogo";
 import ThemedText from "../components/ui/ThemedText";
@@ -76,9 +75,7 @@ const Home = () => {
         </View>
         <ThemedLogo />
 
-        {/* <Spacer height={20}/> */}
-
-        <View style={{ position: 'relative', width: '100%', height: 150, alignItems: 'center', justifyContent: 'center' }}>
+        {/* <View style={{ position: 'relative', width: '100%', height: 150, alignItems: 'center', justifyContent: 'center' }}>
           <ThemedText
             title={true}
             font="christmasBold"
@@ -93,9 +90,9 @@ const Home = () => {
               style={[styles.goblink, { textShadowColor: theme.magicGreen }]}
             >
               Gob'Link
-            </ThemedText>
+            </ThemedText> 
           </Animated.View>
-        </View>
+        </View> */}
 
         <ThemedText title={true} font="sofia" style={[styles.secondTitle]}>
           Connecte à ton Gobelin
@@ -137,20 +134,18 @@ const Home = () => {
           </ThemedText>
         </Link>
 
-        {/* <Link href="/home">
+         <Link href="/home">
         <ThemedText style={styles.link}>
           TABS
         </ThemedText>
-      </Link> */}
-
-          <Spacer></Spacer>
+      </Link> 
         <Link href="/Scene">
           <ThemedText style={styles.link}>DEMO 3D</ThemedText>
         </Link>
 
-        {/* <Link href="/introManager">
+         <Link href="/introManager">
           <ThemedText style={styles.link}>INTRO</ThemedText>
-        </Link> */}
+        </Link> 
       </GuestOnly>
     </ThemedView>
   );

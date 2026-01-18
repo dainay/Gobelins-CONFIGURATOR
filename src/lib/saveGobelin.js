@@ -1,6 +1,6 @@
-import { supabase } from "./supabase";
-import { useGobelinStore } from "../store/gobelinStore";
 import { AvatarOptions } from "../../constants/AvatarOptions";
+import { useGobelinStore } from "../store/gobelinStore";
+import { supabase } from "./supabase";
 /**
  * Save the complete gobelin from Zustand store to Supabase 
  */
@@ -51,8 +51,8 @@ export async function loadGobelinFromDatabase(userId) {
       setGuild(data.guild || "");
       setConfig({
         hair: data.hair || AvatarOptions.hair[0].label,
-        face: data.face || AvatarOptions.face[0].label,
-        accessoire: data.accessoire || AvatarOptions.accessoire[0].label,
+        // face: data.face || AvatarOptions.face[0].label,
+        // accessoire: data.accessoire || AvatarOptions.accessoire[0].label,
         cloth: data.cloth || AvatarOptions.cloth[0].label,
         animation: data.animation || AvatarOptions.animation[0].label,
         pose: data.pose || AvatarOptions.pose[0].label,
@@ -65,8 +65,8 @@ export async function loadGobelinFromDatabase(userId) {
       console.log("No gobelin found for user, setting defaults");
       setConfig({
         hair: AvatarOptions.hair[0].label,
-        face: AvatarOptions.face[0].label,
-        accessoire: AvatarOptions.accessoire[0].label,
+        // face: AvatarOptions.face[0].label,
+        // accessoire: AvatarOptions.accessoire[0].label,
         cloth: AvatarOptions.cloth[0].label,
         animation: AvatarOptions.animation[0].label,
         pose: AvatarOptions.pose[0].label,

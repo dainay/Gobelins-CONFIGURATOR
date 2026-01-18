@@ -1,13 +1,12 @@
+import { useAnimations, useGLTF } from "@react-three/drei/native";
 import React, { useEffect, useMemo, useRef } from "react";
-import { useGLTF, useAnimations } from "@react-three/drei/native";
-import { MeshStandardMaterial } from "three";
 import Model from "../../assets/models/bake.glb";
 
 export default function ObjectLoad({
   hair,
   cloth,
-  face,
-  accesssoire,
+  // face,
+  // accesssoire,
   animation,
   pose,
 }) {
@@ -77,11 +76,11 @@ export default function ObjectLoad({
       });
     };
 
-    applyVisibility(groups.accessoires, accesssoire);
+    // applyVisibility(groups.accessoires, accesssoire);
     applyVisibility(groups.hair, hair);
     applyVisibility(groups.clothes, cloth);
-    applyVisibility(groups.face, face);
-  }, [hair, cloth, face, accesssoire, groups]);
+    // applyVisibility(groups.face, face);
+  }, [hair, cloth, /* face, accesssoire, */ groups]);
 
   // ---------- ACTIVATE SHADOWS ----------
   useEffect(() => {

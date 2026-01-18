@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, ImageBackground, StyleSheet, TouchableOpacity, View } from "react-native";
 import SelectorPanel from "./SelectorPanel";
 
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
@@ -22,28 +22,50 @@ export default function TabsBar() {
   }, [activeMenu]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tabs}>
-        {TabsInfo[activeMenu].map((t) => (
-          <TouchableOpacity 
-            style={activeTab === t.id ? styles.activeContainer : styles.normalContainer} 
-            key={t.id} 
-            onPress={() => setActiveTab(t.id)}
-            activeOpacity={1}
-          >
-            <Image source={t.icon} style={activeTab === t.id ? styles.active : styles.normal} />
-          </TouchableOpacity>
-        ))}
+    <View style={styles.globalContainer}>
+      <View style={styles.container}>
+        <View style={styles.tabs}>
+          {TabsInfo[activeMenu].map((t) => {
+            const isActive = activeTab === t.id;
+            return (
+              <TouchableOpacity 
+                style={isActive ? styles.activeContainer : styles.normalContainer} 
+                key={t.id} 
+                onPress={() => setActiveTab(t.id)}
+                activeOpacity={1}
+              >
+                <ImageBackground
+                  source={isActive 
+                    ? require("../../assets/ui/tabs-bar/onglet-active.png")
+                    : require("../../assets/ui/tabs-bar/onglet-inactive.png")
+                  }
+                  style={styles.tabBackground}
+                  resizeMode="contain"
+                >
+                  <Image source={t.icon} style={isActive ? styles.active : styles.normal} />
+                </ImageBackground>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        <SelectorPanel activeTab={activeTab} />
       </View>
-      <SelectorPanel activeTab={activeTab} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  globalContainer: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "transparent",
+  },
   container: {
     width: "100%",
     backgroundColor: "transparent",
+
+    // borderWidth: 2,
+    // borderColor: "blue",
     // borderTopWidth: 1,
   },
   saveContainer: {
@@ -53,6 +75,8 @@ const styles = StyleSheet.create({
     padding: 8,
     gap: 12,
     backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "purple",
   },
   saveMessage: {
     fontSize: 14,
@@ -60,14 +84,13 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   tabs: {
-    height: 80,
+    height: 100,
     width: "100%",
     flexDirection: "row",
     // justifyContent: "space-around",
     gap: 8,
-    paddingInline: 16,
+    paddingInline: 8,
     backgroundColor: "transparent",
-    border: "1px solid red",
     marginBottom: -16,
     
   },
@@ -82,19 +105,20 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 1,
   },
-  active: {
-    // width: 40,
-    height: "100%",
-    tintColor: "#007AFF",
-    backgroundColor: "green",
+  tabBackground: {
     width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  active: {
+    width: 40,
+    height: 40,
+    tintColor: "#007AFF",
   },
   normal: {
-    // width: 40,
-    height: "100%",
+    width: 40,
+    height: 40,
     tintColor: "#999",
-    backgroundColor: "yellow",
-    flex: 1,
-    width: "100%",
   },
 });

@@ -8,8 +8,8 @@ import Button1 from "../../assets/ui/buttons/button1-dark.png";
 const BUTTON_CONFIG = {
   button1: {
     image: Button1,
-    height: 200, 
-    width: 330,
+    height: 150,
+    width: 250,
     transform: [{ translateX: -5 }],
   },
   // button2: {
@@ -48,7 +48,7 @@ function ThemedButton({ style, children, textStyle, type = "button1", ...props})
         source={button.image}
         resizeMode="stretch"
         style={{
-          width: "80%",
+          width: "50%",
           height: button.height,
           justifyContent: "center",
           width: button.width,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Sofia",
-    fontSize: 37,
+    fontSize: 24,
     textAlign: "center", 
     paddingTop: 8,
     paddingLeft: 10,

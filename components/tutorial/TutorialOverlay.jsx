@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     },
     progressContainer: {
         width: "70%",
-        paddingTop: 24,
+        paddingTop: 12,
         paddingInline: 48,
         marginHorizontal: "auto",
         height: 60,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Merriweather-Bold',
     },
     subtitleTutorialImage: {
-        width: "50%",
+        width: "100%",
         marginBottom: 16,
         alignSelf: "center",
     },
