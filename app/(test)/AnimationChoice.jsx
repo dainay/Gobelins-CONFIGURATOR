@@ -38,6 +38,8 @@ export default function AnimationChoice() {
   const prevDiffRef = useRef(null);
   const subscriptionRef = useRef(null);
 
+  console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD:", user);
+
   // ---------------------------------------------------
   // CALCULATE ANIMATION ON TEST FINISH
   // ---------------------------------------------------
@@ -134,7 +136,7 @@ export default function AnimationChoice() {
     setConfig({ animation: ANIMATIONS[selectedAnimation].animName });
     
     // Save complete gobelin to database
-    await saveGobelinToDatabase(user.id);
+    await saveGobelinToDatabase(user.id, user.user_metadata.display_name);
     
     router.replace("/(dashboard)/openWorld");
   };

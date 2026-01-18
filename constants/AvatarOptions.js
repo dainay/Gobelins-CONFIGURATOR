@@ -38,12 +38,12 @@ export const AvatarOptions = {
     { id: "an9", label: "ANIM_danse7" },
     { id: "an10", label: "ANIM_danse8" },
 
-    { id: "an11", label: "ANIM_gesture" },
-    { id: "an12", label: "ANIM_gettinghit" },
-    { id: "an13", label: "ANIM_salut" },
-    { id: "an14", label: "ANIM_scream" },
-    { id: "an15", label: "ANIM_talking" },
-    { id: "an16", label: "ANIM_thankful" }, 
+    // { id: "an11", label: "ANIM_gesture" },
+    // { id: "an12", label: "ANIM_gettinghit" },
+    // { id: "an13", label: "ANIM_salut" },
+    // { id: "an14", label: "ANIM_scream" },
+    // { id: "an15", label: "ANIM_talking" },
+    // { id: "an16", label: "ANIM_thankful" }, 
   ],
 
    pose: [
@@ -54,12 +54,12 @@ export const AvatarOptions = {
     { id: "POSE_5", label: "POSE_5" },
     { id: "POSE_6", label: "POSE_6" },
 
-     { id: "an11", label: "ANIM_gesture" },
-    { id: "an12", label: "ANIM_gettinghit" },
-    { id: "an13", label: "ANIM_salut" },
-    { id: "an14", label: "ANIM_scream" },
-    { id: "an15", label: "ANIM_talking" },
-    { id: "an16", label: "ANIM_thankful" }, 
+    //  { id: "an11", label: "ANIM_gesture" },
+    // { id: "an12", label: "ANIM_gettinghit" },
+    // { id: "an13", label: "ANIM_salut" },
+    // { id: "an14", label: "ANIM_scream" },
+    // { id: "an15", label: "ANIM_talking" },
+    // { id: "an16", label: "ANIM_thankful" }, 
  
     // { id: "an2", label: "ANIM_catwalk"},
     // { id: "an3", label: "ANIM_danse1" },

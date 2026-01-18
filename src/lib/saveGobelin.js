@@ -5,7 +5,7 @@ import { supabase } from "./supabase";
  * Save the complete gobelin from Zustand store to Supabase 
  */
 
-export async function saveGobelinToDatabase(userId) {
+export async function saveGobelinToDatabase(userId, userName) {
   try {
     // Get complete gobelin data from Zustand
     const gobelinData = useGobelinStore.getState().getGobelinData();
@@ -16,6 +16,7 @@ export async function saveGobelinToDatabase(userId) {
         .insert({
           ...gobelinData,
           user_id: userId,
+          user_name: userName,
         })
         .select()
         .single();
