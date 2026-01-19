@@ -13,6 +13,11 @@ export const SOUNDS = {
     hello: require("../../assets/audio/gobelin/hello.mp3"),
     scream2: require("../../assets/audio/gobelin/scream2.mp3"),
     chatting: require("../../assets/audio/gobelin/chatting.mp3"),
+    suffering: require("../../assets/audio/gobelin/suffering.mp3"),
+    stomach: require("../../assets/audio/gobelin/stomach.mp3"),
+    suffering1: require("../../assets/audio/gobelin/suffering1.mp3"),
+    suffering2: require("../../assets/audio/gobelin/suffering2.mp3"),
+    suffering3: require("../../assets/audio/gobelin/suffering3.mp3"),
   },
 };
 
@@ -76,5 +81,32 @@ export async function playSfx(key, { volume = 0.8 } = {}) {
     await sfx.sound.playAsync();
   } catch (e) {
     console.log("playSfx error:", e);
+  }
+}
+
+export async function stopSfx(key) {
+  try {
+    const sfx = sfxCache.get(key);
+    if (!sfx) return;
+    await sfx.sound.stopAsync();
+    await sfx.sound.setPositionAsync(0);
+  } catch (e) {
+    console.log("stopSfx error:", e);
+  }
+}
+
+export async function stopAllSfx() {
+  try {
+    const values = Array.from(sfxCache.values());
+    await Promise.all(
+      values.map(async (s) => {
+        try {
+          await s.sound.stopAsync();
+          await s.sound.setPositionAsync(0);
+        } catch {}
+      }),
+    );
+  } catch (e) {
+    console.log("stopAllSfx error:", e);
   }
 }

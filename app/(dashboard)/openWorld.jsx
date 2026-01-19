@@ -27,9 +27,11 @@ import ThemedText from "../../components/ui/ThemedText";
 import { fetchGobelinsPage } from "../../src/lib/listGobelins";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
-import { playSfx } from "../../src/lib/sounds";
+import { useRef } from "react";
+import { playSfx, stopAllSfx } from "../../src/lib/sounds";
 
 const openWorld = () => {
+  const animTimeoutRef = useRef(null);
   const router = useRouter();
   const { user } = useUser();
   const gobelinName = useGobelinStore((s) => s.name);
@@ -44,19 +46,52 @@ const openWorld = () => {
 
   const [activeAnimation, setActiveAnimation] = useState(null);
 
-  useEffect(() => {
+  const [countTouch, setCountTouch] = useState(0);
+
+  const cancelCurrentInteraction = async () => {
+    if (animTimeoutRef.current) {
+      clearTimeout(animTimeoutRef.current);
+      animTimeoutRef.current = null;
+    }
     setActiveAnimation(null);
+    try {
+      await stopAllSfx();
+    } catch (e) {
+      console.log("stopAllSfx error:", e);
+    }
+  };
+
+  useEffect(() => {
+    cancelCurrentInteraction();
+    setCountTouch(0);
   }, [currentIndex]);
 
-  const playTempAnimation = () => {
+  const playTempAnimation = async () => {
     if (!currentGobelin?.animation) return;
 
-    setActiveAnimation(currentGobelin.animation);
-    playSfx("scream");
+    await cancelCurrentInteraction();
 
-    setTimeout(() => {
-      setActiveAnimation(null);
-    }, 3000);
+    setCountTouch((c) => {
+      const nextCount = c + 1;
+
+      let chosenAnim = currentGobelin.animation;
+      let audioKey = `suffering${Math.floor(Math.random() * 3) + 1}`;
+
+      if (nextCount > 2) {
+        chosenAnim = "ANIM_scream";
+        audioKey = "scream";
+      }
+
+      setActiveAnimation(chosenAnim);
+      playSfx(audioKey);
+
+      animTimeoutRef.current = setTimeout(() => {
+        setActiveAnimation(null);
+        animTimeoutRef.current = null;
+      }, 4000);
+
+      return nextCount;
+    });
   };
 
   const loadGobelins = async (targetPage, { append = false } = {}) => {
@@ -89,16 +124,11 @@ const openWorld = () => {
     [listGobelins, currentIndex],
   );
 
-  //   const msgs = [
-  //   "Personne ici — les Gobelins fait la sieste ",
-  //   "Aucun Gobelin en vue — le tien est le premier ! ",
-  //   "Les Gobelins sont en grève aujourd'hui ✊",
-  //   "Silence gobelinique — sois le premier"
-  // ];
-  // const msg = msgs[Math.floor(Math.random()*msgs.length)];
-
   const goNext = async () => {
     if (loading || loadingMore) return;
+
+    await cancelCurrentInteraction();
+    setCountTouch(0);
 
     if (currentIndex < listGobelins.length - 1) {
       setCurrentIndex((i) => i + 1);
@@ -112,12 +142,14 @@ const openWorld = () => {
 
     if (newItems.length > 0) {
       setCurrentIndex((i) => i + 1);
-    } else {
-      console.log("No more gobelins");
     }
   };
 
-  const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
+  const goPrev = async () => {
+    await cancelCurrentInteraction();
+    setCountTouch(0);
+    setCurrentIndex((i) => Math.max(0, i - 1));
+  };
 
   return (
     <ThemedView safe={true} style={styles.container}>
