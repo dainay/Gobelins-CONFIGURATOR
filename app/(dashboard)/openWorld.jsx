@@ -87,8 +87,7 @@ useEffect(() => {
   const currentGobelin = useMemo(
     () => listGobelins[currentIndex] ?? null,
     [listGobelins, currentIndex]
-  );
-  console.log("Current gobelin DDDDDDDDDDDDDDDD:", currentGobelin);
+  ); 
 
   //   const msgs = [
   //   "Personne ici — les Gobelins fait la sieste ",
@@ -129,7 +128,11 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
       </View>
 
       {/* ==================HEADER==================== */}
-      <ImageBackground
+      <Pressable
+          style={styles.avatarSection}
+          onPress={() => router.replace("/(dashboard)/profile")}
+        >
+           <ImageBackground
         source={Header}
         resizeMode="stretch"
         style={{
@@ -140,10 +143,7 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
           position: "relative",
         }}
       >
-        <Pressable
-          style={styles.avatarSection}
-          onPress={() => router.replace("/(dashboard)/profile")}
-        >
+       
           <ThemedText
             font="sofia"
             style={[styles.gobelinName, { color: Colors.black }]}
@@ -153,8 +153,9 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
           <ThemedText style={styles.userName}>
             de {user?.user_metadata?.display_name || "User"}
           </ThemedText>
-        </Pressable>
+      
       </ImageBackground>
+        </Pressable>
 
       {/* ==================CARDS (centered vertically)==================== */}
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -315,7 +316,7 @@ const styles = StyleSheet.create({
   avatarSection: {
     position: "absolute",
     top: 50,
-    left: 140,
+    left: 0,
     width: 230,
   },
   avatarText: {

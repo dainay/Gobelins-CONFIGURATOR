@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber/native";
 import { router } from "expo-router";
 import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -21,6 +22,7 @@ import { useMenuStore } from "../../src/store/menuStore";
 import Avatar from "./Avatar";
 import ConfiguratorBackground from "./ConfiguratorBackground";
 import Cylinder from "./Cylinder";
+
 
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
@@ -52,6 +54,16 @@ export default function Scene() {
       tabsY.value = withTiming(150);
     }
   }, [showTutorial]);
+
+  const [activeAnimation, setActiveAnimation] = useState(null);
+
+  const playTempAnimation = () => {
+    setActiveAnimation("ANIM_gettinghit");
+
+    setTimeout(() => {
+      setActiveAnimation(null);
+    }, 3000);
+  };
 
   const menuStyle = useAnimatedStyle(() => ({
     opacity: menuOpacity.value,
@@ -119,12 +131,12 @@ export default function Scene() {
           <CameraController />
 
           <color attach="background" args={["#000000"]} />
- 
+
           {/* Fog lumineux */}
           <fog attach="fog" args={["#000000", 4, 15]} />
           <ambientLight intensity={1.2} />
-          <directionalLight 
-            position={[0, 4, 3.5]} 
+          <directionalLight
+            position={[0, 4, 3.5]}
             intensity={1}
             castShadow
             shadow-mapSize-width={2048}
@@ -144,12 +156,11 @@ export default function Scene() {
           <Suspense fallback={null}>
             <group position={[0, 1, 0]}>
               <Avatar
-                // accessoire={configuration.accessoire}
+                onPress={playTempAnimation}
                 hair={configuration.hair}
                 cloth={configuration.cloth}
-                // face={configuration.face}
-                animation={configuration.animation}
-                pose={configuration.pose}
+                animation={activeAnimation || configuration.animation}
+                pose={!activeAnimation || configuration.pose}
               />
             </group>
           </Suspense>

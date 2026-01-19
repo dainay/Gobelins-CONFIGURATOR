@@ -28,6 +28,7 @@ export const AvatarOptions = {
   ], 
 
   animation: [ 
+    { id: "an13", label: "ANIM_thankful" },
     { id: "an2", label: "ANIM_catwalk"},
     { id: "an3", label: "ANIM_danse1" },
     { id: "an4", label: "ANIM_danse2" },
@@ -40,7 +41,7 @@ export const AvatarOptions = {
 
     // { id: "an11", label: "ANIM_gesture" },
     // { id: "an12", label: "ANIM_gettinghit" },
-    // { id: "an13", label: "ANIM_salut" },
+    //  { id: "an13", label: "ANIM_salut" },
     // { id: "an14", label: "ANIM_scream" },
     // { id: "an15", label: "ANIM_talking" },
     // { id: "an16", label: "ANIM_thankful" }, 

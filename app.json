@@ -17,7 +17,6 @@
       "softwareKeyboardLayoutMode": "resize",
       "package": "com.dainay.gobelink"
     },
-    
     "web": {
       "output": "static"
     },
@@ -35,7 +34,8 @@
         }
       ],
       "expo-asset",
-      "expo-video"
+      "expo-video",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,
