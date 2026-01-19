@@ -1,19 +1,37 @@
-import { Audio } from "expo-audio"; // API expo-audio
+import { Audio } from "expo-av"; // use expo-av Audio API
+
+export const SOUNDS = {
+  //   bgm: {
+  //     world: require("../../assets/audio/gobelin/bgm_world.mp3"),
+  //     menu: require("../../assets/audio/gobelin/bgm_menu.mp3"),
+  //   },
+  sfx: {
+    laugh: require("../../assets/audio/gobelin/laugh.mp3"),
+    roating: require("../../assets/audio/gobelin/roating.mp3"),
+    speach: require("../../assets/audio/gobelin/speach.mp3"),
+    scream: require("../../assets/audio/gobelin/scream.mp3"),
+    hello: require("../../assets/audio/gobelin/hello.mp3"),
+    scream2: require("../../assets/audio/gobelin/scream2.mp3"),
+    chatting: require("../../assets/audio/gobelin/chatting.mp3"),
+  },
+};
 
 let bgm = null;
 let sfxCache = new Map();
 
-export async function initAudio() {
-  // важно: на iOS режимы/микс и т.п. настраиваются тут
-  // expo-audio docs: background требует отдельной конфигурации в standalone apps
-  // но для обычного “внутри приложения” этого хватает
-}
+export async function initAudio() {}
 
-export async function playBgm(assetModule, { volume = 0.25, loop = true } = {}) {
+export async function playBgm(key, { volume = 0.25, loop = true } = {}) {
   try {
+    const asset = SOUNDS.bgm[key];
+    if (!asset) {
+      console.warn("Unknown BGM:", key);
+      return;
+    }
+
     await stopBgm();
 
-    bgm = await Audio.Sound.createAsync(assetModule, {
+    bgm = await Audio.Sound.createAsync(asset, {
       shouldPlay: true,
       isLooping: loop,
       volume,
@@ -36,11 +54,17 @@ export async function stopBgm() {
   }
 }
 
-export async function playSfx(key, assetModule, { volume = 0.8 } = {}) {
+export async function playSfx(key, { volume = 0.8 } = {}) {
   try {
- 
+    console.log("playSfx TRY PLAY SOUND:", key);
+    const asset = SOUNDS.sfx[key];
+    if (!asset) {
+      console.warn("Unknown SFX:", key);
+      return;
+    }
+
     if (!sfxCache.has(key)) {
-      const s = await Audio.Sound.createAsync(assetModule, {
+      const s = await Audio.Sound.createAsync(asset, {
         shouldPlay: false,
         volume,
       });

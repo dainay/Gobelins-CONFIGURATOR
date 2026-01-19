@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber/native";
 import { router } from "expo-router";
-import { Suspense, useEffect } from "react";
 import { Suspense, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -23,6 +22,7 @@ import Avatar from "./Avatar";
 import ConfiguratorBackground from "./ConfiguratorBackground";
 import Cylinder from "./Cylinder";
 
+import { playSfx } from "../../src/lib/sounds";
 
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
@@ -57,13 +57,26 @@ export default function Scene() {
 
   const [activeAnimation, setActiveAnimation] = useState(null);
 
+  const matchingMedias = [
+    { animation: "ANIM_scream", sound: "scream" },
+    { animation: "ANIM_salut", sound: "hello" },
+    { animation: "ANIM_gettinghit", sound: "laugh" },
+  ];
+
   const playTempAnimation = () => {
-    setActiveAnimation("ANIM_gettinghit");
+    // setActiveAnimation("ANIM_gettinghit");
+    const randomIndex = Math.floor(Math.random() * matchingMedias.length);
+    const media = matchingMedias[randomIndex];
+
+    setActiveAnimation(media.animation);
+    playSfx(media.sound);
 
     setTimeout(() => {
       setActiveAnimation(null);
     }, 3000);
   };
+
+  // playSfx("chatting");
 
   const menuStyle = useAnimatedStyle(() => ({
     opacity: menuOpacity.value,
@@ -159,8 +172,8 @@ export default function Scene() {
                 onPress={playTempAnimation}
                 hair={configuration.hair}
                 cloth={configuration.cloth}
-                animation={activeAnimation || configuration.animation}
-                pose={!activeAnimation || configuration.pose}
+                animation={activeAnimation}
+                pose={configuration.pose}
               />
             </group>
           </Suspense>
