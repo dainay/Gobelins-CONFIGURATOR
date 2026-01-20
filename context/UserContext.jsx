@@ -55,7 +55,7 @@ export function UserProvider({ children }) {
       password,
     });
     console.log("AAAAAAAAAAAAAAAAAAAAAAAA  Login attempt for:", intro);
-    if (error) throw new Error(error.message);
+    if (error) throw error;
 
     console.log(
       "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  Login attempt for:",
@@ -73,7 +73,7 @@ export function UserProvider({ children }) {
       options: { data: { display_name: name, year: year } },
     });
 
-    if (error) throw new Error(error.message);
+    if (error) throw error;
 
     return await login(email, password, true);
   }

@@ -28,6 +28,7 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
+          "image": "./logo.png",
           "dark": {
             "backgroundColor": "#000000"
           }

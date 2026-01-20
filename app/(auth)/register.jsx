@@ -17,6 +17,7 @@ import ThemedView from "../../components/ui/ThemedView";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
+import { mapSupabaseAuthError } from "../../src/lib/mapSupabaseAuthError";
 
 import backgroundImage from "../../assets/img/temp-back.png";
 import ThemedPicker from "../../components/ui/ThemedPicker";
@@ -51,7 +52,8 @@ const Register = () => {
       console.log("Login successful, navigating to:", result);
       // router.replace(result);
     } catch (error) {
-      setError(error.message);
+      console.log("Login error ##################:", error.code);
+      setError(mapSupabaseAuthError(error));
     }
   };
 

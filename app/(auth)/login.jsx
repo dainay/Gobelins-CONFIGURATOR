@@ -10,6 +10,7 @@ import ThemedView from "../../components/ui/ThemedView";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
+import { mapSupabaseAuthError } from "../../src/lib/mapSupabaseAuthError";
 
 import backgroundImage from "../../assets/img/temp-back.png";
 
@@ -34,7 +35,7 @@ const Login = () => {
       console.log("Login successful, navigating to:", result);
       // router.replace(result);
     } catch (error) {
-      setError(error.message);
+      setError(mapSupabaseAuthError(error));
     }
   };
 

@@ -16,6 +16,7 @@ import ThemedLogo from "../components/ui/ThemedLogo";
 import ThemedText from "../components/ui/ThemedText";
 import ThemedTextInput from "../components/ui/ThemedTextInput";
 import ThemedView from "../components/ui/ThemedView";
+import { mapSupabaseAuthError } from "../src/lib/mapSupabaseAuthError";
 
 import FirefliesSimple from "../components/ui/FirefliesSimple";
 
@@ -58,7 +59,8 @@ const Home = () => {
       console.log("Login successful, navigating to:", result);
       // router.replace(result);
     } catch (error) {
-      setError(error.message);
+      // console.log("Login error ##################:", error.code);
+      setError(mapSupabaseAuthError(error));
     }
   };
 

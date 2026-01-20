@@ -75,13 +75,15 @@ const openWorld = () => {
       const nextCount = c + 1;
 
       let chosenAnim = currentGobelin.animation;
-      let audioKey = `suffering${Math.floor(Math.random() * 3) + 1}`;
-      let volume = 0.3;
+      let audioKey = ["suffering1", "suffering3", "yay"][
+        Math.floor(Math.random() * 4)
+      ];
+      let volume = 0.1;
 
       if (nextCount > 2) {
         chosenAnim = "ANIM_scream";
         audioKey = "scream";
-        volume = 0.7;
+        volume = 1;
       }
 
       setActiveAnimation(chosenAnim);

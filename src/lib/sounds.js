@@ -17,8 +17,10 @@ export const SOUNDS = {
     suffering: require("../../assets/audio/gobelin/suffering.mp3"),
     stomach: require("../../assets/audio/gobelin/stomach.mp3"),
     suffering1: require("../../assets/audio/gobelin/suffering1.mp3"),
-    suffering2: require("../../assets/audio/gobelin/suffering2.mp3"),
+    // suffering2: require("../../assets/audio/gobelin/suffering2.mp3"),
     suffering3: require("../../assets/audio/gobelin/suffering3.mp3"),
+    yay: require("../../assets/audio/gobelin/yay.mp3"),
+    button: require("../../assets/audio/gobelin/button.mp3"),
   },
 };
 
