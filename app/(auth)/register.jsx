@@ -58,7 +58,7 @@ const Register = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ThemedView style={styles.container}>
+      <ThemedView style={styles.container} safe={true} keyboard={true}>
         <View style={styles.bgImageWrapper} pointerEvents="none">
           <Image
             source={backgroundImage}
