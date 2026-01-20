@@ -118,7 +118,7 @@ const Register = () => {
           {/* Picker */}
           <View style={styles.pickerBlock}>
             <ThemedPicker
-              label="Quelle année êtes-vous ?"
+              label="Quelle année es-tu ?"
               items={yearItems}
               value={year}
               onChange={setYear}
