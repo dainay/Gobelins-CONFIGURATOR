@@ -9,8 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "../../constants/Colors";
 
-import Spacer from "../../components/ui/Spacer";
-import ThemedButton from "../../components/ui/ThemedButton";
+import GreenButton from "../../components/ui/GreenButton";
 import ThemedText from "../../components/ui/ThemedText";
 import ThemedTextInput from "../../components/ui/ThemedTextInput";
 import ThemedView from "../../components/ui/ThemedView";
@@ -19,7 +18,7 @@ import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
 import { mapSupabaseAuthError } from "../../src/lib/mapSupabaseAuthError";
 
-import backgroundImage from "../../assets/img/temp-back.png";
+import backgroundImage from "../../assets/img/bacgkound-school.webp";
 import ThemedPicker from "../../components/ui/ThemedPicker";
 
 const yearItems = [
@@ -67,56 +66,84 @@ const Register = () => {
             resizeMode="cover"
           />
         </View>
-        <Spacer />
-        <ThemedText title={true} style={styles.title} font="christmasBold">
-          Créer un compte
-        </ThemedText>
+        <View style={styles.globalContent}>
+          {/* Titre + soulignement */}
+          <View style={styles.titleBlock}>
+            <ThemedText title={true} style={styles.title} font="merriweather">
+              Créer un compte
+            </ThemedText>
+            <Image
+              source={require("../../assets/ui/tutorial/motif-underline.webp")}
+              style={styles.underlineMotif}
+              resizeMode="contain"
+            />
+          </View>
 
-        <ThemedTextInput
-          placeholder="Adresse e-mail"
-          keyboardType="email-address"
-          onChangeText={setEmail}
-          value={email}
-          background={"bar1"}
-        />
+          {/* Inputs */}
+          <View style={styles.inputsBlock}>
+            <ThemedTextInput
+              placeholder="Adresse e-mail"
+              placeholderTextColor="rgba(0,0,0,0.6)"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={setEmail}
+              value={email}
+              background={"bar1"}
+              style={{ fontSize: 16 }}
+              containerStyle={{ marginBottom: 16 }}
+            />
 
-        <ThemedTextInput
-          placeholder="Mot de passe"
-          secureTextEntry
-          onChangeText={setPassword}
-          value={password}
-        />
+            <ThemedTextInput
+              placeholder="Mot de passe"
+              placeholderTextColor="rgba(0,0,0,0.6)"
+              secureTextEntry
+              autoCapitalize="none"
+              onChangeText={setPassword}
+              value={password}
+              background={"bar2"}
+              style={{ fontSize: 16 }}
+              containerStyle={{ marginBottom: 16 }}
+            />
 
-        <ThemedTextInput
-          placeholder="Nom"
-          onChangeText={setName}
-          value={name}
-        />
+            <ThemedTextInput
+              placeholder="Nom"
+              placeholderTextColor="rgba(0,0,0,0.6)"
+              autoCapitalize="words"
+              onChangeText={setName}
+              value={name}
+              background={"bar2"}
+              style={{ fontSize: 16 }}
+            />
+          </View>
 
-        <ThemedPicker
-          label="Quelle année êtes-vous ?"
-          items={yearItems}
-          value={year}
-          onChange={setYear}
-          background="bar2"
-        />
+          {/* Picker */}
+          <View style={styles.pickerBlock}>
+            <ThemedPicker
+              label="Quelle année êtes-vous ?"
+              items={yearItems}
+              value={year}
+              onChange={setYear}
+              background="bar2"
+            />
+          </View>
 
-        <ThemedButton onPress={handleSubmit}>
-          <Text style={{ color: "#f2f2f2" }}>S'inscrire</Text>
-        </ThemedButton>
+          {/* Actions */}
+          <View style={styles.actionsBlock}>
+            <GreenButton title="S'inscrire" onPress={handleSubmit} />
 
-        {error && (
-          <ThemedText style={{ color: Colors.error, marginTop: 10 }}>
-            {error}
-          </ThemedText>
-        )}
+            {error && (
+              <ThemedText font="merriweather" style={styles.errorText}>
+                {error}
+              </ThemedText>
+            )}
 
-        <Spacer height={10} />
-        <Link href="/login" replace>
-          <ThemedText style={{ textAlign: "center", ...styles.link }}>
-            Se connecter
-          </ThemedText>
-        </Link>
+            <Link href="/login" replace>
+              <ThemedText font="merriweather" style={styles.link}>
+                Se connecter
+              </ThemedText>
+            </Link>
+          </View>
+        </View>
       </ThemedView>
     </TouchableWithoutFeedback>
   );
@@ -129,8 +156,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
-    overflow: "hidden",
+    position: 'relative',
+    // IMPORTANT: ne pas couper le dropdown du Picker (Android)
+    overflow: 'visible',
+  },
+  globalContent: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
+  },
+  titleBlock: {
+    width: "100%",
+    alignItems: "center",
+  },
+  inputsBlock: {
+    width: "100%",
+    alignItems: "center",
+  },
+  pickerBlock: {
+    width: "100%",
+    alignItems: "center",
+    // Mettre le picker au-dessus du bouton quand le dropdown s'ouvre
+    zIndex: 50,
+    elevation: 50,
+  },
+  actionsBlock: {
+    width: "100%",
+    alignItems: "center",
+    zIndex: 1,
   },
   bgImageWrapper: {
     ...StyleSheet.absoluteFillObject,
@@ -145,8 +199,16 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    fontSize: 40,
-    marginBottom: 30,
+    fontSize: 20,
+    fontFamily: 'Merriweather',
+    fontWeight: 'bold',
+    width: "70%",
+  },
+  underlineMotif: {
+    height: 60,
+    maxWidth: "95%",
+    alignSelf: "center",
+    marginTop: -20,
   },
   pickerContainer: {
     width: "80%",
@@ -165,7 +227,13 @@ const styles = StyleSheet.create({
     color: "#ffffffff",
     marginTop: 10,
     textAlign: "center",
-    textDecorationLine: "underline",
-    fontFamily: "Merriweather-Light",
+    textDecorationLine: 'underline',
+    fontFamily: 'Merriweather', 
+  },
+  errorText: {
+    color: Colors.error,
+    marginTop: 10,
+    textAlign: "center",
+    fontFamily: "Merriweather",
   },
 });

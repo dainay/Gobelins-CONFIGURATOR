@@ -50,7 +50,9 @@ export default function TutorialOverlay() {
     const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
     return (
-        <Pressable onPress={handlePress} style={styles.containerPressableTutorial}>
+        // Sur la dernière page: seul le bouton est cliquable (pas tout l'écran)
+        isLastPage ? (
+        <View style={styles.containerPressableTutorial}>
             <AnimatedImageBackground 
                 source={require('../../assets/ui/tutorial/tutorial-background.png')}
                 entering={FadeIn.duration(300)}
@@ -87,8 +89,49 @@ export default function TutorialOverlay() {
                 {/* Bouton d'action */}
                 <View style={styles.buttonContainer}>
                     {isLastPage && (
-                        <GreenButton title="Démarrer" />
+                        <GreenButton title="Démarrer" onPress={finishTutorial} />
                     )}
+                </View>
+                </View>
+            </AnimatedImageBackground>
+        </View>
+        ) : (
+        <Pressable onPress={handlePress} style={styles.containerPressableTutorial}>
+            <AnimatedImageBackground 
+                source={require('../../assets/ui/tutorial/tutorial-background.png')}
+                entering={FadeIn.duration(300)}
+                exiting={FadeOut.duration(200)}
+                style={styles.containerPageTutorial}
+                resizeMode="stretch"
+                imageStyle={styles.backgroundImage}
+            >
+                {/* Conteneur interne avec le padding pour le contenu */}
+                <View style={styles.contentWrapper}>
+                {/* Indicateur de progression */}
+                <View style={styles.progressContainer}>
+                    <ProgressDiamonds 
+                        currentStep={tutorialStep} 
+                        totalSteps={tutorialPages1.length} 
+                    />
+                </View>
+
+                {/* Contenu principal */}
+                <View style={styles.contentContainer}>
+                    <Text style={styles.titlePageTutorial}>
+                        {currentPage.title}
+                    </Text>
+                    <Image 
+                        source={require('../../assets/ui/tutorial/bar-subtitle.png')}
+                        style={styles.subtitleTutorialImage}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.descriptionPageTutorial}>
+                        {currentPage.description}
+                    </Text>
+                </View>
+
+                {/* Bouton d'action */}
+                <View style={styles.buttonContainer}>
                     <Text style={styles.hintText}>
                         Appuyez n'importe où pour continuer
                     </Text>
@@ -96,6 +139,7 @@ export default function TutorialOverlay() {
                 </View>
             </AnimatedImageBackground>
         </Pressable>
+        )
     )
 }
 
@@ -110,7 +154,6 @@ const styles = StyleSheet.create({
         zIndex: 1000,
         justifyContent: "center",
         alignItems: "center",
-        
     },
     containerPageTutorial: {
         width: "105%",
@@ -138,6 +181,7 @@ const styles = StyleSheet.create({
         padding: 24,
         paddingTop: 0,
         paddingBlock: 50,
+        paddingBottom: 62,
         justifyContent: "space-between",
     },
     progressContainer: {

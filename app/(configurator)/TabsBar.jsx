@@ -75,8 +75,6 @@ const styles = StyleSheet.create({
     padding: 8,
     gap: 12,
     backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "purple",
   },
   saveMessage: {
     fontSize: 14,

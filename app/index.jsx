@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
+  Pressable,
   StyleSheet,
   View,
   useColorScheme,
@@ -11,7 +12,8 @@ import { Colors } from "../constants/Colors";
 import { useUser } from "../hooks/useUser";
 
 import GuestOnly from "../components/auth/GuestOnly";
-import ThemedButton from "../components/ui/ThemedButton";
+
+import GreenButton from "../components/ui/GreenButton";
 import ThemedLogo from "../components/ui/ThemedLogo";
 import ThemedText from "../components/ui/ThemedText";
 import ThemedTextInput from "../components/ui/ThemedTextInput";
@@ -69,12 +71,15 @@ const Home = () => {
       <GuestOnly>
         <View style={styles.bgImageWrapper} pointerEvents="none">
           <Image
-            source={require("../assets/img/temp-back.png")}
+            source={require("../assets/img/temp-back.webp")}
             style={[styles.bgImage]}
             resizeMode="cover"
           />
         </View>
-        <ThemedLogo />
+        {/* Décor en absolute (hors layout des 4 blocs) */}
+        <FirefliesSimple count={15}/>  
+        <View style={styles.globalContent}>
+          <ThemedLogo />
 
         {/* <View style={{ position: 'relative', width: '100%', height: 150, alignItems: 'center', justifyContent: 'center' }}>
           <ThemedText
@@ -95,54 +100,64 @@ const Home = () => {
           </Animated.View>
         </View> */}
 
-        <ThemedText title={true} font="sofia" style={[styles.secondTitle]}>
-          Connecte à ton Gobelin
-        </ThemedText>
+          <View style={styles.titleBlock}>
+            <ThemedText title={true} font="merriweather" style={[styles.secondTitle]}>
+              Connecte toi à ton Gobelin
+            </ThemedText>
+            <Image
+              source={require("../assets/ui/tutorial/motif-underline.webp")}
+              style={styles.underlineMotif}
+              resizeMode="contain"
+            />
+          </View>
 
-        <ThemedTextInput
-          placeholder="Email"
-          keyboardType="email-address"
-          onChangeText={setEmail}
-          value={email}
-          background={"bar1"}
-        />
+          <View style={styles.inputsBlock}>
+            <ThemedTextInput
+              placeholder="Email"
+              placeholderTextColor="rgba(0,0,0,0.6)"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={setEmail}
+              value={email}
+              background={"bar1"}
+              containerStyle={{ marginBottom: 16 }}
+            />
 
-        <ThemedTextInput
-          placeholder="Password"
-          secureTextEntry
-          onChangeText={setPassword}
-          value={password}
-          background={"bar2"}
-        />
+            <ThemedTextInput
+              placeholder="Mot de passe"
+              placeholderTextColor="rgba(0,0,0,0.6)"
+              secureTextEntry
+              autoCapitalize="none"
+              onChangeText={setPassword}
+              value={password}
+              background={"bar2"}
+            />
+          </View>
 
-        <FirefliesSimple count={15} />
+          <View style={styles.actionsBlock}>
+            <GreenButton title="Se connecter" onPress={handleSubmit} />
 
-        <ThemedButton onPress={handleSubmit} type="button1">
-          Se connecter
-        </ThemedButton>
+            {error && (
+              <ThemedText font="merriweather" style={{ color: Colors.error }}>
+                {error}
+              </ThemedText>
+            )}
 
-        {error && (
-          <ThemedText style={{ color: Colors.error }}>{error}</ThemedText>
-        )}
+            <Link href="/register">
+              <ThemedText font="merriweather" style={styles.link}>
+                Pas encore de gobelin ? {"\n"} Crée le tien ici
+              </ThemedText>
+            </Link>
+          </View>
+        </View>
 
-        <ThemedText style={styles.link}>Mot de passe oublié ?</ThemedText>
-
-        <Link href="/register">
-          <ThemedText style={styles.link}>
-            Pas encore de gobelin ? {"\n"} Crée le tien ici
-          </ThemedText>
-        </Link>
-
-        <Link href="/home">
-          <ThemedText style={styles.link}>TABS</ThemedText>
-        </Link>
-        <Link href="/Scene">
-          <ThemedText style={styles.link}>DEMO 3D</ThemedText>
-        </Link>
-
-        <Link href="/introManager">
-          <ThemedText style={styles.link}>INTRO</ThemedText>
-        </Link>
+        {/* DEBUG shortcuts */}
+        <Pressable style={[styles.debugButton, styles.debugLeft]} onPress={() => router.push("/Scene")}>
+          <ThemedText font="merriweather" style={styles.debugButtonText}>DEMO 3D</ThemedText>
+        </Pressable>
+        <Pressable style={[styles.debugButton, styles.debugRight]} onPress={() => router.push("/introManager")}>
+          <ThemedText font="merriweather" style={styles.debugButtonText}>INTRO</ThemedText>
+        </Pressable>
       </GuestOnly>
     </ThemedView>
   );
@@ -157,7 +172,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   secondTitle: {
-    fontSize: 40,
+    fontSize: 20,
+    fontFamily: 'Merriweather',
+    fontWeight: 'bold',
+    width: '70%',
+    textAlign: "center",
+  },
+  underlineMotif: {
+    height: 60,
+    maxWidth: '95%',
+    alignSelf: "center",
+
+    marginTop: -20,
+  },
+  globalContent: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
+  },
+  titleBlock: {
+    width: "100%",
+    alignItems: "center",
+  },
+  inputsBlock: {
+    width: "100%",
+    alignItems: "center",
+  },
+  actionsBlock: {
+    width: "100%",
+    alignItems: "center",
   },
   container: {
     flex: 1,
@@ -169,14 +213,11 @@ const styles = StyleSheet.create({
   bgImageWrapper: {
     ...StyleSheet.absoluteFillObject,
     zIndex: -1,
+    backgroundColor: "black",
   },
   bgImage: {
+    height: "100%",
     width: "100%",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
   },
   title: {
     fontSize: 40,
@@ -187,6 +228,38 @@ const styles = StyleSheet.create({
     color: "#ffffffff",
     marginTop: 10,
     textAlign: "center",
+  },
+  debugLeft: {
+    position: "absolute",
+    top: 50,
+    left: 12,
+    zIndex: 9999,
+  },
+  debugRight: {
+    position: "absolute",
+    top: 50,
+    right: 12,
+    zIndex: 9999,
+  },
+  debugButtonText: {
+    fontSize: 12,
+    color: "#0b2b12",
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  debugButton: {
+    backgroundColor: "#2ecc71",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    minWidth: 110,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
   },
 });
 

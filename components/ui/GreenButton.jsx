@@ -11,7 +11,7 @@ export default function GreenButton({
     return (
         <Pressable onPress={onPress} style={[styles.button, { width }, style]}>
             <ImageBackground 
-                source={require('../../assets/ui/buttons/green-button.png')}
+                source={require('../../assets/ui/buttons/green-button.webp')}
                 style={styles.buttonImage}
                 resizeMode="contain"
             >
