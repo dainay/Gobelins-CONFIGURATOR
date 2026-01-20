@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions } from "react-native";
 import { AvatarOptions } from "../../constants/AvatarOptions";
+import { playSfx } from "../../src/lib/sounds";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useMenuStore } from "../../src/store/menuStore";
@@ -225,7 +226,7 @@ export default function OptionsPanel() {
   console.log("Active Tab:", activeTab);
 
   const handlePress = (item) => {
-    
+    playSfx("button");
     setConfig({ [activeTab]: item.label });
   };
 
@@ -342,7 +343,11 @@ export default function OptionsPanel() {
                 style={styles.itemBackground}
                 resizeMode="contain"
               >
-                <Text style={[styles.label, isActive && styles.labelActive]}>{item.label}</Text>
+                {activeMenu === "appearance" ? (
+                  <Image source={item.img} style={styles.itemImg} resizeMode="cover" />
+                ) : (
+                  <Text style={[styles.label, {fontSize: 20, fontWeight: "bold", marginTop: 15}]}>{item.name}</Text>
+                )}
               </ImageBackground>
             </TouchableOpacity>
           );
@@ -446,6 +451,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginBottom: 6,
+  },
+  itemImg: {
+     width: 60,
+     height: 60,
+     marginTop:10,
   },
   label: {
     fontSize: 12,

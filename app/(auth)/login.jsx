@@ -91,6 +91,13 @@ const Login = () => {
           Créer un compte
         </ThemedText>
       </Link>
+
+      <ThemedText
+        font="merriweather"
+        style={{ marginBottom: 30, marginTop: 10, color: "white" }}
+      >
+        Mot de passe oublié
+      </ThemedText>
     </ThemedView>
   );
 };

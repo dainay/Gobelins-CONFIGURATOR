@@ -35,10 +35,9 @@ const Profile = () => {
   }, []);
 
   const playTempAnimation = () => {
-    // пример: 3 секунды анимации
-    setActiveAnimation("ANIM_danse4");
-    // playSfx("click");
-    setTimeout(() => setActiveAnimation(null), 3000);
+     
+    setActiveAnimation(configuration?.animation || "ANIM_danse2");
+    setTimeout(() => setActiveAnimation(null), 5000);
   };
 
   return (
@@ -90,7 +89,7 @@ const Profile = () => {
             <directionalLight position={[5, 5, 5]} intensity={2} />
 
             <Suspense fallback={null}>
-              {/* чуть опускаем модель, чтобы голова была по центру */}
+              
               <group position={[0, -0.15, 0]}>
                 <Avatar
                   onPress={playTempAnimation}

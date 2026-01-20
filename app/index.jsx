@@ -77,11 +77,11 @@ const Home = () => {
           />
         </View>
         {/* Décor en absolute (hors layout des 4 blocs) */}
-        <FirefliesSimple count={15}/>  
+        <FirefliesSimple count={15} />
         <View style={styles.globalContent}>
           <ThemedLogo />
 
-        {/* <View style={{ position: 'relative', width: '100%', height: 150, alignItems: 'center', justifyContent: 'center' }}>
+          {/* <View style={{ position: 'relative', width: '100%', height: 150, alignItems: 'center', justifyContent: 'center' }}>
           <ThemedText
             title={true}
             font="christmasBold"
@@ -101,7 +101,11 @@ const Home = () => {
         </View> */}
 
           <View style={styles.titleBlock}>
-            <ThemedText title={true} font="merriweather" style={[styles.secondTitle]}>
+            <ThemedText
+              title={true}
+              font="merriweather"
+              style={[styles.secondTitle]}
+            >
               Connecte toi à ton Gobelin
             </ThemedText>
             <Image
@@ -143,20 +147,40 @@ const Home = () => {
               </ThemedText>
             )}
 
+            <ThemedText
+              font="merriweather"
+              style={{ marginBottom: 30, marginTop: 10, color: "white" }}
+            >
+              Mot de passe oublié
+            </ThemedText>
+
             <Link href="/register">
-              <ThemedText font="merriweather" style={styles.link}>
-                Pas encore de gobelin ? {"\n"} Crée le tien ici
+              <ThemedText
+                font="merriweather"
+                style={[styles.link, { width: 200, lineHeight: 22 }]}
+              >
+                Pas encore de gobelin ?{"\n"}Crée le tien ici
               </ThemedText>
             </Link>
           </View>
         </View>
 
         {/* DEBUG shortcuts */}
-        <Pressable style={[styles.debugButton, styles.debugLeft]} onPress={() => router.push("/Scene")}>
-          <ThemedText font="merriweather" style={styles.debugButtonText}>DEMO 3D</ThemedText>
+        <Pressable
+          style={[styles.debugButton, styles.debugLeft]}
+          onPress={() => router.push("/Scene")}
+        >
+          <ThemedText font="merriweather" style={styles.debugButtonText}>
+            DEMO 3D
+          </ThemedText>
         </Pressable>
-        <Pressable style={[styles.debugButton, styles.debugRight]} onPress={() => router.push("/introManager")}>
-          <ThemedText font="merriweather" style={styles.debugButtonText}>INTRO</ThemedText>
+        <Pressable
+          style={[styles.debugButton, styles.debugRight]}
+          onPress={() => router.push("/introManager")}
+        >
+          <ThemedText font="merriweather" style={styles.debugButtonText}>
+            INTRO
+          </ThemedText>
         </Pressable>
       </GuestOnly>
     </ThemedView>
@@ -173,14 +197,14 @@ const styles = StyleSheet.create({
   },
   secondTitle: {
     fontSize: 20,
-    fontFamily: 'Merriweather',
-    fontWeight: 'bold',
-    width: '70%',
+    fontFamily: "Merriweather",
+    fontWeight: "bold",
+    width: "70%",
     textAlign: "center",
   },
   underlineMotif: {
     height: 60,
-    maxWidth: '95%',
+    maxWidth: "95%",
     alignSelf: "center",
 
     marginTop: -20,
