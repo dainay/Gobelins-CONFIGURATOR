@@ -3,9 +3,8 @@ import {
   Image,
   Keyboard,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
 import { Colors } from "../../constants/Colors";
 
@@ -106,7 +105,7 @@ const Register = () => {
             />
 
             <ThemedTextInput
-              placeholder="Nom"
+              placeholder="Comment t'appelles-tu ?"
               placeholderTextColor="rgba(0,0,0,0.6)"
               autoCapitalize="words"
               onChangeText={setName}
