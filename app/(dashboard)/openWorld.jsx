@@ -3,6 +3,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   Image,
   ImageBackground,
+  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -28,6 +29,7 @@ import { fetchGobelinsPage } from "../../src/lib/listGobelins";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
 import { useRef } from "react";
+import GreenButton from "../../components/ui/GreenButton";
 import { playSfx, stopAllSfx } from "../../src/lib/sounds";
 
 const openWorld = () => {
@@ -47,6 +49,8 @@ const openWorld = () => {
   const [activeAnimation, setActiveAnimation] = useState(null);
 
   const [countTouch, setCountTouch] = useState(0);
+
+  const [showPopup, setShowPopup] = useState(false);
 
   const cancelCurrentInteraction = async () => {
     if (animTimeoutRef.current) {
@@ -123,6 +127,7 @@ const openWorld = () => {
 
   useEffect(() => {
     loadGobelins(0, { append: false });
+    setShowPopup(true);
   }, []);
 
   const currentGobelin = useMemo(
@@ -320,7 +325,7 @@ const openWorld = () => {
                 styles.linkSection,
                 { width: "100%", alignItems: "center" },
               ]}
-              onPress={() => console.log("Navigate to demands")}
+              onPress={() => setShowPopup(true)}
             >
               <Text style={styles.linkTitle}>Projet</Text>
             </Pressable>
@@ -342,13 +347,51 @@ const openWorld = () => {
                 styles.linkSection,
                 { width: "100%", alignItems: "center" },
               ]}
-              onPress={() => console.log("Navigate to propositions")}
+              onPress={() => setShowPopup(true)}
             >
               <Text style={styles.linkTitle}>Ma Guilde</Text>
             </Pressable>
           </ImageBackground>
         </View>
       </View>
+
+      {/* ==================POPUP==================== */}
+      <Modal
+        visible={showPopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowPopup(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <ImageBackground
+            source={require("../../assets/ui/tutorial/tutorial-background.png")}
+            style={styles.popupBackground}
+            resizeMode="contain"
+          >
+            <View style={styles.popupContent}>
+              <ThemedText font="sofia" style={styles.popupTitle}>
+                Merci d'avoir terminé l'expérience Gob'link.
+              </ThemedText>
+              
+              <ThemedText font="merriweather" style={styles.popupText}>
+                Gob'link, c'est avant tout une histoire d'entraide entre étudiant·es : se rencontrer, s'aider, créer ensemble.
+                {"\n\n"}
+                Cette partie arrivera très bientôt.
+                {"\n\n"}
+                En attendant, tu peux déjà découvrir les Gobelins créés par la communauté. Parle-leur. Fais-les danser. Embête-les ! Fais les vivre !
+                {"\n\n"}
+                À très vite.{"\n"}Gob'link
+              </ThemedText>
+
+              <GreenButton
+                title="Compris !"
+                onPress={() => setShowPopup(false)}
+                width="60%"
+              />
+            </View>
+          </ImageBackground>
+        </View>
+      </Modal>
     </ThemedView>
   );
 };
@@ -469,5 +512,38 @@ const styles = StyleSheet.create({
   linkArrow: {
     fontSize: 20,
     fontWeight: "600",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  popupBackground: {
+    width: "100%",
+    aspectRatio: 0.4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  popupContent: {
+    width: "90%",
+    alignItems: "center",
+    paddingHorizontal: 30,
+    paddingTop: 100,
+    paddingBottom: 40,
+  },
+  popupTitle: {
+    fontSize: 22,
+    textAlign: "center",
+    marginBottom: 20,
+    color: Colors.black,
+  },
+  popupText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 30,
+    lineHeight: 22,
+    color: Colors.black,
   },
 });
