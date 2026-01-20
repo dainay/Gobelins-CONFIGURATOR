@@ -1,11 +1,12 @@
+import { useRouter } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AppState } from "react-native";
 import { loadGobelinFromDatabase } from "../src/lib/saveGobelin";
 import { supabase } from "../src/lib/supabase";
+import { useConfigurateurStore } from "../src/store/configurateurStore";
 import { useGobelinStore } from "../src/store/gobelinStore";
 import { useMenuStore } from "../src/store/menuStore";
-import { useConfigurateurStore } from "../src/store/configurateurStore";
-import { useRouter } from "expo-router";
+import { useMusicStore } from "../src/store/musicStore";
 
 export const UserContext = createContext();
 
@@ -23,6 +24,7 @@ export function UserProvider({ children }) {
   const [authChecked, setAuthChecked] = useState(false);
   const setConfig = useGobelinStore((state) => state.setConfig);
   const router = useRouter();
+  const stopMusic = useMusicStore((s) => s.stopMusic);
 
   // AUTO REFRESH TOKEN (RN official)
   useEffect(() => {
@@ -34,7 +36,7 @@ export function UserProvider({ children }) {
     return () => subscription.remove();
   }, []);
 
-//to load gobelin on user change and set into zustand (login register logout nosession)  
+  //to load gobelin on user change and set into zustand (login register logout nosession)
   useEffect(() => {
     if (user) {
       loadGobelinFromDatabase(user.id).then((gobelinData) => {
@@ -48,19 +50,19 @@ export function UserProvider({ children }) {
 
   // LOGIN
   async function login(email, password, intro = false) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAA  Login attempt for:", intro );
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAA  Login attempt for:", intro);
+    if (error) throw error;
 
-    if (error) throw new Error(error.message);
+    console.log(
+      "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  Login attempt for:",
+      intro,
+    );
 
-    console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  Login attempt for:", intro );
-    
-    if (intro) {
-    router.replace('/(intro)/intro');
-    return;
-    } 
-      
-    
+    return intro ? "/(intro)/intro" : "/(dashboard)/openWorld";
   }
 
   // REGISTER
@@ -71,9 +73,9 @@ export function UserProvider({ children }) {
       options: { data: { display_name: name, year: year } },
     });
 
-    if (error) throw new Error(error.message);
+    if (error) throw error;
 
-    await login(email, password, true); 
+    return await login(email, password, true);
   }
 
   // LOGOUT
@@ -92,7 +94,7 @@ export function UserProvider({ children }) {
       (_event, session) => {
         setUser(session?.user ?? null);
         setAuthChecked(true);
-      }
+      },
     );
 
     // Initial session load
@@ -105,7 +107,9 @@ export function UserProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, authChecked, login, register, logout }}>
+    <UserContext.Provider
+      value={{ user, authChecked, login, register, logout }}
+    >
       {children}
     </UserContext.Provider>
   );

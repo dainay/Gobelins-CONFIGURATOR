@@ -1,5 +1,12 @@
 import { Link, useRouter } from "expo-router";
-import { Image, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Image,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { Colors } from "../../constants/Colors";
 
 import GreenButton from "../../components/ui/GreenButton";
@@ -9,6 +16,7 @@ import ThemedView from "../../components/ui/ThemedView";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
+import { mapSupabaseAuthError } from "../../src/lib/mapSupabaseAuthError";
 
 import backgroundImage from "../../assets/img/bacgkound-school.webp";
 import ThemedPicker from "../../components/ui/ThemedPicker";
@@ -33,16 +41,18 @@ const Register = () => {
 
   const handleSubmit = async () => {
     if (!email || !password || !name) {
-    setError("Tous les champs sont requis"); 
-    return;
-  }
+      setError("Tous les champs sont requis");
+      return;
+    }
     // console.log("register form submitted");
     setError(null);
     try {
-      await register(email, password, name, year);
-     
+      const result = await register(email, password, name, year);
+      console.log("Login successful, navigating to:", result);
+      // router.replace(result);
     } catch (error) {
-      setError(error.message);
+      console.log("Login error ##################:", error.code);
+      setError(mapSupabaseAuthError(error));
     }
   };
 
@@ -53,7 +63,7 @@ const Register = () => {
           <Image
             source={backgroundImage}
             style={[styles.bgImage]}
-            resizeMode="cover" 
+            resizeMode="cover"
           />
         </View>
         <View style={styles.globalContent}>
@@ -181,9 +191,9 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   bgImage: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    position: "absolute",
     top: 0,
     left: 0,
   },
