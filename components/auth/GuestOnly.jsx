@@ -8,19 +8,14 @@ const GuestOnly = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (authChecked && user) {
-      router.replace("/(dashboard)/openWorld");
+    if (!authChecked) return;
+    if (user) {
+      router.replace("/postAuth");  
     }
-  }, [authChecked, user, router]);
+  }, [authChecked, user?.id]);
 
-
-  if (!authChecked) {
-    return <ThemedLoader />;
-  }
-
-  if (user) {
-    return null;
-  }
+  if (!authChecked) return <ThemedLoader />;
+  if (user) return null;
 
   return children;
 };

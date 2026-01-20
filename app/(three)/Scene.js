@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber/native";
 import { router } from "expo-router";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -21,6 +21,8 @@ import { useMenuStore } from "../../src/store/menuStore";
 import Avatar from "./Avatar";
 import ConfiguratorBackground from "./ConfiguratorBackground";
 import Cylinder from "./Cylinder";
+
+import { playSfx } from "../../src/lib/sounds";
 
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
@@ -52,6 +54,27 @@ export default function Scene() {
       tabsY.value = withTiming(150);
     }
   }, [showTutorial]);
+
+  const [activeAnimation, setActiveAnimation] = useState(null);
+
+  const matchingMedias = [
+    { animation: "ANIM_scream", sound: "scream" },
+    { animation: "ANIM_salut", sound: "hello" },
+    { animation: "ANIM_gettinghit", sound: "laugh" },
+  ];
+
+  const playTempAnimation = () => {
+    // setActiveAnimation("ANIM_gettinghit");
+    const randomIndex = Math.floor(Math.random() * matchingMedias.length);
+    const media = matchingMedias[randomIndex];
+
+    setActiveAnimation(media.animation);
+    playSfx(media.sound);
+
+    setTimeout(() => {
+      setActiveAnimation(null);
+    }, 3000);
+  };
 
   const menuStyle = useAnimatedStyle(() => ({
     opacity: menuOpacity.value,
@@ -119,42 +142,40 @@ export default function Scene() {
           <CameraController />
 
           <color attach="background" args={["#000000"]} />
- 
-          {/* Fog lumineux */}
-          <fog attach="fog" args={["#000000", 4, 15]} />
-          <ambientLight intensity={1.2} />
-          <directionalLight 
-            position={[0, 4, 3.5]} 
-            intensity={1}
-            castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
-            shadow-camera-far={50}
-            shadow-camera-left={-10}
-            shadow-camera-right={10}
-            shadow-camera-top={10}
-            shadow-camera-bottom={-10}
-          />
 
-          {/* Fond du configurateur (mur de fond + sol) */}
           <Suspense fallback={null}>
+            {/* Fog lumineux */}
+            <fog attach="fog" args={["#000000", 4, 15]} />
+            <ambientLight intensity={1.2} />
+            <directionalLight
+              position={[0, 4, 3.5]}
+              intensity={1}
+              castShadow
+              shadow-mapSize-width={2048}
+              shadow-mapSize-height={2048}
+              shadow-camera-far={50}
+              shadow-camera-left={-10}
+              shadow-camera-right={10}
+              shadow-camera-top={10}
+              shadow-camera-bottom={-10}
+            />
+
+            {/* Fond du configurateur (mur de fond + sol) */}
+
             <ConfiguratorBackground />
-          </Suspense>
 
-          <Suspense fallback={null}>
             <group position={[0, 1, 0]}>
               <Avatar
-                // accessoire={configuration.accessoire}
+                onPress={playTempAnimation}
                 hair={configuration.hair}
                 cloth={configuration.cloth}
-                // face={configuration.face}
-                animation={configuration.animation}
+                animation={activeAnimation}
                 pose={configuration.pose}
               />
             </group>
-          </Suspense>
-          {/* Trepied - Test visible */}
-          <Suspense fallback={null}>
+
+            {/* Trepied - Test visible */}
+
             <Cylinder />
           </Suspense>
         </Canvas>
@@ -189,7 +210,7 @@ export default function Scene() {
         </Animated.View>
       )}
 
-      <TutorialOverlay />
+      <TutorialOverlay /> 
     </ThemedView>
   );
 }

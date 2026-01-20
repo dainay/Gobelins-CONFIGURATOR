@@ -6,7 +6,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import { useUser } from "../../hooks/useUser";
 
@@ -27,11 +27,15 @@ import ThemedText from "../../components/ui/ThemedText";
 import { fetchGobelinsPage } from "../../src/lib/listGobelins";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
+import { useRef } from "react";
+import { playSfx, stopAllSfx } from "../../src/lib/sounds";
+
 const openWorld = () => {
+  const animTimeoutRef = useRef(null);
   const router = useRouter();
   const { user } = useUser();
   const gobelinName = useGobelinStore((s) => s.name);
-  const gobelin = useGobelinStore((s) => s); 
+  const gobelin = useGobelinStore((s) => s);
 
   const [listGobelins, setListGobelins] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,87 +44,115 @@ const openWorld = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-const [activeAnimation, setActiveAnimation] = useState(null);
+  const [activeAnimation, setActiveAnimation] = useState(null);
 
-useEffect(() => {
-  setActiveAnimation(null);
-}, [currentIndex]);
+  const [countTouch, setCountTouch] = useState(0);
 
-const playTempAnimation = () => {
-  if (!currentGobelin?.animation) return;
-
-  setActiveAnimation(currentGobelin.animation);
-
-  setTimeout(() => {
+  const cancelCurrentInteraction = async () => {
+    if (animTimeoutRef.current) {
+      clearTimeout(animTimeoutRef.current);
+      animTimeoutRef.current = null;
+    }
     setActiveAnimation(null);
-  }, 3000);
-};
+    try {
+      await stopAllSfx();
+    } catch (e) {
+      console.log("stopAllSfx error:", e);
+    }
+  };
 
+  useEffect(() => {
+    cancelCurrentInteraction();
+    setCountTouch(0);
+  }, [currentIndex]);
+
+  const playTempAnimation = async () => {
+    if (!currentGobelin?.animation) return;
+
+    await cancelCurrentInteraction();
+
+    setCountTouch((c) => {
+      const nextCount = c + 1;
+
+      let chosenAnim = currentGobelin.animation;
+      let audioKey = ["suffering1", "suffering3", "yay"][
+        Math.floor(Math.random() * 4)
+      ];
+      let volume = 0.1;
+
+      if (nextCount > 2) {
+        chosenAnim = "ANIM_scream";
+        audioKey = "scream";
+        volume = 1;
+      }
+
+      setActiveAnimation(chosenAnim);
+      playSfx(audioKey, { volume });
+      animTimeoutRef.current = setTimeout(() => {
+        setActiveAnimation(null);
+        animTimeoutRef.current = null;
+      }, 4000);
+
+      return nextCount;
+    });
+  };
 
   const loadGobelins = async (targetPage, { append = false } = {}) => {
-  try {
-    append ? setLoadingMore(true) : setLoading(true);
+    try {
+      append ? setLoadingMore(true) : setLoading(true);
 
-    const list = await fetchGobelinsPage(targetPage);
-    const safe = list || [];
+      const list = await fetchGobelinsPage(targetPage);
+      const safe = list || [];
 
-    setListGobelins((prev) => (append ? [...prev, ...safe] : safe));
-    setPage(targetPage); 
+      setListGobelins((prev) => (append ? [...prev, ...safe] : safe));
+      setPage(targetPage);
 
-    if (safe.length === 0) setHasMore(false);
+      if (safe.length === 0) setHasMore(false);
 
-    return safe;
-  } catch (e) {
-    console.log("Fetch gobelins failed:", e);
-    return [];
-  } finally {
-    append ? setLoadingMore(false) : setLoading(false);
-  }
-};
+      return safe;
+    } catch (e) {
+      console.log("Fetch gobelins failed:", e);
+      return [];
+    } finally {
+      append ? setLoadingMore(false) : setLoading(false);
+    }
+  };
 
-useEffect(() => {
-  loadGobelins(0, { append: false });
-}, []);
-
-  
+  useEffect(() => {
+    loadGobelins(0, { append: false });
+  }, []);
 
   const currentGobelin = useMemo(
     () => listGobelins[currentIndex] ?? null,
-    [listGobelins, currentIndex]
+    [listGobelins, currentIndex],
   );
-  console.log("Current gobelin DDDDDDDDDDDDDDDD:", currentGobelin);
 
-  //   const msgs = [
-  //   "Personne ici — les Gobelins fait la sieste ",
-  //   "Aucun Gobelin en vue — le tien est le premier ! ",
-  //   "Les Gobelins sont en grève aujourd'hui ✊",
-  //   "Silence gobelinique — sois le premier"
-  // ];
-  // const msg = msgs[Math.floor(Math.random()*msgs.length)];
+  const goNext = async () => {
+    if (loading || loadingMore) return;
 
-const goNext = async () => {
-  if (loading || loadingMore) return;
- 
-  if (currentIndex < listGobelins.length - 1) {
-    setCurrentIndex((i) => i + 1);
-    return;
-  }
+    await cancelCurrentInteraction();
+    setCountTouch(0);
 
-  if (!hasMore) return;
- 
-  const nextPage = page + 1;
-  const newItems = await loadGobelins(nextPage, { append: true });
+    if (currentIndex < listGobelins.length - 1) {
+      setCurrentIndex((i) => i + 1);
+      return;
+    }
 
-  if (newItems.length > 0) {
-    setCurrentIndex((i) => i + 1);
-  } else {
-    console.log("No more gobelins");
-  }
-};
+    if (!hasMore) return;
 
+    const nextPage = page + 1;
+    const newItems = await loadGobelins(nextPage, { append: true });
 
-const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
+    if (newItems.length > 0) {
+      setCurrentIndex((i) => i + 1);
+    }
+  };
 
+  const goPrev = async () => {
+    await cancelCurrentInteraction();
+    setCountTouch(0);
+    setCurrentIndex((i) => Math.max(0, i - 1));
+  };
 
   return (
     <ThemedView safe={true} style={styles.container}>
@@ -129,20 +161,20 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
       </View>
 
       {/* ==================HEADER==================== */}
-      <ImageBackground
-        source={Header}
-        resizeMode="stretch"
-        style={{
-          justifyContent: "center",
-          marginVertical: 5,
-          width: 400,
-          height: 150,
-          position: "relative",
-        }}
+      <Pressable
+        style={styles.avatarSection}
+        onPress={() => router.replace("/(dashboard)/profile")}
       >
-        <Pressable
-          style={styles.avatarSection}
-          onPress={() => router.replace("/(dashboard)/profile")}
+        <ImageBackground
+          source={Header}
+          resizeMode="stretch"
+          style={{
+            justifyContent: "center",
+            marginVertical: 5,
+            width: 400,
+            height: 150,
+            position: "relative",
+          }}
         >
           <ThemedText
             font="sofia"
@@ -153,8 +185,8 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
           <ThemedText style={styles.userName}>
             de {user?.user_metadata?.display_name || "User"}
           </ThemedText>
-        </Pressable>
-      </ImageBackground>
+        </ImageBackground>
+      </Pressable>
 
       {/* ==================CARDS (centered vertically)==================== */}
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -169,7 +201,6 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
             transform: [{ translateX: 15 }],
           }}
         >
-          
           <View style={styles.cardsSection}>
             <View
               style={{
@@ -178,11 +209,21 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
                 left: -25,
                 right: 0,
                 height: 400,
-                zIndex: 999, 
+                zIndex: 999,
               }}
             >
-            <ThemedText style={[styles.names, {fontSize: 34, top: 40 }]} font="sofia">{currentGobelin?.name || "Incognito"}</ThemedText>
-           <ThemedText style={[styles.names, { fontSize: 18, top: 36 }]} font="merriweatherLight">de {currentGobelin?.user_name || "Incognito"}</ThemedText>
+              <ThemedText
+                style={[styles.names, { fontSize: 34, top: 40 }]}
+                font="sofia"
+              >
+                {currentGobelin?.name || "Incognito"}
+              </ThemedText>
+              <ThemedText
+                style={[styles.names, { fontSize: 18, top: 36 }]}
+                font="merriweatherLight"
+              >
+                de {currentGobelin?.user_name || "Anonyme"}
+              </ThemedText>
 
               {loading ? (
                 <ThemedText>Loading...</ThemedText>
@@ -193,7 +234,7 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
                   style={{
                     width: 350,
                     height: 400,
-                    alignSelf: "center" 
+                    alignSelf: "center",
                   }}
                   shadows
                   dpr={1}
@@ -209,7 +250,7 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
                         default:
                           return;
                       }
-                    }; 
+                    };
                     state.camera.lookAt(0, 1, 0);
                   }}
                 >
@@ -232,14 +273,16 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
 
           <View style={styles.navRow}>
             <Pressable style={styles.navButton} onPress={goPrev}>
-              <Image source={Arrow} style={{ width: 100, height: 70, transform: [{ scaleX: -1 }] }} />
+              <Image
+                source={Arrow}
+                style={{ width: 100, height: 70, transform: [{ scaleX: -1 }] }}
+              />
             </Pressable>
 
             <Pressable style={styles.navButton} onPress={goNext}>
               <Image source={Arrow} style={{ width: 100, height: 70 }} />
             </Pressable>
           </View>
-
         </ImageBackground>
       </View>
 
@@ -259,7 +302,6 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
               width: "100%",
               height: 120,
               justifyContent: "center",
-      
             }}
           >
             <Pressable
@@ -294,7 +336,6 @@ const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
               <Text style={styles.linkTitle}>Ma Guilde</Text>
             </Pressable>
           </ImageBackground>
-
         </View>
       </View>
     </ThemedView>
@@ -307,15 +348,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  names : {
+  names: {
     color: Colors.black,
-    textAlign: "center", 
-    position: "relative", 
+    textAlign: "center",
+    position: "relative",
+  },
+  musicButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  musicText: {
+    fontSize: 24,
+    lineHeight: 24,
   },
   avatarSection: {
     position: "absolute",
     top: 50,
-    left: 140,
+    left: 0,
     width: 230,
   },
   avatarText: {
@@ -324,14 +386,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   navButton: {
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 15,
   },
   navRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '95%',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "95%",
   },
   userName: {
     fontSize: 16,
@@ -394,7 +456,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   linkArrow: {
-    fontSize: 20, 
+    fontSize: 20,
     fontWeight: "600",
   },
 });
