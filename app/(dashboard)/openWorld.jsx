@@ -219,7 +219,7 @@ const openWorld = () => {
                 style={[styles.names, { fontSize: 18, top: 36 }]}
                 font="merriweatherLight"
               >
-                de {currentGobelin?.user_name || "Incognito"}
+                de {currentGobelin?.user_name || "Anonyme"}
               </ThemedText>
 
               {loading ? (
@@ -349,6 +349,27 @@ const styles = StyleSheet.create({
     color: Colors.black,
     textAlign: "center",
     position: "relative",
+  },
+  musicButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  musicText: {
+    fontSize: 24,
+    lineHeight: 24,
   },
   avatarSection: {
     position: "absolute",

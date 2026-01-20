@@ -1,10 +1,11 @@
 import { Audio } from "expo-av"; // use expo-av Audio API
 
 export const SOUNDS = {
-  //   bgm: {
-  //     world: require("../../assets/audio/gobelin/bgm_world.mp3"),
-  //     menu: require("../../assets/audio/gobelin/bgm_menu.mp3"),
-  //   },
+  bgm: {
+    confBg: require("../../assets/audio/gobelin/conf-bg.mp3"),
+    confBg2: require("../../assets/audio/gobelin/conf-bg2.mp3"),
+    mainBg: require("../../assets/audio/gobelin/main-bg.mp3"),
+  },
   sfx: {
     laugh: require("../../assets/audio/gobelin/laugh.mp3"),
     roating: require("../../assets/audio/gobelin/roating.mp3"),
@@ -21,42 +22,58 @@ export const SOUNDS = {
   },
 };
 
-let bgm = null;
+let bgmSound = null; // <- Audio.Sound
+let bgmKey = null;
 let sfxCache = new Map();
 
-export async function initAudio() {}
+export async function initAudio() {
+  await Audio.setAudioModeAsync({
+    playsInSilentModeIOS: true,
+    staysActiveInBackground: false,
+    shouldDuckAndroid: true,
+  });
+}
 
 export async function playBgm(key, { volume = 0.25, loop = true } = {}) {
-  try {
-    const asset = SOUNDS.bgm[key];
-    if (!asset) {
-      console.warn("Unknown BGM:", key);
-      return;
-    }
-
-    await stopBgm();
-
-    bgm = await Audio.Sound.createAsync(asset, {
-      shouldPlay: true,
-      isLooping: loop,
-      volume,
-    });
-
-    return bgm;
-  } catch (e) {
-    console.log("playBgm error:", e);
+  const asset = SOUNDS.bgm[key];
+  if (!asset) {
+    console.warn("Unknown BGM:", key);
+    return;
   }
+  if (bgmSound && bgmKey === key) {
+    await bgmSound.setIsLoopingAsync(loop);
+    await bgmSound.setVolumeAsync(volume);
+    const st = await bgmSound.getStatusAsync();
+    if (!st.isPlaying) await bgmSound.playAsync();
+    return;
+  }
+
+  await stopBgm();
+
+  const { sound } = await Audio.Sound.createAsync(asset, {
+    shouldPlay: true,
+    isLooping: loop,
+    volume,
+  });
+
+  bgmSound = sound;
+  bgmKey = key;
 }
 
 export async function stopBgm() {
+  if (!bgmSound) return;
   try {
-    if (!bgm) return;
-    await bgm.sound.stopAsync();
-    await bgm.sound.unloadAsync();
-    bgm = null;
-  } catch (e) {
-    console.log("stopBgm error:", e);
+    await bgmSound.stopAsync();
+    await bgmSound.unloadAsync();
+  } finally {
+    bgmSound = null;
+    bgmKey = null;
   }
+}
+
+export async function setBgmVolume(volume) {
+  if (!bgmSound) return;
+  await bgmSound.setVolumeAsync(volume);
 }
 
 export async function playSfx(key, { volume = 0.8 } = {}) {

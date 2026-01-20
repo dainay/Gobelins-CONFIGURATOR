@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -10,13 +10,13 @@ import {
 import { Colors } from "../constants/Colors";
 import { useUser } from "../hooks/useUser";
 
-import GuestOnly from "../components/auth/GuestOnly";
-
 import ThemedButton from "../components/ui/ThemedButton";
 import ThemedLogo from "../components/ui/ThemedLogo";
 import ThemedText from "../components/ui/ThemedText";
 import ThemedTextInput from "../components/ui/ThemedTextInput";
 import ThemedView from "../components/ui/ThemedView";
+
+import GuestOnly from "../components/auth/GuestOnly";
 
 import FirefliesSimple from "../components/ui/FirefliesSimple";
 
@@ -41,7 +41,7 @@ const Home = () => {
           useNativeDriver: true,
         }),
       ]),
-      { resetBeforeIteration: false }
+      { resetBeforeIteration: false },
     ).start();
   }, [opacity]);
 
@@ -55,22 +55,22 @@ const Home = () => {
     setError(null);
 
     try {
-      await login(email, password);
-      router.replace("/(dashboard)/openWorld");
+      const result = await login(email, password);
+      console.log("Login successful, navigating to:", result);
+      // router.replace(result);
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    
     <ThemedView safe={true} style={[styles.container]} keyboard={true}>
       <GuestOnly>
         <View style={styles.bgImageWrapper} pointerEvents="none">
           <Image
             source={require("../assets/img/temp-back.png")}
             style={[styles.bgImage]}
-            resizeMode="cover" 
+            resizeMode="cover"
           />
         </View>
         <ThemedLogo />
@@ -114,18 +114,14 @@ const Home = () => {
           background={"bar2"}
         />
 
-       
-        <FirefliesSimple count={15}/>  
-
+        <FirefliesSimple count={15} />
 
         <ThemedButton onPress={handleSubmit} type="button1">
           Se connecter
         </ThemedButton>
 
         {error && (
-          <ThemedText style={{ color: Colors.error }}>
-            {error}
-          </ThemedText>
+          <ThemedText style={{ color: Colors.error }}>{error}</ThemedText>
         )}
 
         <Link href="/register">
@@ -134,18 +130,16 @@ const Home = () => {
           </ThemedText>
         </Link>
 
-         <Link href="/home">
-        <ThemedText style={styles.link}>
-          TABS
-        </ThemedText>
-      </Link> 
+        <Link href="/home">
+          <ThemedText style={styles.link}>TABS</ThemedText>
+        </Link>
         <Link href="/Scene">
           <ThemedText style={styles.link}>DEMO 3D</ThemedText>
         </Link>
 
-         <Link href="/introManager">
+        <Link href="/introManager">
           <ThemedText style={styles.link}>INTRO</ThemedText>
-        </Link> 
+        </Link>
       </GuestOnly>
     </ThemedView>
   );

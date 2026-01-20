@@ -30,7 +30,9 @@ const Login = () => {
     setError(null);
 
     try {
-      await login(email, password); 
+      const result = await login(email, password);
+      console.log("Login successful, navigating to:", result);
+      // router.replace(result);
     } catch (error) {
       setError(error.message);
     }
@@ -55,7 +57,7 @@ const Login = () => {
         keyboardType="email-address"
         onChangeText={setEmail}
         value={email}
-        background = 'bar1'
+        background="bar1"
       />
 
       <ThemedTextInput
@@ -70,19 +72,24 @@ const Login = () => {
       </ThemedButton>
 
       <Spacer />
-      <FirefliesSimple count={15}/>  
-      
+      <FirefliesSimple count={15} />
+
       {error && (
         <ThemedText style={{ color: Colors.error, marginTop: 10 }}>
           {error}
         </ThemedText>
-      )} 
+      )}
       <Link href="/register" replace>
-        <ThemedText style={{ textAlign: "center", color: theme.accentColor1, ...styles.link }}>
+        <ThemedText
+          style={{
+            textAlign: "center",
+            color: theme.accentColor1,
+            ...styles.link,
+          }}
+        >
           Créer un compte
         </ThemedText>
       </Link>
- 
     </ThemedView>
   );
 };
@@ -105,9 +112,9 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   bgImage: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    position: "absolute",
     top: 0,
     left: 0,
   },
@@ -115,7 +122,7 @@ const styles = StyleSheet.create({
     color: "#ffffffff",
     marginTop: 10,
     textAlign: "center",
-    textDecorationLine: 'underline',
-    fontFamily: 'Merriweather-Light',
-  }
+    textDecorationLine: "underline",
+    fontFamily: "Merriweather-Light",
+  },
 });
