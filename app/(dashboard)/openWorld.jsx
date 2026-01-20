@@ -76,15 +76,16 @@ const openWorld = () => {
 
       let chosenAnim = currentGobelin.animation;
       let audioKey = `suffering${Math.floor(Math.random() * 3) + 1}`;
+      let volume = 0.3;
 
       if (nextCount > 2) {
         chosenAnim = "ANIM_scream";
         audioKey = "scream";
+        volume = 0.7;
       }
 
       setActiveAnimation(chosenAnim);
-      playSfx(audioKey);
-
+      playSfx(audioKey, { volume });
       animTimeoutRef.current = setTimeout(() => {
         setActiveAnimation(null);
         animTimeoutRef.current = null;

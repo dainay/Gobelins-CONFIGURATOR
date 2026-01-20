@@ -29,7 +29,9 @@ export default function PostAuth() {
         setConfig(gobelinData);
         router.replace("/(dashboard)/openWorld");
       } else {
-        router.replace("/(intro)/intro");
+        router.replace("/(three)/Scene");
+        // router.replace("/(intro)/intro");
+        //TODO: re-enable intro when ready
       }
     }
 

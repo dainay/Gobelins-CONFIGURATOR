@@ -10,13 +10,12 @@ import {
 import { Colors } from "../constants/Colors";
 import { useUser } from "../hooks/useUser";
 
+import GuestOnly from "../components/auth/GuestOnly";
 import ThemedButton from "../components/ui/ThemedButton";
 import ThemedLogo from "../components/ui/ThemedLogo";
 import ThemedText from "../components/ui/ThemedText";
 import ThemedTextInput from "../components/ui/ThemedTextInput";
 import ThemedView from "../components/ui/ThemedView";
-
-import GuestOnly from "../components/auth/GuestOnly";
 
 import FirefliesSimple from "../components/ui/FirefliesSimple";
 
@@ -123,6 +122,8 @@ const Home = () => {
         {error && (
           <ThemedText style={{ color: Colors.error }}>{error}</ThemedText>
         )}
+
+        <ThemedText style={styles.link}>Mot de passe oublié ?</ThemedText>
 
         <Link href="/register">
           <ThemedText style={styles.link}>
