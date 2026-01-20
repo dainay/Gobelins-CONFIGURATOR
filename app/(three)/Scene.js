@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber/native";
-import { router } from "expo-router";
-import { Suspense, useEffect,useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Suspense, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -13,7 +12,6 @@ import MenuBar from "../(configurator)/MenuBar";
 import TabsBar from "../(configurator)/TabsBar";
 import CameraController from "../../components/CameraController";
 import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
-import ThemedText from "../../components/ui/ThemedText";
 import ThemedView from "../../components/ui/ThemedView";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
@@ -101,12 +99,12 @@ export default function Scene() {
 
   return (
     <ThemedView safe style={{ flex: 1 }}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => router.replace("/(dashboard)/profile")}
         style={{ position: "absolute", zIndex: 1000, top: "50%", right: 10 }}
       >
         <ThemedText>INDEX</ThemedText>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {!showTutorial && (
         <Animated.View

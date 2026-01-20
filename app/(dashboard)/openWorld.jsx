@@ -104,12 +104,15 @@ const openWorld = () => {
       const list = await fetchGobelinsPage(targetPage);
       const safe = list || [];
 
-      setListGobelins((prev) => (append ? [...prev, ...safe] : safe));
+      // Filter out current user's gobelin
+      const filtered = safe.filter((g) => g.user_id !== user?.id);
+
+      setListGobelins((prev) => (append ? [...prev, ...filtered] : filtered));
       setPage(targetPage);
 
-      if (safe.length === 0) setHasMore(false);
+      if (filtered.length === 0) setHasMore(false);
 
-      return safe;
+      return filtered;
     } catch (e) {
       console.log("Fetch gobelins failed:", e);
       return [];
@@ -226,9 +229,17 @@ const openWorld = () => {
               </ThemedText>
 
               {loading ? (
-                <ThemedText>Loading...</ThemedText>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <ThemedText font="sofia" style={{ fontSize: 24, textAlign: "center" }}>
+                    Chargement...
+                  </ThemedText>
+                </View>
               ) : !currentGobelin ? (
-                <ThemedText>No gobelin</ThemedText>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <ThemedText font="sofia" style={{ fontSize: 24, textAlign: "center" }}>
+                    Tous les gobelins sont en grève
+                  </ThemedText>
+                </View>
               ) : (
                 <Canvas
                   style={{
