@@ -8,9 +8,7 @@ export async function fetchGobelinsPage(page = 0, pageSize = PAGE_SIZE) {
 
   const { data, error } = await supabase
     .from("gobelins")
-    .select(
-      "user_id, name, guild, hair, cloth, animation, pose, created_at, user_name",
-    )
+    .select("user_id, name, guild, hair, cloth, animation, pose, created_at")
     .order("created_at", { ascending: false })
     .range(from, to);
 

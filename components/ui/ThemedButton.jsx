@@ -1,23 +1,16 @@
 import React from "react";
-import {
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from "react-native";
+import { ImageBackground, Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
 
-import { Colors } from "../../constants/Colors";
+import { Colors } from '../../constants/Colors';
 
 import Button1 from "../../assets/ui/buttons/button1-dark.png";
-import Button3 from "../../assets/ui/buttons/button3.png";
-import Button4 from "../../assets/ui/buttons/button4.png";
-import Button5 from "../../assets/ui/buttons/button5.png";
-import Button6 from "../../assets/ui/buttons/button6.png";
-import Button2 from "../../assets/ui/guilds/button-guild.png";
+import Button3 from '../../assets/ui/buttons/button3.png';
+import Button4 from '../../assets/ui/buttons/button4.png';
+import Button5 from '../../assets/ui/buttons/button5.png';
+import Button6 from '../../assets/ui/buttons/button6.png';
+import Button2 from '../../assets/ui/guilds/button-guild.png';
 
-import { playSfx } from "../../src/lib/sounds";
+
 
 const BUTTON_CONFIG = {
   button1: {
@@ -53,7 +46,7 @@ const BUTTON_CONFIG = {
     color: Colors.black,
     paddingTop: 8,
   },
-  button5: {
+  button5: {  
     image: Button5,
     height: 90,
     width: 240,
@@ -66,25 +59,18 @@ const BUTTON_CONFIG = {
     height: 100,
     width: 250,
     transform: [{ translateX: 0 }],
-    color: "white",
+    color: 'white',
     paddingTop: -5,
   },
 };
 
-function ThemedButton({
-  style,
-  children,
-  textStyle,
-  type = "button1",
-  width,
-  height,
-  ...props
-}) {
+function ThemedButton({ style, children, textStyle, type = "button1", width, height, ...props}) {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
 
   const button = BUTTON_CONFIG[type] ?? BUTTON_CONFIG.button1;
 
+  
   const renderLabel = () => {
     if (React.isValidElement(children) && children.type === Text) {
       const childStyle = children.props.style || {};
@@ -92,17 +78,9 @@ function ThemedButton({
         style: [styles.text, { color: button.color }, childStyle, textStyle],
       });
     }
-
+ 
     return (
-      <Text
-        style={[
-          styles.text,
-          { color: button.color, paddingTop: button.paddingTop },
-          textStyle,
-        ]}
-      >
-        {children}
-      </Text>
+      <Text style={[styles.text, { color: button.color, paddingTop: button.paddingTop }, textStyle]}>{children}</Text>
     );
   };
 
@@ -112,6 +90,7 @@ function ThemedButton({
         source={button.image}
         resizeMode="stretch"
         style={{
+          
           height: height || button.height,
           justifyContent: "center",
           width: width || button.width,
@@ -119,28 +98,21 @@ function ThemedButton({
           marginVertical: 5,
         }}
       >
-        <Pressable
-          {...props}
-          onPress={() => {
-            playSfx("button");
-            if (props.onPress) props.onPress();
-          }}
-        >
-          {renderLabel()}
-        </Pressable>
+        <Pressable {...props}>{renderLabel()}</Pressable>
       </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  
   pressed: {
     opacity: 0.5,
   },
   text: {
     fontFamily: "ChristmasBold",
     fontSize: 37,
-    textAlign: "center",
+    textAlign: "center",  
     paddingLeft: 10,
   },
 });

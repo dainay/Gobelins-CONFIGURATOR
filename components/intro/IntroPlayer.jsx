@@ -39,7 +39,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       source: require('../../assets/video/intro/intro-partie-3.mp4'),
       isLooping: true, 
       requiresInteraction: true, 
-      clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
+      // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
       clickText: 'Mais aujourd\'hui ?',
       lottieSource: undefined, // Ajoutez votre fichier Lottie ici : require('../../assets/lottie/animation.json')
       isSkipable: true,
@@ -59,7 +59,7 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
       source: require('../../assets/video/intro/intro-partie-5.mp4'),
       isLooping: false, 
       requiresInteraction: true, 
-      clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
+      // clickImage: require('../../assets/intro/CTA/eveille-etincelle.png'), // Système d'image de clic désactivé temporairement
       clickText: 'Prêt ?',
       lottieSource: undefined, // Ajoutez votre fichier Lottie ici : require('../../assets/lottie/animation.json')
       isSkipable: true,
