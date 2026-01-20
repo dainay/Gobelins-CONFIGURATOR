@@ -15,7 +15,8 @@ function setVisibleDeep(obj, visible) {
 function toggleVariantsByPrefix(root, prefix, chosenName) {
   if (!root) return;
 
-  root.children.forEach((child) => {
+  const children = Array.isArray(root.children) ? root.children : [];
+  children.forEach((child) => {
     if (!child.name.startsWith(prefix)) return;
     setVisibleDeep(child, child.name === chosenName);
   });
@@ -23,7 +24,8 @@ function toggleVariantsByPrefix(root, prefix, chosenName) {
 
 function hideAllByPrefix(root, prefix) {
   if (!root) return;
-  root.children.forEach((child) => {
+  const children = Array.isArray(root.children) ? root.children : [];
+  children.forEach((child) => {
     if (!child.name.startsWith(prefix)) return;
     setVisibleDeep(child, false);
   });

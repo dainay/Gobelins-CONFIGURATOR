@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber/native";
 import { router } from "expo-router";
 import { Suspense, useEffect } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -175,17 +175,14 @@ export default function Scene() {
         <Animated.View
           style={[
             guildStyle,
-            {
-              position: "absolute",
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 20,
-            },
+            styles.guildOverlay,
           ]}
           pointerEvents={activeMenu === "guild" ? "auto" : "none"}
         >
-          <GuildChoice />
+          <View style={styles.guildBackdrop} />
+          <View style={styles.guildCard}>
+            <GuildChoice />
+          </View>
         </Animated.View>
       )}
 
@@ -193,3 +190,23 @@ export default function Scene() {
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  guildOverlay: {
+      ...StyleSheet.absoluteFillObject,
+    zIndex: 100,
+    elevation: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  guildBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  guildCard: {
+    width: "100%",
+    maxWidth: 425,
+    height: "65%",
+    minHeight: 500,
+  },
+});

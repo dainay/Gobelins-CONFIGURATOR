@@ -83,6 +83,23 @@ export default function OptionsPanel() {
     const porteWidth = screenWidth * 0.5; // 50% de l'écran
     const translateDistance = porteWidth * 0.96; // 96% de la largeur de la porte (48% de l'écran)
     
+    const closeDrawer = () => {
+      Animated.parallel([
+        Animated.timing(porteGaucheAnim, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(porteDroiteAnim, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    };
+
     const runDrawerAnimation = () => {
       Animated.parallel([
         Animated.sequence([
@@ -119,6 +136,12 @@ export default function OptionsPanel() {
         ]),
       ]).start();
     };
+
+    // Quand on est sur le 3e menu (guild), on force les portes à rester fermées
+    if (activeMenu === "guild") {
+      closeDrawer();
+      return;
+    }
 
     // Cas demandé : à la toute première apparition après le tuto, attendre 1s avant l'ouverture du tiroir.
     if (tutorialCompleted && !hasDelayedDrawerAfterTutorialRef.current) {

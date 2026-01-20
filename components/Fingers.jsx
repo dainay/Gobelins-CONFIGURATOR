@@ -1,6 +1,6 @@
 import LottieView from 'lottie-react-native';
 import { useRef, useState } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, Image, StyleSheet, View } from "react-native";
 import { Colors } from "../constants/Colors";
 import ThemedText from "./ui/ThemedText";
 
@@ -30,7 +30,7 @@ export default function Fingers({ onHandDetected }) {
 
   const animatedTextColor = shineAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [Colors.black, '#35d224'],
+    outputRange: [Colors.brownText, "#35d224"],
   });
 
   // ---------------- Glow animation ----------------
@@ -97,16 +97,21 @@ export default function Fingers({ onHandDetected }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles.debugContainer]}>
       <AnimatedLottie
         pointerEvents="none"
         source={require('../assets/lottie/Magma.json')}
         autoPlay
         loop
         style={{
-          width: '90%',
-          height: 300,
+          width: '100%',
+          maxHeight: 300,
           alignSelf: 'center',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           marginVertical: -30,
           transform: [{ scale: shineAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.2] }) }],
           opacity: isShining ? 1 : 0.9,
@@ -114,7 +119,7 @@ export default function Fingers({ onHandDetected }) {
       />
 
       <View
-        style={styles.touchZone}
+        style={[styles.touchZone, styles.debugTouchZone]}
         onTouchStart={(e) => processTouches(e.nativeEvent.touches)}
         onTouchMove={(e) => processTouches(e.nativeEvent.touches)}
         onTouchEnd={(e) => processTouches(e.nativeEvent.touches)}
@@ -130,25 +135,52 @@ export default function Fingers({ onHandDetected }) {
             }),
             shadowOpacity: isShining ? 0.5 : 0,
           },
+          styles.debugGlow,
         ]}
       />
 
-      <AnimatedThemedText font="christmasBold" style={[styles.textFingers, { color: animatedTextColor }]}> 
-        {detected ? "Main gobeline reconnue " : (isShining && currentPhraseRef.current ? currentPhraseRef.current : `Pose ${MIN_TOUCHES} doigts ici. \n Lance le rite d'initiation pour découvrir ta guilde`)}
-      </AnimatedThemedText>
+      <View style={styles.contentOverlay}>
+        <AnimatedThemedText
+          font="merriweather"
+          style={[styles.textFingers, { color: animatedTextColor }, styles.debugText]}
+        >
+          {detected
+            ? "Main gobeline reconnue"
+            : isShining && currentPhraseRef.current
+              ? currentPhraseRef.current
+              : `Pose ${MIN_TOUCHES} doigts ici.\nLance le rite d'initiation pour découvrir ta guilde.`}
+        </AnimatedThemedText>
+
+        <View style={[styles.iconsRow, styles.debugIconsRow]}>
+          <Image
+            source={require("../assets/ui/guilds/empreinte-digitale.png")}
+            style={styles.icon}
+            resizeMode="contain"
+          />
+          <Image
+            source={require("../assets/ui/guilds/empreinte-digitale.png")}
+            style={styles.icon}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+  },
   touchZone: {
     width: "100%",
-    height: 300,
+    height: "100%",
     backgroundColor: "#edb55525",
     borderRadius: 16,
-    // justifyContent: "center",
-    // alignItems: "center",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingHorizontal: 24,
     overflow: "hidden", 
   },
 
@@ -158,21 +190,49 @@ const styles = StyleSheet.create({
     shadowRadius: 25,
   },
 
-  text: {
-    fontSize: 30, 
-    color: Colors.black,
-    // zIndex: 10,
-    textAlign: "center",
-    marginVertical: 110,
-    width: "80%",
-    alignSelf: "center",
+  contentOverlay: {
+    width: "100%",
+    zIndex: 2,
+    alignItems: "center",
+    gap: 12,
   },
-  textFingers:{
-     fontSize: 30, 
-    color: Colors.black,
-     marginTop: 90,
+  iconsRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 14,
+  },
+  icon: {
+    width: 80,
+    height: 80,
+  },
+
+  textFingers: {
+    fontSize: 16,
+    lineHeight: 24,
+    letterSpacing: 0.2,
     textAlign: "center",
-    width: "80%",
-    alignSelf: "center",
-  }
+    width: "100%",
+  },
+  // DEBUG BORDERS
+  debugContainer: {
+    borderWidth: 2,
+    borderColor: "red",
+  },
+  debugTouchZone: {
+    borderWidth: 2,
+    borderColor: "lime",
+  },
+  debugGlow: {
+    borderWidth: 2,
+    borderColor: "cyan",
+  },
+  debugText: {
+    borderWidth: 2,
+    borderColor: "magenta",
+  },
+  debugIconsRow: {
+    borderWidth: 2,
+    borderColor: "yellow",
+  },
 });
