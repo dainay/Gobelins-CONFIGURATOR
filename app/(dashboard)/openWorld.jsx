@@ -3,6 +3,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   Image,
   ImageBackground,
+  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -27,7 +28,12 @@ import ThemedText from "../../components/ui/ThemedText";
 import { fetchGobelinsPage } from "../../src/lib/listGobelins";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 
+import { useRef } from "react";
+import GreenButton from "../../components/ui/GreenButton";
+import { playSfx, stopAllSfx } from "../../src/lib/sounds";
+
 const openWorld = () => {
+  const animTimeoutRef = useRef(null);
   const router = useRouter();
   const { user } = useUser();
   const gobelinName = useGobelinStore((s) => s.name);
@@ -42,18 +48,57 @@ const openWorld = () => {
 
   const [activeAnimation, setActiveAnimation] = useState(null);
 
-  useEffect(() => {
+  const [countTouch, setCountTouch] = useState(0);
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const cancelCurrentInteraction = async () => {
+    if (animTimeoutRef.current) {
+      clearTimeout(animTimeoutRef.current);
+      animTimeoutRef.current = null;
+    }
     setActiveAnimation(null);
+    try {
+      await stopAllSfx();
+    } catch (e) {
+      console.log("stopAllSfx error:", e);
+    }
+  };
+
+  useEffect(() => {
+    cancelCurrentInteraction();
+    setCountTouch(0);
   }, [currentIndex]);
 
-  const playTempAnimation = () => {
+  const playTempAnimation = async () => {
     if (!currentGobelin?.animation) return;
 
-    setActiveAnimation(currentGobelin.animation);
+    await cancelCurrentInteraction();
 
-    setTimeout(() => {
-      setActiveAnimation(null);
-    }, 3000);
+    setCountTouch((c) => {
+      const nextCount = c + 1;
+
+      let chosenAnim = currentGobelin.animation;
+      let audioKey = ["suffering1", "suffering3", "yay"][
+        Math.floor(Math.random() * 4)
+      ];
+      let volume = 0.1;
+
+      if (nextCount > 2) {
+        chosenAnim = "ANIM_scream";
+        audioKey = "scream";
+        volume = 1;
+      }
+
+      setActiveAnimation(chosenAnim);
+      playSfx(audioKey, { volume });
+      animTimeoutRef.current = setTimeout(() => {
+        setActiveAnimation(null);
+        animTimeoutRef.current = null;
+      }, 4000);
+
+      return nextCount;
+    });
   };
 
   const loadGobelins = async (targetPage, { append = false } = {}) => {
@@ -63,12 +108,15 @@ const openWorld = () => {
       const list = await fetchGobelinsPage(targetPage);
       const safe = list || [];
 
-      setListGobelins((prev) => (append ? [...prev, ...safe] : safe));
+      // Filter out current user's gobelin
+      const filtered = safe.filter((g) => g.user_id !== user?.id);
+
+      setListGobelins((prev) => (append ? [...prev, ...filtered] : filtered));
       setPage(targetPage);
 
-      if (safe.length === 0) setHasMore(false);
+      if (filtered.length === 0) setHasMore(false);
 
-      return safe;
+      return filtered;
     } catch (e) {
       console.log("Fetch gobelins failed:", e);
       return [];
@@ -79,24 +127,19 @@ const openWorld = () => {
 
   useEffect(() => {
     loadGobelins(0, { append: false });
+    setShowPopup(true);
   }, []);
 
   const currentGobelin = useMemo(
     () => listGobelins[currentIndex] ?? null,
     [listGobelins, currentIndex],
   );
-  console.log("Current gobelin DDDDDDDDDDDDDDDD:", currentGobelin);
-
-  //   const msgs = [
-  //   "Personne ici — les Gobelins fait la sieste ",
-  //   "Aucun Gobelin en vue — le tien est le premier ! ",
-  //   "Les Gobelins sont en grève aujourd'hui ✊",
-  //   "Silence gobelinique — sois le premier"
-  // ];
-  // const msg = msgs[Math.floor(Math.random()*msgs.length)];
 
   const goNext = async () => {
     if (loading || loadingMore) return;
+
+    await cancelCurrentInteraction();
+    setCountTouch(0);
 
     if (currentIndex < listGobelins.length - 1) {
       setCurrentIndex((i) => i + 1);
@@ -110,12 +153,14 @@ const openWorld = () => {
 
     if (newItems.length > 0) {
       setCurrentIndex((i) => i + 1);
-    } else {
-      console.log("No more gobelins");
     }
   };
 
-  const goPrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
+  const goPrev = async () => {
+    await cancelCurrentInteraction();
+    setCountTouch(0);
+    setCurrentIndex((i) => Math.max(0, i - 1));
+  };
 
   return (
     <ThemedView safe={true} style={styles.container}>
@@ -124,20 +169,20 @@ const openWorld = () => {
       </View>
 
       {/* ==================HEADER==================== */}
-      <ImageBackground
-        source={Header}
-        resizeMode="stretch"
-        style={{
-          justifyContent: "center",
-          marginVertical: 5,
-          width: 400,
-          height: 150,
-          position: "relative",
-        }}
+      <Pressable
+        style={styles.avatarSection}
+        onPress={() => router.replace("/(dashboard)/profile")}
       >
-        <Pressable
-          style={styles.avatarSection}
-          onPress={() => router.replace("/(dashboard)/profile")}
+        <ImageBackground
+          source={Header}
+          resizeMode="stretch"
+          style={{
+            justifyContent: "center",
+            marginVertical: 5,
+            width: 400,
+            height: 150,
+            position: "relative",
+          }}
         >
           <ThemedText
             font="sofia"
@@ -148,8 +193,8 @@ const openWorld = () => {
           <ThemedText style={styles.userName}>
             de {user?.user_metadata?.display_name || "User"}
           </ThemedText>
-        </Pressable>
-      </ImageBackground>
+        </ImageBackground>
+      </Pressable>
 
       {/* ==================CARDS (centered vertically)==================== */}
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -185,13 +230,21 @@ const openWorld = () => {
                 style={[styles.names, { fontSize: 18, top: 36 }]}
                 font="merriweatherLight"
               >
-                de {currentGobelin?.user_name || "Incognito"}
+                de {currentGobelin?.user_name || "Anonyme"}
               </ThemedText>
 
               {loading ? (
-                <ThemedText>Loading...</ThemedText>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <ThemedText font="sofia" style={{ fontSize: 24, textAlign: "center" }}>
+                    Chargement...
+                  </ThemedText>
+                </View>
               ) : !currentGobelin ? (
-                <ThemedText>No gobelin</ThemedText>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <ThemedText font="sofia" style={{ fontSize: 24, textAlign: "center" }}>
+                    Tous les gobelins sont en grève
+                  </ThemedText>
+                </View>
               ) : (
                 <Canvas
                   style={{
@@ -272,7 +325,7 @@ const openWorld = () => {
                 styles.linkSection,
                 { width: "100%", alignItems: "center" },
               ]}
-              onPress={() => console.log("Navigate to demands")}
+              onPress={() => setShowPopup(true)}
             >
               <Text style={styles.linkTitle}>Projet</Text>
             </Pressable>
@@ -294,13 +347,51 @@ const openWorld = () => {
                 styles.linkSection,
                 { width: "100%", alignItems: "center" },
               ]}
-              onPress={() => console.log("Navigate to propositions")}
+              onPress={() => setShowPopup(true)}
             >
               <Text style={styles.linkTitle}>Ma Guilde</Text>
             </Pressable>
           </ImageBackground>
         </View>
       </View>
+
+      {/* ==================POPUP==================== */}
+      <Modal
+        visible={showPopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowPopup(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <ImageBackground
+            source={require("../../assets/ui/tutorial/tutorial-background.png")}
+            style={styles.popupBackground}
+            resizeMode="contain"
+          >
+            <View style={styles.popupContent}>
+              <ThemedText font="sofia" style={styles.popupTitle}>
+                Merci d'avoir terminé l'expérience Gob'link.
+              </ThemedText>
+              
+              <ThemedText font="merriweather" style={styles.popupText}>
+                Gob'link, c'est avant tout une histoire d'entraide entre étudiant·es : se rencontrer, s'aider, créer ensemble.
+                {"\n\n"}
+                Cette partie arrivera très bientôt.
+                {"\n\n"}
+                En attendant, tu peux déjà découvrir les Gobelins créés par la communauté. Parle-leur. Fais-les danser. Embête-les ! Fais les vivre !
+                {"\n\n"}
+                À très vite.{"\n"}Gob'link
+              </ThemedText>
+
+              <GreenButton
+                title="Compris !"
+                onPress={() => setShowPopup(false)}
+                width="60%"
+              />
+            </View>
+          </ImageBackground>
+        </View>
+      </Modal>
     </ThemedView>
   );
 };
@@ -316,10 +407,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "relative",
   },
+  musicButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  musicText: {
+    fontSize: 24,
+    lineHeight: 24,
+  },
   avatarSection: {
     position: "absolute",
     top: 50,
-    left: 140,
+    left: 0,
     width: 230,
   },
   avatarText: {
@@ -400,5 +512,38 @@ const styles = StyleSheet.create({
   linkArrow: {
     fontSize: 20,
     fontWeight: "600",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  popupBackground: {
+    width: "100%",
+    aspectRatio: 0.4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  popupContent: {
+    width: "90%",
+    alignItems: "center",
+    paddingHorizontal: 30,
+    paddingTop: 100,
+    paddingBottom: 40,
+  },
+  popupTitle: {
+    fontSize: 22,
+    textAlign: "center",
+    marginBottom: 20,
+    color: Colors.black,
+  },
+  popupText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 30,
+    lineHeight: 22,
+    color: Colors.black,
   },
 });

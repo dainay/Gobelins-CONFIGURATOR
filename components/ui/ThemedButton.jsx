@@ -1,7 +1,15 @@
 import React from "react";
-import { ImageBackground, Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
+import {
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 
-import { Colors } from '../../constants/Colors';
+import { Colors } from "../../constants/Colors";
+import { playSfx } from "../../src/lib/sounds";
 
 import ButtonBg from "../../assets/ui/buttons/button.webp";
 
@@ -17,7 +25,7 @@ function ThemedButton({ style, children, textStyle, width, height, ...props }) {
         style: [styles.text, { color: theme.accentColor1 ?? Colors.accentColor1 }, childStyle, textStyle],
       });
     }
- 
+
     return (
       <Text
         style={[
@@ -46,21 +54,28 @@ function ThemedButton({ style, children, textStyle, width, height, ...props }) {
           ...(style ?? null),
         }}
       >
-        <Pressable {...props}>{renderLabel()}</Pressable>
+        <Pressable
+          {...props}
+          onPress={() => {
+            playSfx("button");
+            if (props.onPress) props.onPress();
+          }}
+        >
+          {renderLabel()}
+        </Pressable>
       </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  
   pressed: {
     opacity: 0.5,
   },
   text: {
     fontFamily: "ChristmasBold",
     fontSize: 37,
-    textAlign: "center",  
+    textAlign: "center",
     paddingLeft: 10,
   },
 });

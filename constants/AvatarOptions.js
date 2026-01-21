@@ -1,34 +1,33 @@
 export const AvatarOptions = {
   hair: [
-    { id: "h1", label: "hat_1" },
-    { id: "h2", label: "hat_2" },
-    { id: "h3", label: "hat_3" },
-    { id: "h4", label: "hat_4" },
-    { id: "h5", label: "hat_5" },
-    { id: "h6", label: "hat_6" },
-    { id: "h7", label: "hat_7" },
-    { id: "h8", label: "hat_8" },
-    { id: "h9", label: "hat_9" },
-    { id: "h10", label: "hat_10" },
-
+    { id: "h1", label: "hat_1", img: require("../assets/ui/clothes/h1.png") },
+    { id: "h2", label: "hat_2", img: require("../assets/ui/clothes/h2.png") },
+    { id: "h3", label: "hat_3", img: require("../assets/ui/clothes/h3.png") },
+    { id: "h4", label: "hat_4", img: require("../assets/ui/clothes/h4.png") },
+    { id: "h5", label: "hat_5", img: require("../assets/ui/clothes/h5.png") },
+    { id: "h6", label: "hat_6", img: require("../assets/ui/clothes/h6.png") },
+    { id: "h7", label: "hat_7", img: require("../assets/ui/clothes/h7.png") },
+    { id: "h8", label: "hat_8", img: require("../assets/ui/clothes/h8.png") },
+    { id: "h9", label: "hat_9", img: require("../assets/ui/clothes/h9.png") },
+    { id: "h10", label: "hat_10", img: require("../assets/ui/clothes/h10.png") },
   ],
 
   cloth: [
-    { id: "c1", label: "outfit1" },
-    { id: "c2", label: "outfit_2" },
-    { id: "c3", label: "outfit_3" },
-    { id: "c4", label: "outfit_4" },
-    { id: "c5", label: "outfit_5" },
-    { id: "c6", label: "outfit_6" },
+    { id: "c1", label: "outfit1", img: require("../assets/ui/clothes/c1.png") },
+    { id: "c2", label: "outfit_2", img: require("../assets/ui/clothes/c2.png") },
+    { id: "c3", label: "outfit_3", img: require("../assets/ui/clothes/c3.png") },
+    { id: "c4", label: "outfit_4", img: require("../assets/ui/clothes/c4.png") },
+    { id: "c5", label: "outfit_5", img: require("../assets/ui/clothes/c5.png") },
+    { id: "c6", label: "outfit_6", img: require("../assets/ui/clothes/c6.png") },
+    { id: "c7", label: "outfit_7", img: require("../assets/ui/clothes/c7.png") },
+    { id: "c8", label: "outfit_8", img: require("../assets/ui/clothes/c8.png") },
+    { id: "c9", label: "outfit_9", img: require("../assets/ui/clothes/c9.png") },
+    { id: "c10", label: "outfit_10", img: require("../assets/ui/clothes/c10.png") },
+  ],
 
-    { id: "c7", label: "outfit_7" },
-    { id: "c8", label: "outfit_8" },
-    { id: "c9", label: "outfit_9" },
-    { id: "c10", label: "outfit_10" },
-  ], 
-
-  animation: [ 
-    { id: "an2", label: "ANIM_catwalk"},
+  animation: [
+    { id: "an13", label: "ANIM_thankful" },
+    { id: "an2", label: "ANIM_catwalk" },
     { id: "an3", label: "ANIM_danse1" },
     { id: "an4", label: "ANIM_danse2" },
     { id: "an5", label: "ANIM_danse3" },
@@ -40,27 +39,27 @@ export const AvatarOptions = {
 
     // { id: "an11", label: "ANIM_gesture" },
     // { id: "an12", label: "ANIM_gettinghit" },
-    // { id: "an13", label: "ANIM_salut" },
+    //  { id: "an13", label: "ANIM_salut" },
     // { id: "an14", label: "ANIM_scream" },
     // { id: "an15", label: "ANIM_talking" },
-    // { id: "an16", label: "ANIM_thankful" }, 
+    // { id: "an16", label: "ANIM_thankful" },
   ],
 
-   pose: [
-    { id: "POSE_1", label: "POSE_1" },
-    { id: "POSE_2", label: "POSE_2" },
-    { id: "POSE_3", label: "POSE_3" },
-    { id: "POSE_4", label: "POSE_4" },
-    { id: "POSE_5", label: "POSE_5" },
-    { id: "POSE_6", label: "POSE_6" },
+  pose: [
+    { id: "POSE_1", label: "POSE_1", name: "Drama" },
+    { id: "POSE_2", label: "POSE_2", name: "Cutie" },
+    { id: "POSE_3", label: "POSE_3", name: "Stylé" },
+    { id: "POSE_4", label: "POSE_4", name: "Papillon" },
+    { id: "POSE_5", label: "POSE_5", name: "Hey!" },
+    { id: "POSE_6", label: "POSE_6", name: "Ballerine" },
 
     //  { id: "an11", label: "ANIM_gesture" },
     // { id: "an12", label: "ANIM_gettinghit" },
     // { id: "an13", label: "ANIM_salut" },
     // { id: "an14", label: "ANIM_scream" },
     // { id: "an15", label: "ANIM_talking" },
-    // { id: "an16", label: "ANIM_thankful" }, 
- 
+    // { id: "an16", label: "ANIM_thankful" },
+
     // { id: "an2", label: "ANIM_catwalk"},
     // { id: "an3", label: "ANIM_danse1" },
     // { id: "an4", label: "ANIM_danse2" },
@@ -70,7 +69,5 @@ export const AvatarOptions = {
     // { id: "an8", label: "ANIM_danse6" },
     // { id: "an9", label: "ANIM_danse7" },
     // { id: "an10", label: "ANIM_danse8" },
-
-      
   ],
 };

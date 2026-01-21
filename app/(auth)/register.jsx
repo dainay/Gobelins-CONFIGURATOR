@@ -1,5 +1,11 @@
 import { Link, useRouter } from "expo-router";
-import { Image, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Image,
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View
+} from "react-native";
 import { Colors } from "../../constants/Colors";
 
 import GreenButton from "../../components/ui/GreenButton";
@@ -9,6 +15,7 @@ import ThemedView from "../../components/ui/ThemedView";
 
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
+import { mapSupabaseAuthError } from "../../src/lib/mapSupabaseAuthError";
 
 import backgroundImage from "../../assets/img/bacgkound-school.webp";
 import ThemedPicker from "../../components/ui/ThemedPicker";
@@ -33,27 +40,29 @@ const Register = () => {
 
   const handleSubmit = async () => {
     if (!email || !password || !name) {
-    setError("Tous les champs sont requis"); 
-    return;
-  }
+      setError("Tous les champs sont requis");
+      return;
+    }
     // console.log("register form submitted");
     setError(null);
     try {
-      await register(email, password, name, year);
-     
+      const result = await register(email, password, name, year);
+      console.log("Login successful, navigating to:", result);
+      // router.replace(result);
     } catch (error) {
-      setError(error.message);
+      console.log("Login error ##################:", error.code);
+      setError(mapSupabaseAuthError(error));
     }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ThemedView style={styles.container}>
+      <ThemedView style={styles.container} safe={true} keyboard={true}>
         <View style={styles.bgImageWrapper} pointerEvents="none">
           <Image
             source={backgroundImage}
             style={[styles.bgImage]}
-            resizeMode="cover" 
+            resizeMode="cover"
           />
         </View>
         <View style={styles.globalContent}>
@@ -106,8 +115,8 @@ const Register = () => {
             />
 
             <ThemedTextInput
-              placeholder="Nom"
-              placeholderTextColor={Colors.brownText}
+              placeholder="Comment t'appelles-tu ?"
+              placeholderTextColor="rgba(0,0,0,0.6)"
               autoCapitalize="words"
               onChangeText={setName}
               value={name}
@@ -124,7 +133,7 @@ const Register = () => {
           {/* Picker */}
           <View style={styles.pickerBlock}>
             <ThemedPicker
-              label="Quelle année êtes-vous ?"
+              label="Quelle année es-tu ?"
               items={yearItems}
               value={year}
               onChange={setYear}
@@ -196,9 +205,9 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   bgImage: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    position: "absolute",
     top: 0,
     left: 0,
   },
