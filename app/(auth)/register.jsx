@@ -3,9 +3,8 @@ import {
   Image,
   Keyboard,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
 import { Colors } from "../../constants/Colors";
 
@@ -58,7 +57,7 @@ const Register = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ThemedView style={styles.container}>
+      <ThemedView style={styles.container} safe={true} keyboard={true}>
         <View style={styles.bgImageWrapper} pointerEvents="none">
           <Image
             source={backgroundImage}
@@ -106,7 +105,7 @@ const Register = () => {
             />
 
             <ThemedTextInput
-              placeholder="Nom"
+              placeholder="Comment t'appelles-tu ?"
               placeholderTextColor="rgba(0,0,0,0.6)"
               autoCapitalize="words"
               onChangeText={setName}
@@ -119,7 +118,7 @@ const Register = () => {
           {/* Picker */}
           <View style={styles.pickerBlock}>
             <ThemedPicker
-              label="Quelle année êtes-vous ?"
+              label="Quelle année es-tu ?"
               items={yearItems}
               value={year}
               onChange={setYear}

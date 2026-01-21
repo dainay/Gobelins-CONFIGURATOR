@@ -37,7 +37,7 @@ const Profile = () => {
   const playTempAnimation = () => {
      
     setActiveAnimation(configuration?.animation || "ANIM_danse2");
-    setTimeout(() => setActiveAnimation(null), 5000);
+    setTimeout(() => setActiveAnimation(null), 7000);
   };
 
   return (
