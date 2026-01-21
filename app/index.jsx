@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,

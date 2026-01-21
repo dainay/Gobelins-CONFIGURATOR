@@ -364,7 +364,7 @@ const openWorld = () => {
       >
         <View style={styles.modalOverlay}>
           <ImageBackground
-            source={require("../../assets/ui/tutorial/tutorial-background.png")}
+            source={require("../../assets/ui/tutorial/tutorial-background.webp")}
             style={styles.popupBackground}
             resizeMode="contain"
           >

@@ -1,7 +1,6 @@
 import { Canvas, useFrame } from "@react-three/fiber/native";
-import { router } from "expo-router";
-import { Suspense, useEffect, useState, useRef } from "react"; 
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -15,13 +14,13 @@ import TabsBar from "../(configurator)/TabsBar";
 import CameraController from "../../components/CameraController";
 import TutorialOverlay from "../../components/tutorial/TutorialOverlay";
 import ThemedView from "../../components/ui/ThemedView";
+import { playSfx } from "../../src/lib/sounds";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useMenuStore } from "../../src/store/menuStore";
 import Avatar from "./Avatar";
 import ConfiguratorBackground from "./ConfiguratorBackground";
 import Cylinder from "./Cylinder";
-import { playSfx } from "../../src/lib/sounds";
 
 function AvatarRig({ y, children }) {
   const group = useRef();
@@ -227,16 +226,15 @@ export default function Scene() {
 
             <ConfiguratorBackground />
 
-            <group position={[0, 1, 0]}>
+            <AvatarRig y={avatarY}>
               <Avatar
                 onPress={playTempAnimation}
                 hair={configuration.hair}
                 cloth={configuration.cloth}
-               animation={undefined}
-                pose={avatarPose}
+                animation={activeAnimation}
+                pose={configuration.pose}
               />
-               </AvatarRig>
-            </group>
+            </AvatarRig>
 
             {/* Trepied - Test visible */}
 
