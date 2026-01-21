@@ -38,7 +38,7 @@ export default function AnimationChoice() {
   const prevDiffRef = useRef(null);
   const subscriptionRef = useRef(null);
 
-  console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD:", user);
+  // console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD:", user);
 
   // ---------------------------------------------------
   // CALCULATE ANIMATION ON TEST FINISH
