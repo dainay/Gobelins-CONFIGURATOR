@@ -3,6 +3,7 @@
     "name": "gobelink",
     "scheme": "gobelink",
     "slug": "gobelink",
+    "icon": "./assets/iconroot.png",  
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
