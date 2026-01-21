@@ -151,7 +151,7 @@ const Home = () => {
           </View>
 
           <View style={styles.actionsBlock}>
-            <GreenButton title="Se connecter" onPress={handleSubmit} />
+            <GreenButton style={{minWidth: 70}} title="Se connecter" onPress={handleSubmit} />
 
             {error && (
               <ThemedText font="merriweather" style={{ color: Colors.error }}>
@@ -161,7 +161,7 @@ const Home = () => {
 
             <ThemedText
               font="merriweather"
-              style={{ marginBottom: 30, marginTop: 10, color: "white" }}
+              style={{ marginBottom: 30, marginTop: 10, color: "white" }}q
             >
               Mot de passe oublié
             </ThemedText>
