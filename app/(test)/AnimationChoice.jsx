@@ -181,6 +181,7 @@ export default function AnimationChoice() {
         </Suspense>
       </Canvas>
 
+<<<<<<< Updated upstream
 <ImageBackground
   source={require('../../assets/ui/animations/anim-back.png')}
         resizeMode="stretch"
@@ -204,9 +205,38 @@ export default function AnimationChoice() {
               <ThemedText style={[styles.text, { color: Colors.black }]}>Transmets ton énergie à ton Gobelin. Secoue ton téléphone : danse douce ou rage totale… à toi de décider.</ThemedText>
               <ThemedButton onPress={startTest} type="button6" textStyle={{ fontSize: 30, paddingbottom: 5 }}>
                En scène !
+=======
+      <ImageBackground
+        source={require("../../assets/ui/tutorial/square-paper.webp")}
+        resizeMode="stretch"
+        style={styles.panelBackground}
+      >
+        <View style={styles.contentContainer}>
+        {!testFinished ? (
+          !isTesting ? (
+            <View style={styles.stepWrapper}>
+              <ThemedText style={styles.title} font="merriweatherBold">
+                C’est le moment final !
+              </ThemedText>
+              <Image
+                source={require("../../assets/ui/tutorial/bar-subtitle.webp")}
+                style={styles.subtitleBar}
+                resizeMode="contain"
+              />
+              <ThemedText style={styles.bodyText} font="merriweather">
+                Transmets ton énergie à ton Gobelin. Secoue ton téléphone : danse douce ou rage totale… à toi de décider.
+              </ThemedText>
+              <ThemedButton
+                onPress={startTest}
+                type="button6"
+                textStyle={{ fontSize: 30, paddingBottom: 5 }}
+              >
+                En scène !
+>>>>>>> Stashed changes
               </ThemedButton>
             </>
           ) : (
+<<<<<<< Updated upstream
             <>
               <View style ={{ alignItems: "center", textAlign: 'center' }}>
                 <ThemedText style={[styles.text, { color: Colors.black, textAlign: 'center' }]}>Continue de bouger…</ThemedText>
@@ -219,6 +249,35 @@ export default function AnimationChoice() {
             <ThemedText style={[styles.text, { color: Colors.black }]}>
               {ANIMATIONS[selectedAnimation].title}
             </ThemedText>
+=======
+            <View style={styles.testingWrapper}>
+              <ThemedText style={styles.title} font="merriweatherBold">
+                Bouge ton tel !
+              </ThemedText>
+              <Image
+                source={require("../../assets/ui/tutorial/bar-subtitle.webp")}
+                style={styles.subtitleBar}
+                resizeMode="contain"
+              />
+              <ThemedText style={styles.bodyText} font="merriweather">
+                Continue de bouger…
+              </ThemedText>
+              <ThemedText style={styles.counter} font="merriweatherBold">
+                {timeLeft}s
+              </ThemedText>
+            </View>
+          )
+        ) : selectedAnimation ? (
+          <View style={styles.resultWrapper}>
+            <ThemedText style={styles.subtitle} font="merriweatherBold">
+              {ANIMATIONS[selectedAnimation].title}
+            </ThemedText>
+            <Image
+              source={require("../../assets/ui/tutorial/bar-subtitle.webp")}
+              style={styles.subtitleBar}
+              resizeMode="contain"
+            />
+>>>>>>> Stashed changes
 
             <ThemedText style={[styles.text, { color: Colors.black }]}>
               {ANIMATIONS[selectedAnimation].detail}
@@ -229,7 +288,15 @@ export default function AnimationChoice() {
             </ThemedButton>
           </View>
         ) : (
+<<<<<<< Updated upstream
           <ThemedText style={[styles.text, { color: Colors.black }]}>Calcul de ton animation...</ThemedText>
+=======
+          <View style={styles.loadingWrapper}>
+            <ThemedText style={styles.bodyText} font="merriweather">
+              Calcul de ton animation...
+            </ThemedText>
+          </View>
+>>>>>>> Stashed changes
         )}
       </View>
       </ImageBackground>
@@ -263,6 +330,37 @@ const styles = StyleSheet.create({
     fontSize: 38,
     textAlign: 'center',
     marginBottom: 15,
+<<<<<<< Updated upstream
     fontFamily: "Sofia",
   },
+=======
+    letterSpacing: 0.5,
+    color: Colors.brownText,
+  },
+  subtitle: {
+    fontSize: 20,
+    lineHeight: 24,
+    textAlign: "center",
+    letterSpacing: 0.2,
+    color: Colors.brownText,
+    marginBottom: 10,
+  },
+  bodyText: {
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: "center",
+    letterSpacing: 0.2,
+    color: Colors.brownText,
+    width: "85%",
+    alignSelf: "center",
+    marginBottom: 12,
+  },
+  counter: {
+    fontSize: 28,
+    lineHeight: 34,
+    textAlign: "center",
+    color: Colors.brownText,
+  },
+
+>>>>>>> Stashed changes
 });

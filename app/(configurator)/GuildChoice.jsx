@@ -60,7 +60,7 @@ function GuildChoice() {
 
   return (
     <ImageBackground
-      source={require("../../assets/ui/tutorial/long-parchemin.png")}
+      source={require("../../assets/ui/tutorial/long-paper.webp")}
       resizeMode="stretch"
       style={[styles.parcheminBg, styles.debugParchemin]}
     >
@@ -114,7 +114,7 @@ function GuildChoice() {
                     Prêt·e à découvrir ta guilde&nbsp;?
                   </ThemedText>
                   <Image
-                    source={require("../../assets/ui/tutorial/bar-subtitle.png")}
+                    source={require("../../assets/ui/tutorial/bar-subtitle.webp")}
                     style={styles.subtitleBar}
                     resizeMode="contain"
                   />

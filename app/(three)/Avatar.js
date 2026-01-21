@@ -63,8 +63,36 @@ export default function Avatar({onPress, hair, cloth,  animation,  pose,
 
   // ---------- APPLY POSE ANIMATION ----------
  
-const playAction = (name, fade = 0.25) => {
-  if (!name || !actions?.[name]) return;
+const resolveActionName = (wanted) => {
+  const keys = Object.keys(actions || {});
+  const candidates = [
+    wanted,
+    "POSE_1",
+    "ANIM_talking",
+    keys[0],
+  ].filter(Boolean);
+
+  return candidates.find((n) => actions?.[n]);
+};
+
+const playAction = (wantedName, fade = 0.25) => {
+  // Si on n'a pas de nom, on stoppe l'action courante (sinon elle reste figée).
+  if (!wantedName) {
+    if (currentAction.current) {
+      currentAction.current.fadeOut(fade);
+      currentAction.current = null;
+    }
+    // Revenir au bind pose (pose "de base" du rig) quand on ne joue rien
+    scene.traverse((obj) => {
+      if (obj.isSkinnedMesh && obj.skeleton) {
+        obj.skeleton.pose();
+      }
+    });
+    return;
+  }
+
+  const name = resolveActionName(wantedName);
+  if (!name) return;
 
   const next = actions[name];
 

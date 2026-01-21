@@ -1,21 +1,24 @@
+import { Asset } from "expo-asset";
+import { Image as ExpoImage } from "expo-image";
 import {
   Animated,
   Easing,
-  Image,
   ImageBackground,
   Pressable,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import { Colors } from "../../constants/Colors";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { default as Bar2 } from "../../assets/ui/bars/input1.webp";
+import { default as Bar2 } from "../../assets/ui/bars/input.webp";
 import ThemedText from "./ThemedText";
 
 // Un seul style de "bar" pour le picker
 const PICKER_BAR = { image: Bar2, height: 60, width: 275, paddingX: 25, transform: [{ translateX: 0 }] };
+const PAPER_BG = require("../../assets/ui/tutorial/square-paper.webp");
+const BOTTOM_ROLL = require("../../assets/ui/tutorial/bottom-roll.webp");
 
 export default function ThemedPicker({
   label,
@@ -28,6 +31,7 @@ export default function ThemedPicker({
   const bar = PICKER_BAR;
   const [open, setOpen] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const assetsPrefetchedRef = useRef(false);
   const anim = useRef(new Animated.Value(0)).current;
   const OPTION_ROW_HEIGHT = 44;
   const DROPDOWN_PADDING_TOP = 10;
@@ -51,6 +55,12 @@ export default function ThemedPicker({
 
   const openDropdown = () => {
     if (dropdownVisible) return;
+    if (!assetsPrefetchedRef.current) {
+      assetsPrefetchedRef.current = true;
+      // Fire-and-forget: évite le "pop" la 1ère fois
+      Asset.fromModule(PAPER_BG).downloadAsync();
+      Asset.fromModule(BOTTOM_ROLL).downloadAsync();
+    }
     setDropdownVisible(true);
     setOpen(true);
     Animated.timing(anim, {
@@ -135,36 +145,41 @@ export default function ThemedPicker({
             <Pressable style={styles.backdrop} onPress={closeDropdown} />
 
             <View style={[styles.dropdown, { width: bar.width }]}>
-              {/* clip animé: se déplie de haut en bas */}
-              <Animated.View style={[styles.dropdownClip, dropdownAnimStyle]}>
-                <ImageBackground
-                  source={require("../../assets/ui/tutorial/background-square.png")}
-                  resizeMode="stretch"
-                  style={styles.dropdownBg}
-                >
-                  <View style={styles.dropdownContent}>
-                    {items.map((it) => (
-                      <Pressable
-                        key={String(it.value)}
-                        onPress={() => {
-                          onChange?.(it.value);
-                          closeDropdown();
-                        }}
-                        style={[styles.optionRow, { height: OPTION_ROW_HEIGHT }]}
-                      >
-                        <Text style={styles.optionText}>{it.label}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-
-                  {/* déco bas parchemin (suit le bas car position: absolute) */}
-                  <Image
-                    source={require("../../assets/ui/tutorial/bout-parchemin.png")}
-                    style={styles.dropdownBottomDeco}
+              {/* wrapper animé: se déplie de haut en bas (sans clipper les débords) */}
+              <Animated.View style={[styles.dropdownAnimWrapper, dropdownAnimStyle]}>
+                {/* clip interne: masque le contenu pendant l'anim */}
+                <View style={styles.dropdownClip}>
+                  <ImageBackground
+                    source={PAPER_BG}
                     resizeMode="stretch"
-                    pointerEvents="none"
-                  />
-                </ImageBackground>
+                    style={styles.dropdownBg}
+                  >
+                    <View style={styles.dropdownContent}>
+                      {items.map((it) => (
+                        <Pressable
+                          key={String(it.value)}
+                          onPress={() => {
+                            onChange?.(it.value);
+                            closeDropdown();
+                          }}
+                          style={[styles.optionRow, { height: OPTION_ROW_HEIGHT }]}
+                        >
+                          <Text style={styles.optionText}>{it.label}</Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </ImageBackground>
+                </View>
+
+                {/* déco bas parchemin: en dehors du clip pour ne pas être crop */}
+                <ExpoImage
+                  source={BOTTOM_ROLL}
+                  style={styles.dropdownBottomDeco}
+                  contentFit="fill"
+                  cachePolicy="memory-disk"
+                  transition={150}
+                  pointerEvents="none"
+                />
               </Animated.View>
             </View>
           </>
@@ -231,10 +246,16 @@ const styles = StyleSheet.create({
     // Doit être derrière la barre sélectionnée ("2e année")
     zIndex: 1,
     elevation: 10,
+    overflow: "visible",
+  },
+  dropdownAnimWrapper: {
+    width: "100%",
+    overflow: "visible",
   },
   dropdownClip: {
     overflow: "hidden",
     width: "100%",
+    height: "100%",
   },
   dropdownBg: {
     width: "100%",

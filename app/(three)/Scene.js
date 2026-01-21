@@ -1,12 +1,13 @@
-import { Canvas } from "@react-three/fiber/native";
+import { Canvas, useFrame } from "@react-three/fiber/native";
 import { router } from "expo-router";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { MathUtils } from "three";
 
 import GuildChoice from "../(configurator)/GuildChoice";
 import MenuBar from "../(configurator)/MenuBar";
@@ -22,6 +23,38 @@ import Avatar from "./Avatar";
 import ConfiguratorBackground from "./ConfiguratorBackground";
 import Cylinder from "./Cylinder";
 
+function AvatarRig({ y, children }) {
+  const group = useRef();
+  const targetY = useRef(y);
+  const didInit = useRef(false);
+
+  useEffect(() => {
+    targetY.current = y;
+  }, [y]);
+
+  useFrame((_, delta) => {
+    if (!group.current) return;
+    // Init position once (sinon React "position={[0,y,0]}" téléporte)
+    if (!didInit.current) {
+      group.current.position.y = targetY.current;
+      didInit.current = true;
+      return;
+    }
+    group.current.position.y = MathUtils.damp(
+      group.current.position.y,
+      targetY.current,
+      10,
+      delta
+    );
+  });
+
+  return (
+    <group ref={group} position={[0, 0, 0]}>
+      {children}
+    </group>
+  );
+}
+
 export default function Scene() {
   const configuration = useGobelinStore((state) => state.configuration);
   const showTutorial = useConfigurateurStore((state) => state.showTutorial);
@@ -32,6 +65,21 @@ export default function Scene() {
   useEffect(() => {
     startTutorial();
   }, []);
+
+  // Pose de base = la pose (ou anim) "courante" tant qu'on n'a pas encore ouvert le menu pose.
+  // Dès qu'on va sur le menu "pose", on fige cette valeur pour pouvoir y revenir en menu 1.
+  const baseActionRef = useRef(null);
+  const baseLockedRef = useRef(false);
+
+  useEffect(() => {
+    if (activeMenu === "pose") baseLockedRef.current = true;
+  }, [activeMenu]);
+
+  useEffect(() => {
+    if (baseLockedRef.current) return;
+    const candidate = configuration?.pose ?? configuration?.animation ?? null;
+    if (candidate) baseActionRef.current = candidate;
+  }, [configuration?.pose, configuration?.animation]);
 
   // menu bars animation
   const menuOpacity = useSharedValue(0);
@@ -75,6 +123,23 @@ export default function Scene() {
   const guildStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: guildY.value }],
   }));
+
+  // Déplacement du gobelin selon le menu (MenuBar)
+  // menu 1 -> appearance, menu 2 -> pose, menu 3 -> guild
+  const avatarY =
+    activeMenu === "appearance"
+      ? 1.0
+      : activeMenu === "pose"
+        ? 0.75
+        : activeMenu === "guild"
+          ? 0.75
+          : 1.0;
+
+  // Pose affichée:
+  // - menu 2 ("pose"): on montre la pose choisie
+  // - menu 1 ("appearance"): on revient à la pose "de base" (celle d'entrée, figée avant le menu pose)
+  const avatarPose =
+    activeMenu === "pose" ? configuration.pose : baseActionRef.current;
 
   return (
     <ThemedView safe style={{ flex: 1 }}>
@@ -142,16 +207,16 @@ export default function Scene() {
           </Suspense>
 
           <Suspense fallback={null}>
-            <group position={[0, 1, 0]}>
+            <AvatarRig y={avatarY}>
               <Avatar
                 // accessoire={configuration.accessoire}
                 hair={configuration.hair}
                 cloth={configuration.cloth}
                 // face={configuration.face}
-                animation={configuration.animation}
-                pose={configuration.pose}
+                animation={undefined}
+                pose={avatarPose}
               />
-            </group>
+            </AvatarRig>
           </Suspense>
           {/* Trepied - Test visible */}
           <Suspense fallback={null}>
