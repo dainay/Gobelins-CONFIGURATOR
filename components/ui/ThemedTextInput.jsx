@@ -1,5 +1,5 @@
 import { ImageBackground, TextInput, useColorScheme, View } from 'react-native';
-import { default as Bar1, default as Bar2 } from '../../assets/ui/bars/input1.webp';
+import { default as Bar1, default as Bar2 } from '../../assets/ui/bars/input.webp';
 import { Colors } from '../../constants/Colors';
 
 const BAR_CONFIG = {

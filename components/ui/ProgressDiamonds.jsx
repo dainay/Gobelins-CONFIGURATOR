@@ -56,8 +56,8 @@ export default function ProgressDiamonds({ currentStep, totalSteps, onDiamondPre
                             <Image 
                                 source={
                                     isInactive 
-                                        ? require('../../assets/ui/progress-bar/crystal-off.png')
-                                        : require('../../assets/ui/progress-bar/crystal-on.png')
+                                        ? require('../../assets/ui/progress-bar/crystal-off.webp')
+                                        : require('../../assets/ui/progress-bar/crystal-on.webp')
                                 }
                                 style={[
                                     styles.diamond,

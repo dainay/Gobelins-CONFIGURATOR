@@ -1,3 +1,5 @@
+import { Asset } from "expo-asset";
+import { useEffect, useRef } from "react";
 import { Image, ImageBackground, Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { Colors } from "../../constants/Colors";
@@ -5,6 +7,9 @@ import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import GreenButton from "../ui/GreenButton";
 import ProgressDiamonds from "../ui/ProgressDiamonds";
 
+const TUTORIAL_BG = require("../../assets/ui/tutorial/tutorial-background.webp");
+const TUTORIAL_SUBTITLE_BAR = require("../../assets/ui/tutorial/bar-subtitle.webp");
+const GREEN_BUTTON_BG = require("../../assets/ui/buttons/green-button.webp");
 
 const tutorialPages1 = [
     {title : "Bienvenue dans le configurateur", description : "Dans cet espace, tu peux configurer l'apparence de ton gobelin."},
@@ -20,6 +25,17 @@ export default function TutorialOverlay() {
     const finishTutorial = useConfigurateurStore((state) => state.finishTutorial);
     const colorScheme = useColorScheme();
     const theme = Colors[colorScheme] ?? Colors.light;
+    const prefetchedRef = useRef(false);
+
+    useEffect(() => {
+        if (!showTutorial) return;
+        if (prefetchedRef.current) return;
+        prefetchedRef.current = true;
+        // Fire-and-forget: évite le "pop" au 1er affichage
+        Asset.fromModule(TUTORIAL_BG).downloadAsync();
+        Asset.fromModule(TUTORIAL_SUBTITLE_BAR).downloadAsync();
+        Asset.fromModule(GREEN_BUTTON_BG).downloadAsync();
+    }, [showTutorial]);
 
     if (!showTutorial) {
         return null;
@@ -54,7 +70,7 @@ export default function TutorialOverlay() {
         isLastPage ? (
         <View style={styles.containerPressableTutorial}>
             <AnimatedImageBackground 
-                source={require('../../assets/ui/tutorial/tutorial-background.png')}
+                source={TUTORIAL_BG}
                 entering={FadeIn.duration(300)}
                 exiting={FadeOut.duration(200)}
                 style={styles.containerPageTutorial}
@@ -77,7 +93,7 @@ export default function TutorialOverlay() {
                         {currentPage.title}
                     </Text>
                     <Image 
-                        source={require('../../assets/ui/tutorial/bar-subtitle.png')}
+                        source={TUTORIAL_SUBTITLE_BAR}
                         style={styles.subtitleTutorialImage}
                         resizeMode="contain"
                     />
@@ -98,7 +114,7 @@ export default function TutorialOverlay() {
         ) : (
         <Pressable onPress={handlePress} style={styles.containerPressableTutorial}>
             <AnimatedImageBackground 
-                source={require('../../assets/ui/tutorial/tutorial-background.png')}
+                source={TUTORIAL_BG}
                 entering={FadeIn.duration(300)}
                 exiting={FadeOut.duration(200)}
                 style={styles.containerPageTutorial}
@@ -121,7 +137,7 @@ export default function TutorialOverlay() {
                         {currentPage.title}
                     </Text>
                     <Image 
-                        source={require('../../assets/ui/tutorial/bar-subtitle.png')}
+                        source={TUTORIAL_SUBTITLE_BAR}
                         style={styles.subtitleTutorialImage}
                         resizeMode="contain"
                     />

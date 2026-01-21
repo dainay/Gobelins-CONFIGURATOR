@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { Asset } from "expo-asset";
+import { useEffect, useRef } from "react";
 import { Image, ImageBackground, StyleSheet, TouchableOpacity, View } from "react-native";
 import SelectorPanel from "./SelectorPanel";
 
@@ -7,6 +8,8 @@ import { useMenuStore } from "../../src/store/menuStore";
 
 import { TabsInfo } from "../../constants/TabsInfo";
 
+const TAB_ACTIVE_BG = require("../../assets/ui/tabs-bar/tab-active.webp");
+const TAB_INACTIVE_BG = require("../../assets/ui/tabs-bar/tab-inactive.webp");
 
 
 export default function TabsBar() {
@@ -14,6 +17,23 @@ export default function TabsBar() {
   const setActiveTab = useConfigurateurStore((state) => state.setActiveTab);
 
   const activeMenu = useMenuStore((state) => state.activeMenu);
+  const prefetchedRef = useRef(false);
+
+  // Précharge les assets de la TabsBar (1 seule fois)
+  useEffect(() => {
+    if (prefetchedRef.current) return;
+    prefetchedRef.current = true;
+
+    const tabIcons = Object.values(TabsInfo)
+      .flatMap((arr) => (Array.isArray(arr) ? arr : []))
+      .map((t) => t?.icon)
+      .filter(Boolean);
+
+    [TAB_ACTIVE_BG, TAB_INACTIVE_BG, ...tabIcons].forEach((mod) => {
+      // Fire-and-forget: évite les "pop" au 1er affichage
+      Asset.fromModule(mod).downloadAsync();
+    });
+  }, []);
 
   useEffect(() => {
     if (activeMenu === "appearance" || activeMenu === "pose") {
@@ -36,8 +56,8 @@ export default function TabsBar() {
               >
                 <ImageBackground
                   source={isActive 
-                    ? require("../../assets/ui/tabs-bar/onglet-active.png")
-                    : require("../../assets/ui/tabs-bar/onglet-inactive.png")
+                    ? TAB_ACTIVE_BG
+                    : TAB_INACTIVE_BG
                   }
                   style={styles.tabBackground}
                   resizeMode="contain"

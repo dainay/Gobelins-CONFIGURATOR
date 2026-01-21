@@ -1,3 +1,4 @@
+import { Asset } from "expo-asset";
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions } from "react-native";
 import { AvatarOptions } from "../../constants/AvatarOptions";
@@ -5,6 +6,15 @@ import { playSfx } from "../../src/lib/sounds";
 import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { useMenuStore } from "../../src/store/menuStore";
+
+const CLOSET_BG = require("../../assets/ui/tabs-bar/closet-background.webp");
+const CLOSET_TOP = require("../../assets/ui/tabs-bar/closet-top.webp");
+const CLOSET_BOTTOM = require("../../assets/ui/tabs-bar/closet-bottom.webp");
+const ROPE = require("../../assets/ui/tabs-bar/rope.webp");
+const DRAWER_LEFT = require("../../assets/ui/tabs-bar/drawer-left.webp");
+const DRAWER_RIGHT = require("../../assets/ui/tabs-bar/drawer-right.webp");
+const ACTIVE_ICON_BG = require("../../assets/ui/tabs-bar/active-icon.webp");
+const INACTIVE_ICON_BG = require("../../assets/ui/tabs-bar/inactive-icon.webp");
 
 export default function OptionsPanel() {
   const setConfig = useGobelinStore((state) => state.setConfig);
@@ -22,11 +32,12 @@ export default function OptionsPanel() {
   const porteDroiteAnim = useRef(new Animated.Value(0)).current;
   const isMenuBarChangeRef = useRef(false);
   const hasDelayedDrawerAfterTutorialRef = useRef(false);
+  const prefetchedRef = useRef(false);
   
   // Calcul du top pour la corde : (containerHeight - itemHeight - paddingVertical*2) / 2
   // Container: 250px, Item: 120px, Padding: 8px*2 = 16px
   // top = (250 - 120 - 16) / 2 = 57px
-  const cordeTop = (250 - 120 - 16) / 2;
+  const cordeTop = (250 - 120) / 2;
 
   // --- Tiroirs: calcul du cadrage "cover" + ancrage gauche/droite ---
   const drawerTop = 50;
@@ -34,11 +45,30 @@ export default function OptionsPanel() {
   const drawerWidth = screenWidth * 0.51; // correspond au width: "51%" des styles
 
   const tiroirGaucheAsset = Image.resolveAssetSource(
-    require("../../assets/ui/tabs-bar/tiroir-gauche.png")
+    DRAWER_LEFT
   );
   const tiroirDroiteAsset = Image.resolveAssetSource(
-    require("../../assets/ui/tabs-bar/tiroir-droite.png")
+    DRAWER_RIGHT
   );
+
+  // Précharge les assets du dressing (1 seule fois)
+  useEffect(() => {
+    if (prefetchedRef.current) return;
+    prefetchedRef.current = true;
+    [
+      CLOSET_BG,
+      CLOSET_TOP,
+      CLOSET_BOTTOM,
+      ROPE,
+      DRAWER_LEFT,
+      DRAWER_RIGHT,
+      ACTIVE_ICON_BG,
+      INACTIVE_ICON_BG,
+    ].forEach((mod) => {
+      // Fire-and-forget: évite les "pop" au 1er affichage
+      Asset.fromModule(mod).downloadAsync();
+    });
+  }, []);
 
   const { tiroirGaucheStyle, tiroirDroiteStyle } = useMemo(() => {
     const makeCoverStyle = (asset, align) => {
@@ -232,24 +262,24 @@ export default function OptionsPanel() {
 
   return (
     <ImageBackground
-      source={require("../../assets/ui/tabs-bar/fond-tabs.png")}
+      source={CLOSET_BG}
       style={styles.container}
       resizeMode="cover"
     >
       <Image
-        source={require("../../assets/ui/tabs-bar/haut-armoir.png")}
+        source={CLOSET_TOP}
         style={styles.hautArmoir}
         resizeMode="stretch"
         pointerEvents="none"
       />
       <Image
-        source={require("../../assets/ui/tabs-bar/bas-armoir.png")}
+        source={CLOSET_BOTTOM}
         style={styles.basArmoir}
         resizeMode="stretch"
         pointerEvents="none"
       />
       <Animated.Image
-        source={require("../../assets/ui/tabs-bar/corde.png")}
+        source={ROPE}
         style={[
           styles.corde,
           { top: cordeTop },
@@ -276,7 +306,7 @@ export default function OptionsPanel() {
         pointerEvents="none"
       >
         <Image
-          source={require("../../assets/ui/tabs-bar/tiroir-gauche.png")}
+          source={DRAWER_LEFT}
           style={tiroirGaucheStyle}
           resizeMode="cover"
         />
@@ -291,7 +321,7 @@ export default function OptionsPanel() {
         pointerEvents="none"
       >
         <Image
-          source={require("../../assets/ui/tabs-bar/tiroir-droite.png")}
+          source={DRAWER_RIGHT}
           style={tiroirDroiteStyle}
           resizeMode="cover"
         />
@@ -337,8 +367,8 @@ export default function OptionsPanel() {
             >
               <ImageBackground
                 source={isActive 
-                  ? require("../../assets/ui/tabs-bar/btn-tabs-active.png")
-                  : require("../../assets/ui/tabs-bar/btn-tabs-inactive.png")
+                  ? ACTIVE_ICON_BG
+                  : INACTIVE_ICON_BG
                 }
                 style={styles.itemBackground}
                 resizeMode="contain"

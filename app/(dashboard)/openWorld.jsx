@@ -20,7 +20,7 @@ import ImgBack from "../../assets/ui/world/back-world.png";
 import Btn from "../../assets/ui/world/btn-world.png";
 import Header from "../../assets/ui/world/header.png";
 
-import Main from "../../assets/ui/world/main.png";
+import Main from "../../assets/ui/tutorial/long-paper.webp";
 
 import { Canvas } from "@react-three/fiber/native";
 import Avatar from "../(three)/Avatar";

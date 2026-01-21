@@ -97,7 +97,7 @@ export default function Fingers({ onHandDetected }) {
   };
 
   return (
-    <View style={[styles.container, styles.debugContainer]}>
+    <View style={styles.container}>
       <AnimatedLottie
         pointerEvents="none"
         source={require('../assets/lottie/Magma.json')}
@@ -119,7 +119,7 @@ export default function Fingers({ onHandDetected }) {
       />
 
       <View
-        style={[styles.touchZone, styles.debugTouchZone]}
+        style={styles.touchZone}
         onTouchStart={(e) => processTouches(e.nativeEvent.touches)}
         onTouchMove={(e) => processTouches(e.nativeEvent.touches)}
         onTouchEnd={(e) => processTouches(e.nativeEvent.touches)}
@@ -135,14 +135,13 @@ export default function Fingers({ onHandDetected }) {
             }),
             shadowOpacity: isShining ? 0.5 : 0,
           },
-          styles.debugGlow,
         ]}
       />
 
       <View style={styles.contentOverlay}>
         <AnimatedThemedText
           font="merriweather"
-          style={[styles.textFingers, { color: animatedTextColor }, styles.debugText]}
+          style={[styles.textFingers, { color: animatedTextColor }]}
         >
           {detected
             ? "Main gobeline reconnue"
@@ -151,14 +150,14 @@ export default function Fingers({ onHandDetected }) {
               : `Pose ${MIN_TOUCHES} doigts ici.\nLance le rite d'initiation pour découvrir ta guilde.`}
         </AnimatedThemedText>
 
-        <View style={[styles.iconsRow, styles.debugIconsRow]}>
+        <View style={styles.iconsRow}>
           <Image
-            source={require("../assets/ui/guilds/empreinte-digitale.png")}
+            source={require("../assets/ui/guilds/digital-touch-left.webp")}
             style={styles.icon}
             resizeMode="contain"
           />
           <Image
-            source={require("../assets/ui/guilds/empreinte-digitale.png")}
+            source={require("../assets/ui/guilds/digital-touch-right.webp")}
             style={styles.icon}
             resizeMode="contain"
           />
@@ -203,8 +202,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   icon: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
   },
 
   textFingers: {
@@ -213,26 +212,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "center",
     width: "100%",
-  },
-  // DEBUG BORDERS
-  debugContainer: {
-    borderWidth: 2,
-    borderColor: "red",
-  },
-  debugTouchZone: {
-    borderWidth: 2,
-    borderColor: "lime",
-  },
-  debugGlow: {
-    borderWidth: 2,
-    borderColor: "cyan",
-  },
-  debugText: {
-    borderWidth: 2,
-    borderColor: "magenta",
-  },
-  debugIconsRow: {
-    borderWidth: 2,
-    borderColor: "yellow",
   },
 });
