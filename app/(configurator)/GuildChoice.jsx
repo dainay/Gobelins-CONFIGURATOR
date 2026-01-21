@@ -9,7 +9,7 @@ import {
   Pressable,
   StyleSheet,
   useColorScheme,
-  View
+  View,
 } from "react-native";
 import Fingers from "../../components/Fingers";
 import ThemedButton from "../../components/ui/ThemedButton";
@@ -79,7 +79,7 @@ function GuildChoice() {
                   Dernière étape de ton initiation gobeline
                 </ThemedText>
                 <Image
-                  source={require("../../assets/ui/tutorial/bar-subtitle.png")}
+                  source={require("../../assets/ui/tutorial/bar-subtitle.webp")}
                   style={styles.subtitleBar}
                   resizeMode="contain"
                 />
@@ -120,7 +120,8 @@ function GuildChoice() {
                   />
 
                   <ThemedText style={styles.description} font="merriweather">
-                    Ta guilde est ta petite famille gobeline&nbsp;: aide les autres et elle gagnera en prestige.
+                    Ta guilde est ta petite famille gobeline&nbsp;: aide les
+                    autres et elle gagnera en prestige.
                   </ThemedText>
                 </View>
                 <View style={styles.debugHintWrapper}>
@@ -129,7 +130,10 @@ function GuildChoice() {
                       onPress={() => setFlowStep(1)}
                       style={[styles.choiceBtn, styles.choiceBtnYes]}
                     >
-                      <ThemedText style={styles.choiceText} font="merriweatherBold">
+                      <ThemedText
+                        style={styles.choiceText}
+                        font="merriweatherBold"
+                      >
                         Oui
                       </ThemedText>
                     </Pressable>
@@ -142,7 +146,10 @@ function GuildChoice() {
                       }}
                       style={[styles.choiceBtn, styles.choiceBtnNo]}
                     >
-                      <ThemedText style={styles.choiceText} font="merriweatherBold">
+                      <ThemedText
+                        style={styles.choiceText}
+                        font="merriweatherBold"
+                      >
                         Non
                       </ThemedText>
                     </Pressable>
@@ -224,14 +231,14 @@ const styles = StyleSheet.create({
     color: Colors.brownText,
     marginBottom: 16,
   },
-    specialText2: {
+  specialText2: {
     fontSize: 20,
     lineHeight: 26,
     paddingHorizontal: 30,
     textAlign: "center",
-    color: Colors.brownText, 
-    marginTop: 10
-    },
+    color: Colors.brownText,
+    marginTop: 10,
+  },
   guildImage: {
     width: "90%",
     height: 180,
