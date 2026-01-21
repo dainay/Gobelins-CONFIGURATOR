@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
 import { mapSupabaseAuthError } from "../../src/lib/mapSupabaseAuthError";
 
-import backgroundImage from "../../assets/img/temp-back.jpg";
+import backgroundImage from "../../assets/img/temp-back.webp";
 
 import FirefliesSimple from "../../components/ui/FirefliesSimple";
 
