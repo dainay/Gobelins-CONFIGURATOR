@@ -13,7 +13,7 @@ const GREEN_BUTTON_BG = require("../../assets/ui/buttons/green-button.webp");
 
 const tutorialPages1 = [
     {title : "Bienvenue dans le configurateur", description : "Dans cet espace, tu peux configurer l'apparence de ton gobelin."},
-    {title : "À toi de créer", description : "Parcours les différents onglets pour ajuster son style, ses traits et révéler sa personnalité.."},
+    {title : "À toi de créer", description : "Parcoure les différents onglets pour ajuster son style, ses traits et révéler sa personnalité.."},
 ]
 
 

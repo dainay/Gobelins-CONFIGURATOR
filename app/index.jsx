@@ -1,12 +1,11 @@
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
-  Pressable,
   StyleSheet,
   View,
-  useColorScheme,
+  useColorScheme
 } from "react-native";
 import { Colors } from "../constants/Colors";
 import { useUser } from "../hooks/useUser";
@@ -180,22 +179,25 @@ const Home = () => {
         </View>
 
         {/* DEBUG shortcuts */}
-        <Pressable
+        
+        {/* <Pressable
           style={[styles.debugButton, styles.debugLeft]}
           onPress={() => router.push("/Scene")}
         >
           <ThemedText font="merriweather" style={styles.debugButtonText}>
             DEMO 3D
           </ThemedText>
-        </Pressable>
-        <Pressable
+        </Pressable> */}
+
+        {/* <Pressable
           style={[styles.debugButton, styles.debugRight]}
           onPress={() => router.push("/introManager")}
         >
           <ThemedText font="merriweather" style={styles.debugButtonText}>
             INTRO
           </ThemedText>
-        </Pressable>
+
+        </Pressable> */}
       </GuestOnly>
     </ThemedView>
   );
