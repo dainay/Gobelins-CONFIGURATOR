@@ -1,4 +1,4 @@
-# Gobel’ink 👺✨
+# Gobel’ink ✨
 
 Application mobile (iOS / Android) développée avec **React Native + Expo** dans le cadre d’un **projet étudiant à Gobelins**.
 
