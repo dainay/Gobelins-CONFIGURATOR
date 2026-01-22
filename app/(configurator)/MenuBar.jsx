@@ -64,8 +64,8 @@ export default function MenuBar() {
         >
           <ImageBackground
             source={isFirstMenu 
-              ? require('../../assets/ui/menu-bar/pierre-gauche-off.png')
-              : require('../../assets/ui/menu-bar/pierre-gauche-on.png')
+              ? require('../../assets/ui/menu-bar/left-button-rock.webp')
+              : require('../../assets/ui/menu-bar/left-button-rock-on.webp')
             }
             style={styles.sideButtonBackground}
             resizeMode="cover"
@@ -74,7 +74,7 @@ export default function MenuBar() {
 
         {/* Conteneur des diamants de progression au milieu */}
         <ImageBackground
-          source={require('../../assets/ui/menu-bar/barre-bois-crop.png')}
+          source={require('../../assets/ui/menu-bar/wooden-bar-crop.webp')}
           style={styles.menuButtons}
           resizeMode="stretch"
         >
@@ -94,8 +94,8 @@ export default function MenuBar() {
         >
           <ImageBackground
             source={isLastMenu 
-              ? require('../../assets/ui/menu-bar/pierre-droite-off.png')
-              : require('../../assets/ui/menu-bar/pierre-droite-on.png')
+              ? require('../../assets/ui/menu-bar/right-button-rock.webp')
+              : require('../../assets/ui/menu-bar/right-button-rock-on.webp')
             }
             style={styles.sideButtonBackground}
             resizeMode="cover"

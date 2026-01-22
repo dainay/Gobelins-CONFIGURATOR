@@ -72,7 +72,7 @@ const Register = () => {
               Créer un compte
             </ThemedText>
             <Image
-              source={require("../../assets/ui/tutorial/motif-underline.webp")}
+              source={require("../../assets/ui/tutorial/motif.webp")}
               style={styles.underlineMotif}
               resizeMode="contain"
             />
@@ -82,25 +82,35 @@ const Register = () => {
           <View style={styles.inputsBlock}>
             <ThemedTextInput
               placeholder="Adresse e-mail"
-              placeholderTextColor="rgba(0,0,0,0.6)"
+              placeholderTextColor={Colors.brownText}
               keyboardType="email-address"
               autoCapitalize="none"
               onChangeText={setEmail}
               value={email}
               background={"bar1"}
-              style={{ fontSize: 16 }}
+              style={{
+                color: Colors.brownText,
+                fontFamily: "Merriweather",
+                fontSize: 16,
+                letterSpacing: 0.2,
+              }}
               containerStyle={{ marginBottom: 16 }}
             />
 
             <ThemedTextInput
               placeholder="Mot de passe"
-              placeholderTextColor="rgba(0,0,0,0.6)"
+              placeholderTextColor={Colors.brownText}
               secureTextEntry
               autoCapitalize="none"
               onChangeText={setPassword}
               value={password}
               background={"bar2"}
-              style={{ fontSize: 16 }}
+              style={{
+                color: Colors.brownText,
+                fontFamily: "Merriweather",
+                fontSize: 16,
+                letterSpacing: 0.2,
+              }}
               containerStyle={{ marginBottom: 16 }}
             />
 
@@ -111,7 +121,12 @@ const Register = () => {
               onChangeText={setName}
               value={name}
               background={"bar2"}
-              style={{ fontSize: 16 }}
+              style={{
+                color: Colors.brownText,
+                fontFamily: "Merriweather",
+                fontSize: 16,
+                letterSpacing: 0.2,
+              }}
             />
           </View>
 
