@@ -1,7 +1,9 @@
 import { useSegments } from "expo-router";
-import { Pressable, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 import { useMusicStore } from "../../src/store/musicStore";
-import ThemedText from "./ThemedText";
+
+const MusicON = require("../../assets/icons/musicON.png");
+const MusicOFF = require("../../assets/icons/musicOFF.png");
 
 export default function MusicToggle({ style }) {
   const segments = useSegments();
@@ -19,7 +21,11 @@ export default function MusicToggle({ style }) {
       accessibilityLabel={enabled ? "Mute music" : "Play music"}
       accessibilityRole="button"
     >
-      <ThemedText style={styles.musicText}>{enabled ? "🎵" : "🔇"}</ThemedText>
+      <Image
+        source={enabled ? MusicON : MusicOFF}
+        style={styles.musicIcon}
+        resizeMode="contain"
+      />
     </Pressable>
   );
 }
@@ -44,8 +50,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.2)",
   },
-  musicText: {
-    fontSize: 26,
-    lineHeight: 26,
+  musicIcon: {
+    width: 35,
+    height: 35,
   },
 });
