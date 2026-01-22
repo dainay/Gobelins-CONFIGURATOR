@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
         width: "105%",
         maxWidth: 425,
         height: "65%",
+        maxHeight: 500,
         minHeight: 500, 
         shadowColor: "#000",
         shadowOffset: {

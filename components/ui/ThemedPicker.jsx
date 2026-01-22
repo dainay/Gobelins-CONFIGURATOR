@@ -221,13 +221,13 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     flex: 1,
-    color: Colors.black,
+    color: Colors.brownText,
     fontFamily: "Merriweather",
     fontSize: 16,
   },
   chevron: {
     marginLeft: 10,
-    color: Colors.black,
+    color: Colors.brownText,
     fontSize: 16,
     fontFamily: "Merriweather",
   },
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   optionText: {
-    color: Colors.black,
+    color: Colors.brownText,
     fontFamily: "Merriweather",
     fontSize: 16,
   },

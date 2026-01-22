@@ -34,7 +34,16 @@ export default function RootLayout() {
   useEffect(() => {
     // Masquer le splash screen immédiatement, ne pas attendre les polices
     // Les polices se chargeront en arrière-plan et seront disponibles quand prêtes
-    SplashScreen.hideAsync();
+    const hideSplash = async () => {
+      try {
+        await SplashScreen.hideAsync();
+      } catch (error) {
+        // Ignorer l'erreur si le splash screen n'est pas encore enregistré
+        console.warn("SplashScreen.hideAsync error:", error.message);
+      }
+    };
+    
+    hideSplash();
 
     if (fontError) {
       // Log uniquement en cas d'erreur pour le débogage

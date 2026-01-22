@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import Fingers from "../../components/Fingers";
+import GreenButton from "../../components/ui/GreenButton";
 import ThemedButton from "../../components/ui/ThemedButton";
 import ThemedText from "../../components/ui/ThemedText";
 import { Colors } from "../../constants/Colors";
@@ -59,12 +60,13 @@ function GuildChoice() {
   const theme = Colors[colorScheme] ?? Colors.light;
 
   return (
-    <ImageBackground
-      source={require("../../assets/ui/tutorial/long-paper.webp")}
-      resizeMode="stretch"
-      style={[styles.parcheminBg, styles.debugParchemin]}
-    >
-      <View style={[styles.container, styles.debugContainer]}>
+    <View style={styles.wrapper}>
+      <ImageBackground
+        source={require("../../assets/ui/tutorial/long-paper.webp")}
+        resizeMode="stretch"
+        style={[styles.parcheminBg, styles.debugParchemin]}
+      >
+        <View style={[styles.container, styles.debugContainer]}>
         <View
           style={[
             styles.actionContainer,
@@ -75,26 +77,33 @@ function GuildChoice() {
           {flowStep === 2 ? (
             <>
               <View style={styles.step2Content}>
-                <ThemedText style={styles.specialText2} font="merriweatherBold">
-                  Dernière étape de ton initiation gobeline
-                </ThemedText>
-                <Image
-                  source={require("../../assets/ui/tutorial/bar-subtitle.webp")}
-                  style={styles.subtitleBar}
-                  resizeMode="contain"
-                />
-                <ThemedText style={styles.specialText} font="merriweather">
-                  Réveille ton énergie intérieure.
-                </ThemedText>
+                {selectedGuildData && selectedGuildData.image && (
+                  <Image
+                    source={selectedGuildData.image}
+                    style={styles.guildImage}
+                    resizeMode="contain"
+                  />
+                )}
+                {selectedGuildData && selectedGuildData.name && (
+                  <ThemedText style={styles.guildName} font="merriweatherBold">
+                    {selectedGuildData.name}
+                  </ThemedText>
+                )}
+                {selectedGuildData && selectedGuildData.description && (
+                  <ThemedText style={styles.guildDescription} font="merriweather">
+                    {selectedGuildData.description}
+                  </ThemedText>
+                )}
               </View>
 
               <View style={styles.ctaAbs}>
                 <ThemedButton
                   onPress={() => router.replace("/(test)/AnimationChoice")}
-                  type="button2"
+                  width={200}
+                  height={60}
                   textStyle={styles.buttonText}
                 >
-                  C'est parti !
+                  Dernière étape
                 </ThemedButton>
               </View>
             </>
@@ -102,7 +111,7 @@ function GuildChoice() {
             <>
               {/* Écran 2 : animation + detection (2 doigts) */}
               <View style={styles.debugFingersWrapper}>
-                <Fingers onHandDetected={randomGuild} />
+                <Fingers onHandDetected={randomGuild} style={styles.debugFingers}/>
               </View>
             </>
           ) : (
@@ -126,17 +135,11 @@ function GuildChoice() {
                 </View>
                 <View style={styles.debugHintWrapper}>
                   <View style={styles.choiceRow}>
-                    <Pressable
+                    <GreenButton
+                      title="Prêt !"
                       onPress={() => setFlowStep(1)}
-                      style={[styles.choiceBtn, styles.choiceBtnYes]}
-                    >
-                      <ThemedText
-                        style={styles.choiceText}
-                        font="merriweatherBold"
-                      >
-                        Oui
-                      </ThemedText>
-                    </Pressable>
+                      width="100%"
+                    />
                     <Pressable
                       onPress={() => {
                         // étape 2 du MenuBar = "pose"
@@ -144,13 +147,13 @@ function GuildChoice() {
                         const firstTabId = TabsInfo.pose?.[0]?.id ?? "pose";
                         setActiveTab(firstTabId);
                       }}
-                      style={[styles.choiceBtn, styles.choiceBtnNo]}
+                      style={styles.textButton}
                     >
                       <ThemedText
-                        style={styles.choiceText}
-                        font="merriweatherBold"
+                        style={styles.skipText}
+                        font="merriweather"
                       >
-                        Non
+                        Je n'ai pas fini de configurer
                       </ThemedText>
                     </Pressable>
                   </View>
@@ -160,26 +163,36 @@ function GuildChoice() {
           )}
         </View>
       </View>
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   parcheminBg: {
     width: "100%",
     height: "100%",
+    maxHeight: 500,
   },
   container: {
     flex: 1,
     padding: 24,
-    paddingTop: 50,
+    // paddingTop: 50,
     paddingBottom: 62,
     justifyContent: "space-between",
+
   },
 
   content: {
     marginBottom: 32,
     paddingInline: 24,
+    paddingTop: 50,
   },
 
   title: {
@@ -207,6 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingInline: 24,
     paddingBottom: 120, // réserve la place du bouton en absolute
+    paddingTop: 40,
   },
   ctaAbs: {
     position: "absolute",
@@ -237,13 +251,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     textAlign: "center",
     color: Colors.brownText,
-    marginTop: 10,
+    paddingBottom: 10,
+    // marginTop: 10,
   },
   guildImage: {
-    width: "90%",
-    height: 180,
+    width: "60%",
+    height: 120,
     alignSelf: "center",
-    marginVertical: 20,
+    marginVertical: 10,
+  },
+  guildName: {
+    fontSize: 20,
+    textAlign: "center",
+    color: Colors.brownText,
+    marginTop: 16,
+    fontWeight: "bold",
+    letterSpacing: 0.2,
+  },
+  guildDescription: {
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: "center",
+    color: Colors.brownText,
+    marginTop: 12,
+    letterSpacing: 0.2,
   },
   guildStepPressable: {
     flex: 1,
@@ -251,39 +282,30 @@ const styles = StyleSheet.create({
   },
   choiceRow: {
     width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
+    flexDirection: "column",
+    justifyContent: "center",
+    // gap: 6,
     paddingInline: 24,
     paddingBottom: 24,
   },
-  choiceBtn: {
-    flex: 1,
-    height: 44,
-    borderRadius: 10,
+  textButton: {
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
+    // paddingVertical: 12,
   },
-  choiceBtnYes: {
-    backgroundColor: "#2E7D32",
-  },
-  choiceBtnNo: {
-    backgroundColor: "#8E2A2A",
-  },
-  choiceText: {
-    fontSize: 16,
-    color: "#fff",
+  skipText: {
+    fontSize: 14,
+    color: Colors.brownText,
     textAlign: "center",
+    textDecorationLine: "underline",
   },
   // DEBUG BORDERS (à enlever quand c'est OK)
   debugParchemin: {
     // borderWidth: 2,
     // borderColor: "red",
   },
-  debugContainer: {
-    // borderWidth: 2,
-    // borderColor: "blue",
-  },
+  debugContainer: {},
   debugActionContainer: {
     // borderWidth: 2,
     // borderColor: "cyan",
@@ -327,15 +349,17 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: "Merriweather-Bold",
-    fontSize: 20,
+    fontSize: 16,
     textAlign: "center",
+    color: Colors.brownText,
+    paddingLeft: 0,
+    paddingTop: 0,
+    paddingBottom: 3,
   },
   canvasContainer: {
     width: "100%",
     height: SCREEN_HEIGHT * 0.3,
     marginBottom: 16,
-    borderBlockColor: "#7f3333ff",
-    borderWidth: 1,
   },
 });
 

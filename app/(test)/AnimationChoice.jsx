@@ -1,22 +1,58 @@
-import { Canvas } from "@react-three/fiber/native";
+import { Canvas, useFrame } from "@react-three/fiber/native";
 import * as Battery from "expo-battery";
 import { router } from "expo-router";
 import { Accelerometer } from "expo-sensors";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Image, ImageBackground, StyleSheet, View } from "react-native";
+import { MathUtils } from "three";
 
 import { ANIMATIONS } from "../../constants/Animations";
 import { useUser } from "../../hooks/useUser";
 import { saveGobelinToDatabase } from "../../src/lib/saveGobelin";
+import { useConfigurateurStore } from "../../src/store/configurateurStore";
 import { useGobelinStore } from "../../src/store/gobelinStore";
 import { calculateShakeMetrics } from "../../src/utils/calculateShakeMetrics";
 import { chooseAnimation } from "../../src/utils/chooseAnimation";
 
 import Avatar from "../(three)/Avatar";
 import ConfiguratorBackground from "../(three)/ConfiguratorBackground";
+import Cylinder from "../(three)/Cylinder";
+import CameraController from "../../components/CameraController";
 import ThemedButton from "../../components/ui/ThemedButton";
 import ThemedText from "../../components/ui/ThemedText";
 import { Colors } from "../../constants/Colors";
+
+function AvatarRig({ y, children }) {
+  const group = useRef();
+  const targetY = useRef(y);
+  const didInit = useRef(false);
+
+  useEffect(() => {
+    targetY.current = y;
+  }, [y]);
+
+  useFrame((_, delta) => {
+    if (!group.current) return;
+    // Init position once (sinon React "position={[0,y,0]}" téléporte)
+    if (!didInit.current) {
+      group.current.position.y = targetY.current;
+      didInit.current = true;
+      return;
+    }
+    group.current.position.y = MathUtils.damp(
+      group.current.position.y,
+      targetY.current,
+      10,
+      delta
+    );
+  });
+
+  return (
+    <group ref={group} position={[0, 0, 0.5]}>
+      {children}
+    </group>
+  );
+}
 
 export default function AnimationChoice() {
   const [isTesting, setIsTesting] = useState(false);
@@ -26,6 +62,16 @@ export default function AnimationChoice() {
   const { user } = useUser();
   const gobelin = useGobelinStore((state) => state);
   const setConfig = useGobelinStore((state) => state.setConfig);
+
+  // Ajuster le zoom de la caméra au montage pour dézoomer
+  useEffect(() => {
+    const store = useConfigurateurStore.getState();
+    useConfigurateurStore.setState({ cameraZoom: 4.5 }); // Augmenter le zoom pour dézoomer
+    return () => {
+      // Restaurer la valeur par défaut si nécessaire
+      useConfigurateurStore.setState({ cameraZoom: store.cameraZoom });
+    };
+  }, []);
 
   const [selectedAnimation, setSelectedAnimation] = useState();
 
@@ -146,9 +192,10 @@ export default function AnimationChoice() {
   return (
     <View style={styles.container}>
       <Canvas
-        shadows
         dpr={1}
-        camera={{ position: [0, 2, 5], fov: 50 }}
+        shadows
+        flat
+        gl={{ antialias: false }}
         onCreated={(state) => {
           const _gl = state.gl.getContext();
           const pixelStorei = _gl.pixelStorei.bind(_gl);
@@ -163,24 +210,46 @@ export default function AnimationChoice() {
           };
         }}
       >
-        <ambientLight intensity={0.9} />
-        <directionalLight position={[5, 5, 5]} intensity={2} />
-        {/* Fond du configurateur (mur de fond + sol) */}
+        <CameraController />
+
+        <color attach="background" args={["#000000"]} />
+
         <Suspense fallback={null}>
-          <ConfiguratorBackground />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Avatar
-            hair={gobelin.configuration.hair}
-            cloth={gobelin.configuration.cloth}
-            face={gobelin.configuration.face}
-            accesssoire={gobelin.configuration.accessoire}
-            pose={
-              selectedAnimation
-                ? ANIMATIONS[selectedAnimation].animName
-                : gobelin.configuration.pose
-            }
+          {/* Fog lumineux */}
+          <fog attach="fog" args={["#000000", 4, 15]} />
+          <ambientLight intensity={1.2} />
+          <directionalLight
+            position={[0, 4, 3.5]}
+            intensity={1}
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-camera-far={50}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
           />
+
+          {/* Fond du configurateur (mur de fond + sol) */}
+          <ConfiguratorBackground />
+
+          <AvatarRig y={0.8}>
+            <Avatar
+              hair={gobelin.configuration.hair}
+              cloth={gobelin.configuration.cloth}
+              face={gobelin.configuration.face}
+              accesssoire={gobelin.configuration.accessoire}
+              pose={
+                selectedAnimation
+                  ? ANIMATIONS[selectedAnimation].animName
+                  : gobelin.configuration.pose
+              }
+            />
+          </AvatarRig>
+
+          {/* Trepied - Test visible */}
+          <Cylinder />
         </Suspense>
       </Canvas>
 
@@ -207,8 +276,9 @@ export default function AnimationChoice() {
                 </ThemedText>
                 <ThemedButton
                   onPress={startTest}
-                  type="button6"
-                  textStyle={{ fontSize: 30, paddingBottom: 5 }}
+                  width={200}
+                  height={60}
+                  textStyle={styles.buttonText}
                 >
                   En scène !
                 </ThemedButton>
@@ -242,14 +312,15 @@ export default function AnimationChoice() {
                 resizeMode="contain"
               />
 
-              <ThemedText style={[styles.text, { color: Colors.black }]}>
+              <ThemedText style={styles.bodyText} font="merriweather">
                 {ANIMATIONS[selectedAnimation].detail}
               </ThemedText>
 
               <ThemedButton
                 onPress={handleConfirm}
-                type="button4"
-                textStyle={{ fontSize: 30, marginTop: 10 }}
+                width={280}
+                height={80}
+                textStyle={styles.buttonText}
               >
                 Mon gobelin est prêt !
               </ThemedButton>
@@ -271,27 +342,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {
+  panelBackground: {
     position: "absolute",
-    bottom: 50,
-    left: 20,
-    right: 20,
-    padding: 20,
-    borderRadius: 12,
+    left: 0,
+    right: 0,
+    bottom: 20,
+    width: "100%",
+    minHeight: 350,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 36,
+  },
+  contentContainer: {
+    width: "100%",
+    paddingHorizontal: 36,
     alignItems: "center",
   },
-  text: {
-    fontSize: 20,
-    textAlign: "center",
-    fontFamily: "MerriweatherLight",
-    width: "80%",
-    textAlign: "center",
-    selfalign: "center",
+  stepWrapper: {
+    width: "100%",
+    alignItems: "center",
+  },
+  testingWrapper: {
+    width: "100%",
+    alignItems: "center",
+  },
+  resultWrapper: {
+    width: "100%",
+    alignItems: "center",
+  },
+  loadingWrapper: {
+    width: "100%",
+    alignItems: "center",
+  },
+  subtitleBar: {
+    width: "90%",
+    alignSelf: "center",
+    marginBottom: 16,
   },
   title: {
-    fontSize: 38,
+    fontSize: 20,
     textAlign: "center",
-    marginBottom: 15,
+    marginBottom: 16,
     letterSpacing: 0.5,
     color: Colors.brownText,
   },
@@ -318,5 +409,14 @@ const styles = StyleSheet.create({
     lineHeight: 34,
     textAlign: "center",
     color: Colors.brownText,
+  },
+  buttonText: {
+    fontFamily: "Merriweather-Bold",
+    fontSize: 16,
+    textAlign: "center",
+    color: Colors.brownText,
+    paddingLeft: 0,
+    paddingTop: 0,
+    paddingBottom: 3,
   },
 });

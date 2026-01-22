@@ -1,4 +1,3 @@
-import { error } from "three";
 
 export const Colors = {
   primary: "#6849a7",
@@ -9,6 +8,7 @@ export const Colors = {
   error: "#ff6b6b",
    black: "#0c0c0cff",
       accentColor1: '#D89640',
+  yellow: "#fdb201",
   
   dark: {
     text: "#d4d4d4",
