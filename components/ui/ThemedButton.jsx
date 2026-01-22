@@ -60,6 +60,12 @@ function ThemedButton({ style, children, textStyle, width, height, ...props }) {
             playSfx("button");
             if (props.onPress) props.onPress();
           }}
+          style={{
+            height: height || 100,
+            width: width || 300,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
           {renderLabel()}
         </Pressable>

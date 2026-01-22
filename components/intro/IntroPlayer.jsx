@@ -794,14 +794,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
+ 
   },
   usernameIntroQuestion: {
     fontSize: 24,
@@ -818,14 +811,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     // borderWidth: 2,
     fontFamily: 'Merriweather',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
+    // elevation: 3,
   },
   usernameIntroButton: {
     marginTop: 16,

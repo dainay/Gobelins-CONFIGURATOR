@@ -157,7 +157,7 @@ const Home = () => {
           </View>
 
           <View style={styles.actionsBlock}>
-            <GreenButton title="Se connecter" onPress={handleSubmit} />
+            <GreenButton style={{minWidth: 70}} title="Se connecter" onPress={handleSubmit} />
 
             {error && (
               <ThemedText font="merriweather" style={{ color: Colors.error }}>
