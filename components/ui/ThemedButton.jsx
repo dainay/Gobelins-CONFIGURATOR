@@ -97,7 +97,7 @@ function ThemedButton({
       <Text
         style={[
           styles.text,
-          { color: button.color, paddingTop: button.paddingTop },
+          // { color: theme.accentColor1 ?? Colors.accentColor1, paddingTop: 8 },
           textStyle,
         ]}
       >
@@ -112,11 +112,14 @@ function ThemedButton({
         source={button.image}
         resizeMode="stretch"
         style={{
-          height: height || button.height,
+          // mêmes defaults que l'ancien "button1"
+          height: height || 80,
           justifyContent: "center",
-          width: width || button.width,
-          transform: button.transform,
+          width: width || 260, 
           marginVertical: 5,
+          textAlign: "center",
+          alignItems: "center",
+          ...(style ?? null),
         }}
       >
         <Pressable
