@@ -116,7 +116,7 @@ const Register = () => {
 
             <ThemedTextInput
               placeholder="Comment t'appelles-tu ?"
-              placeholderTextColor="rgba(0,0,0,0.6)"
+              placeholderTextColor={Colors.brownText}
               autoCapitalize="words"
               onChangeText={setName}
               value={name}

@@ -148,7 +148,7 @@ export default function Scene() {
   // menu 1 -> appearance, menu 2 -> pose, menu 3 -> guild
   const avatarY =
     activeMenu === "appearance"
-      ? 1.0
+      ? 0.75
       : activeMenu === "pose"
         ? 0.75
         : activeMenu === "guild"
@@ -232,7 +232,7 @@ export default function Scene() {
                 hair={configuration.hair}
                 cloth={configuration.cloth}
                 animation={activeAnimation}
-                pose={configuration.pose}
+                pose={avatarPose}
               />
             </AvatarRig>
 

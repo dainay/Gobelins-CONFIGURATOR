@@ -30,7 +30,7 @@ export default function Fingers({ onHandDetected }) {
 
   const animatedTextColor = shineAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [Colors.brownText, "#35d224"],
+    outputRange: [Colors.brownText, Colors.dark.magicGreen],
   });
 
   // ---------------- Glow animation ----------------
@@ -147,7 +147,7 @@ export default function Fingers({ onHandDetected }) {
             ? "Main gobeline reconnue"
             : isShining && currentPhraseRef.current
               ? currentPhraseRef.current
-              : `Pose ${MIN_TOUCHES} doigts ici.\nLance le rite d'initiation pour découvrir ta guilde.`}
+              : `Pose ${MIN_TOUCHES} doigts ici pour découvrir ta guilde.`}
         </AnimatedThemedText>
 
         <View style={styles.iconsRow}>
@@ -212,5 +212,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: "center",
     width: "100%",
+    paddingHorizontal: 12,
   },
 });

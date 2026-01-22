@@ -148,6 +148,12 @@ const Home = () => {
                 letterSpacing: 0.2,
               }}
             />
+            <ThemedText
+              font="merriweather"
+              style={styles.forgotPassword}
+            >
+              Mot de passe oublié
+            </ThemedText>
           </View>
 
           <View style={styles.actionsBlock}>
@@ -159,19 +165,15 @@ const Home = () => {
               </ThemedText>
             )}
 
-            <ThemedText
-              font="merriweather"
-              style={{ marginBottom: 30, marginTop: 10, color: "white" }}q
-            >
-              Mot de passe oublié
-            </ThemedText>
-
             <Link href="/register">
               <ThemedText
                 font="merriweather"
                 style={[styles.link, { width: 200, lineHeight: 22 }]}
               >
-                Pas encore de gobelin ?{"\n"}Crée le tien ici
+                Pas encore de gobelin ?{"\n"}
+                <ThemedText font="merriweatherBold" style={{ color: Colors.yellow, textDecorationLine: "underline" }}>
+                  Crée le tien ici
+                </ThemedText>
               </ThemedText>
             </Link>
           </View>
@@ -234,6 +236,14 @@ const styles = StyleSheet.create({
   inputsBlock: {
     width: "100%",
     alignItems: "center",
+  },
+  forgotPassword: {
+    width: 275,
+    textAlign: "right",
+    marginTop: 4,
+    color: "white",
+    fontSize: 12,
+    fontFamily: "Merriweather",
   },
   actionsBlock: {
     width: "100%",

@@ -3,11 +3,10 @@ import LottieView from 'lottie-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Vibration } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import ThemedButton from '../../components/ui/ThemedButton';
+import GreenButton from '../../components/ui/GreenButton';
 import ThemedText from '../../components/ui/ThemedText';
 import ThemedTextInput from '../../components/ui/ThemedTextInput';
 import ThemedView from '../../components/ui/ThemedView';
-import { Colors } from '../../constants/Colors';
 import { useGobelinStore } from '../../src/store/gobelinStore';
 
 export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
@@ -664,15 +663,15 @@ export default function IntroPlayer({ onIntroFinished, shouldStart = true }) {
               style={styles.usernameIntroInput} 
               value={username} 
               onChangeText={setUsername} 
-              placeholder="On jugera pas…" 
+              placeholder="On jugera pas…"
+              placeholderTextColor="rgba(78, 41, 20, 0.5)"
               autoFocus={true}
             />
-            <ThemedButton 
-              style={styles.usernameIntroButton} 
+            <GreenButton 
+              title="Valider"
               onPress={handleSubmitUsername}
-            >
-              Valider
-            </ThemedButton>
+              style={styles.usernameIntroButton}
+            />
           </ThemedView>
         </Animated.View>
       )}
@@ -784,12 +783,13 @@ const styles = StyleSheet.create({
     zIndex: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 20
   },
   usernameIntroContainer: {
     width: '100%',
     maxWidth: 400,
-    padding: 24,
+
+    // padding: 24,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -797,7 +797,7 @@ const styles = StyleSheet.create({
  
   },
   usernameIntroQuestion: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
@@ -805,10 +805,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Merriweather-Bold',
   },
   usernameIntroInput: {
-    width: '100%', 
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    fontSize: 16, 
+    width: '100%',
+      // marginBottom: 24,
+    // borderRadius: 12,
+    fontSize: 16,
+    // borderWidth: 2,
     fontFamily: 'Merriweather',
     // shadowColor: '#000',
     // shadowOffset: {
@@ -820,18 +821,7 @@ const styles = StyleSheet.create({
     // elevation: 3,
   },
   usernameIntroButton: {
-    // width: 300,
-    // height: 100, 
-    marginTop: 30,
-    borderRadius: 12,
-    shadowColor: Colors.primary,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
+    marginTop: 16,
   },
   //ERROR
   errorContainer: {
