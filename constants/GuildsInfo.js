@@ -3,8 +3,8 @@ export const GuildsInfo = {
    { 
      id: "ardemboul", 
      name: "Les Ardembouls", 
-     image: require("../assets/img/ardemboul.png"),
      image: require("../assets/img/logo-ardemboules.webp"),
+     description: "Ils animent le campus en organisant événements, animations et sorties !"
    },
     { 
       id: "brumelin", 
