@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AppState } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loadGobelinFromDatabase } from "../src/lib/saveGobelin";
 import { supabase } from "../src/lib/supabase";
 import { useConfigurateurStore } from "../src/store/configurateurStore";
@@ -80,7 +81,14 @@ export function UserProvider({ children }) {
 
   // LOGOUT
   async function logout() {
+    const userId = user?.id;
     await supabase.auth.signOut();
+    
+    // Clear cached gobelin data
+    if (userId) {
+      await AsyncStorage.removeItem('@gobelin_data_' + userId);
+    }
+    
     // user will be set to null by listener
     useGobelinStore.getState().reset();
     useMenuStore.getState().reset();
@@ -92,13 +100,19 @@ export function UserProvider({ children }) {
     // Listen for changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        console.log("Auth state changed:", _event, session?.user?.id);
         setUser(session?.user ?? null);
         setAuthChecked(true);
       },
     );
 
     // Initial session load
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        console.error("Error loading session:", error);
+      } else {
+        console.log("Session loaded:", data.session?.user?.id || "No session");
+      }
       setUser(data.session?.user ?? null);
       setAuthChecked(true);
     });

@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Gob'Links",
-    "scheme": "gobelinks",
-    "slug": "gobelinks",
+    "scheme": "gobelink",
+    "slug": "gobelink",
     "icon": "./assets/iconroot.png",  
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "resize",
-      "package": "com.dainay.gobelinks"
+      "package": "com.dainay.gobelink"
     },
     "web": {
       "output": "static"
