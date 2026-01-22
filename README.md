@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
+# Gobel’ink 👺✨
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Application mobile (iOS / Android) développée avec **React Native + Expo** dans le cadre d’un **projet étudiant à Gobelins**.
 
-## Get started
+Le projet explore la création d’une expérience ludique et interactive autour de l’univers des gobelins, en combinant **interactions mobiles**, **rendu 3D** et **logique de jeu légère**, pensée avant tout comme un **proof of concept**.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Contexte du projet
+Gobel’ink est un **projet scolaire réalisé en groupe**, dont l’objectif principal est d’expérimenter des mécaniques mobiles et interactives, plutôt que de livrer une application finalisée ou complète.
 
-2. Start the app
+Le travail présenté ici correspond à une **première version fonctionnelle (POC)** de l’application, centrée sur :
+- un **configurateur mobile de gobelin**,
+- la gestion d’un avatar 3D,
+- des interactions simples (gestes, animations, sons),
+- une première logique de sauvegarde utilisateur.
 
-   ```bash
-   npx expo start
-   ```
+Cette version ne représente qu’une **partie du concept global** de l’application, mais permet de valider les choix techniques et l’expérience proposée.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Objectif du projet
+- Prototyper une application mobile ludique autour d’un univers narratif
+- Tester des mécaniques propres au mobile (gestes, capteurs, audio)
+- Intégrer des scènes **3D** dans un environnement React Native
+- Explorer l’usage d’un backend prêt à l’emploi pour :
+  - l’authentification,
+  - la sauvegarde de données utilisateur,
+  - la synchronisation entre sessions
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Tech stack
+- **Expo / React Native** (JavaScript)
+- **Expo Router** (navigation)
+- **React Three Fiber** + **@react-three/drei** (3D)
+- **Supabase** (authentification et base de données)
+- **Zustand / Context** (gestion d’état)
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## Équipe
+Projet réalisé par des étudiants de **Gobelins** :
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- Théo **CAILLETON**
+- Daria **IAROVAIA**
+- Laurie **ROLLAND**
+- Eva **BOUGNON**
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## Remarque
+Ce projet est conçu comme un **prototype expérimental**.  
+Les choix techniques, l’architecture et les fonctionnalités ont été pensés pour favoriser l’expérimentation, la compréhension des enjeux mobiles et l’exploration de nouvelles pratiques, plutôt que pour une mise en production.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Projet pédagogique — usage non commercial.
