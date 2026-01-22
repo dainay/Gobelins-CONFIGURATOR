@@ -46,12 +46,12 @@ export const AvatarOptions = {
   ],
 
   pose: [
-    { id: "POSE_1", label: "POSE_1", name: "Drama" },
-    { id: "POSE_2", label: "POSE_2", name: "Cutie" },
-    { id: "POSE_3", label: "POSE_3", name: "Stylé" },
-    { id: "POSE_4", label: "POSE_4", name: "Papillon" },
-    { id: "POSE_5", label: "POSE_5", name: "Hey!" },
-    { id: "POSE_6", label: "POSE_6", name: "Ballerine" },
+    { id: "POSE_1", label: "POSE_1", name: "Drama", img: require("../assets/ui/tabs-bar/drama-pose.webp") },
+    { id: "POSE_2", label: "POSE_2", name: "Cutie", img: require("../assets/ui/tabs-bar/cutie-pose.webp") },
+    { id: "POSE_3", label: "POSE_3", name: "Stylé", img: require("../assets/ui/tabs-bar/style-pose.webp") },
+    { id: "POSE_4", label: "POSE_4", name: "Papillon", img: require("../assets/ui/tabs-bar/butterfly-pose.webp") },
+    { id: "POSE_5", label: "POSE_5", name: "Hey!", img: require("../assets/ui/tabs-bar/hey-pose.webp") },
+    { id: "POSE_6", label: "POSE_6", name: "Ballerine", img: require("../assets/ui/tabs-bar/ballerine-pose.webp") },
 
     //  { id: "an11", label: "ANIM_gesture" },
     // { id: "an12", label: "ANIM_gettinghit" },

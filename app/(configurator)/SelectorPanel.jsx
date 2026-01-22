@@ -373,7 +373,7 @@ export default function OptionsPanel() {
                 style={styles.itemBackground}
                 resizeMode="contain"
               >
-                {activeMenu === "appearance" ? (
+                {item.img ? (
                   <Image source={item.img} style={styles.itemImg} resizeMode="cover" />
                 ) : (
                   <Text style={[styles.label, {fontSize: 20, fontWeight: "bold", marginTop: 15}]}>{item.name}</Text>
@@ -483,9 +483,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   itemImg: {
-     width: 60,
-     height: 60,
-     marginTop:10,
+     width: 40,
+     height: 40,
+     marginTop:24,
   },
   label: {
     fontSize: 12,

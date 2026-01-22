@@ -62,7 +62,11 @@ export default function TabsBar() {
                   style={styles.tabBackground}
                   resizeMode="contain"
                 >
-                  <Image source={t.icon} style={isActive ? styles.active : styles.normal} />
+                  <Image 
+                    source={t.icon} 
+                    style={isActive ? styles.active : styles.normal} 
+                    resizeMode="contain"
+                  />
                 </ImageBackground>
               </TouchableOpacity>
             );
@@ -132,11 +136,12 @@ const styles = StyleSheet.create({
   active: {
     width: 40,
     height: 40,
-    tintColor: "#007AFF",
+    marginTop: 20,
   },
   normal: {
     width: 40,
     height: 40,
-    tintColor: "#999",
+    opacity: 0.6,
+    marginTop: 20,
   },
 });

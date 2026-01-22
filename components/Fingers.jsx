@@ -152,12 +152,12 @@ export default function Fingers({ onHandDetected }) {
 
         <View style={styles.iconsRow}>
           <Image
-            source={require("../assets/ui/guilds/digital-touch-left.webp")}
+            source={require("../assets/ui/guilds/digital-touch-right.webp")}
             style={styles.icon}
             resizeMode="contain"
           />
           <Image
-            source={require("../assets/ui/guilds/digital-touch-right.webp")}
+            source={require("../assets/ui/guilds/digital-touch-left.webp")}
             style={styles.icon}
             resizeMode="contain"
           />

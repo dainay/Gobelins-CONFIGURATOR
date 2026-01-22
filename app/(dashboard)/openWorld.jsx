@@ -20,7 +20,7 @@ import ThemedView from "../../components/ui/ThemedView";
 import { Colors } from "../../constants/Colors";
 
 import Btn from "../../assets/ui/buttons/button.webp";
-import Arrow from "../../assets/ui/world/arrow.png";
+import Arrow from "../../assets/ui/world/arrow.webp";
 import ButtonHome from "../../assets/ui/world/button-home.webp";
 import ImgBack from "../../assets/ui/world/fond-world.webp";
 import ButtonWorld from "../../assets/ui/world/name-place.webp";
@@ -294,7 +294,7 @@ const openWorld = () => {
           >
             <ImageBackground
               source={ButtonWorld}
-              resizeMode="conrain"
+              resizeMode="contain"
               style={styles.headerRight}
             >
               <ThemedText
@@ -397,12 +397,17 @@ const openWorld = () => {
             <Pressable style={styles.navButton} onPress={goPrev}>
               <Image
                 source={Arrow}
-                style={{ width: 100, height: 70, transform: [{ scaleX: -1 }] }}
+                style={{ width: 100, height: 70, marginTop: 2, transform: [{ scaleX: -1 }] }}
+                resizeMode="contain"
               />
             </Pressable>
 
             <Pressable style={styles.navButton} onPress={goNext}>
-              <Image source={Arrow} style={{ width: 100, height: 70 }} />
+              <Image 
+                source={Arrow} 
+                style={{ width: 100, height: 70, marginTop: 2 }} 
+                resizeMode="contain"
+              />
             </Pressable>
           </View>
         </ImageBackground>
@@ -642,14 +647,15 @@ const styles = StyleSheet.create({
   },
   navRow: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    paddingHorizontal: 12,
+    // paddingHorizontal: 12,
     position: "absolute",
-    transform: [{ translateY: "-50%" }],
+    // transform: [{ translateY: "-50%" }],
     left: 0,
-    bottom: 12,
+    bottom: "45%",
+    transform: [{ translateY: "50%" }],
     zIndex: 1000,
   },
   userName: {

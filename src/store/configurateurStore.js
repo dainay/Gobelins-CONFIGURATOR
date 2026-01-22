@@ -24,8 +24,8 @@ export const useConfigurateurStore = create((set) => ({
     if (tab === "hair") {
       zoom = 2.4;
       x = 0;
-      y = 2.4;
-      lookAtY = 1.9;
+      y = 1.5;
+      lookAtY = 1.7;
     } else if (tab === "cloth") {
       zoom = 3.8;
       x = 0;
