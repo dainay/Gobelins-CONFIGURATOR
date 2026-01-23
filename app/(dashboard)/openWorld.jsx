@@ -582,8 +582,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    gap: 36,
-    height: "100%",
+    gap: 36, 
+    paddingBottom: 30, 
   },
   names: {
     color: Colors.black,
