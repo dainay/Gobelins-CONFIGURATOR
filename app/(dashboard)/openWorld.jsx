@@ -218,19 +218,24 @@ const openWorld = () => {
         }
       }
 
-      // Animation d'entrée depuis la droite
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacityAnim, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      // Small delay to let Canvas mount with new gobelin before fading in
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Animation d'entrée depuis la droite
+          Animated.parallel([
+            Animated.timing(slideAnim, {
+              toValue: 0,
+              duration: 150,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacityAnim, {
+              toValue: 1,
+              duration: 150,
+              useNativeDriver: true,
+            }),
+          ]).start();
+        });
+      });
     });
   };
 
@@ -256,19 +261,24 @@ const openWorld = () => {
       opacityAnim.setValue(0);
       setCurrentIndex((i) => Math.max(0, i - 1));
 
-      // Animation d'entrée depuis la gauche
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacityAnim, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      // Small delay to let Canvas mount with new gobelin before fading in
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Animation d'entrée depuis la gauche
+          Animated.parallel([
+            Animated.timing(slideAnim, {
+              toValue: 0,
+              duration: 150,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacityAnim, {
+              toValue: 1,
+              duration: 150,
+              useNativeDriver: true,
+            }),
+          ]).start();
+        });
+      });
     });
   };
 
@@ -326,6 +336,7 @@ const openWorld = () => {
                   transform: [{ translateX: slideAnim }],
                   opacity: opacityAnim,
                 }}
+                pointerEvents="box-none"
               >
                 <View style={styles.titleContainer}>
                   <ThemedText
@@ -356,6 +367,7 @@ const openWorld = () => {
                   </View>
                 ) : (
                   <Canvas
+                    key={`gobelin-${currentGobelin?.user_id}-${currentIndex}`}
                     style={styles.canvas3D}
                     shadows
                     dpr={1}
@@ -696,12 +708,11 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   canvas3D: {
-    width: "75%",
-    maxWidth: 350,
-    height: "50%",
-    // maxHeight: 300,
+    width: "100%",
+    maxWidth: 400,
+    height: 400,
     alignSelf: "center",
-    marginBottom: 124,
+    marginBottom: 80,
   },
   titleContainer: {},
   gobelinNameTitle: {

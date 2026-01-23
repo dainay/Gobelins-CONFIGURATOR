@@ -124,13 +124,13 @@ useEffect(() => {
       <group>
         
         <mesh
-           position={[0, 0.7, 0]}  
+           position={[0, 1, 0]}  
           onPointerDown={(e) => {
             e.stopPropagation();
             onPress?.();
           }}
         >
-          <boxGeometry args={[1.3, 1.7, 1.2]} />
+          <boxGeometry args={[1.8, 2.2, 1.5]} />
           <meshBasicMaterial transparent opacity={0} />
         </mesh>
         <primitive ref={group} object={scene} scale={0.9} />

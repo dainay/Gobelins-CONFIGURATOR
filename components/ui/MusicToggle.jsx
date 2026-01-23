@@ -33,7 +33,7 @@ export default function MusicToggle({ style }) {
 const styles = StyleSheet.create({
   musicButton: {
     position: "absolute",
-    top: 60,
+    top: 80,
     left: 20,
     width: 50,
     height: 50,
