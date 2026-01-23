@@ -1,9 +1,9 @@
 import { Link } from "expo-router";
-import { Image, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { Image, StyleSheet, View, useColorScheme } from "react-native";
 import { Colors } from "../../constants/Colors";
 
+import GreenButton from "../../components/ui/GreenButton";
 import Spacer from "../../components/ui/Spacer";
-import ThemedButton from "../../components/ui/ThemedButton";
 import ThemedText from "../../components/ui/ThemedText";
 import ThemedTextInput from "../../components/ui/ThemedTextInput";
 import ThemedView from "../../components/ui/ThemedView";
@@ -49,7 +49,7 @@ const Login = () => {
         />
       </View>
       <Spacer />
-      <ThemedText title={true} style={styles.title} font="christmasBold">
+      <ThemedText title={true} style={styles.title} font="merriweather">
         J'ai déjà mon gobelin
       </ThemedText>
 
@@ -68,9 +68,12 @@ const Login = () => {
         value={password}
       />
 
-      <ThemedButton onPress={handleSubmit}>
-        <Text style={{ color: "#f2f2f2" }}>Se connecter</Text>
-      </ThemedButton>
+      <GreenButton 
+        title="Se connecter" 
+        onPress={handleSubmit}
+        width="80%"
+        style={{ alignSelf: 'center', marginTop: 20 }}
+      />
 
       <Spacer />
       <FirefliesSimple count={15} />
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    fontSize: 40,
+    fontSize: 20,
     marginBottom: 30,
   },
   bgImageWrapper: {
